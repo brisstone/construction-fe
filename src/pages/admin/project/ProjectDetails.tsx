@@ -20,18 +20,18 @@ export type DetailItemType = {
 };
 const ProjectDetails = () => {
   const DetailItems: DetailItemType[] = [
-    { title: "Budget & Planning", image: bugetIcon, link: "/admin/project-detail/budget" },
-    { title: "Payment Schedule", image: paymentSchedule, link: "/admin/project-detail/payment-schedule" },
-    { title: "Properties", image: houseicon, link: "/admin/project-detail/properties" },
-    { title: "Tasks", image: tasksIcon, link: "/admin/project-detail/tasks" },
-    { title: "Materials", image: materialIcon, link: "/admin/project-detail/materials" },
-    { title: "Project Team", image: teamIcon, link: "/admin/project-detail/project-team" },
-    { title: "Documents", image: docIcon, link: "/admin/project-detail/documents" },
-    { title: "Daily Logs", image: dailyLogsIcon, link: "/admin/project-detail/daily-logs" },
-    { title: "Equipments", image: equipmentIcon, link: "/admin/project-detail/equipments" },
-    { title: "Observations", image: observeIcon, link: "/admin/project-detail/observations" },
-    { title: "Daily Report", image: dailyReportIcon, link: "/admin/project-detail/daily-report" },
-    { title: "Safety", image: safetyIcon, link: "/admin/project-detail/safety" },
+    { title: "Budget & Planning", image: bugetIcon, link: "/admin/project/123/budget" },
+    { title: "Payment Schedule", image: paymentSchedule, link: "/admin/project/123/payment-schedule" },
+    { title: "Properties", image: houseicon, link: "/admin/project/123/properties" },
+    { title: "Tasks", image: tasksIcon, link: "/admin/project/123/tasks" },
+    { title: "Materials", image: materialIcon, link: "/admin/project/123/materials" },
+    { title: "Project Team", image: teamIcon, link: "/admin/project/123/project-team" },
+    { title: "Documents", image: docIcon, link: "/admin/project/123/documents" },
+    { title: "Daily Logs", image: dailyLogsIcon, link: "/admin/project/123/daily-logs" },
+    { title: "Equipments", image: equipmentIcon, link: "/admin/project/123/equipments" },
+    { title: "Observations", image: observeIcon, link: "/admin/project/123/observations" },
+    { title: "Daily Report", image: dailyReportIcon, link: "/admin/project/123/daily-report" },
+    { title: "Safety", image: safetyIcon, link: "/admin/project/123/safety" },
   ];
 
   return (

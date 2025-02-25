@@ -17,8 +17,8 @@ function App() {
           <Route path="" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="projects" element={<Project />} />
-            <Route path="project-detail" element={<ProjectDetails />} />
-            <Route path="project-detail/budget" element={<Budget />} />
+            <Route path="project/:id" element={<ProjectDetails />} />
+            <Route path="project/:id/budget" element={<Budget />} />
           </Route>
         </Route>
       </Routes>

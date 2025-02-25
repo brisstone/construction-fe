@@ -1,6 +1,8 @@
 import ButtonComp from "@/components/general/ButtonComp";
 import RouteChain from "@/components/general/RouteChain";
+import Container from "@/components/layout/Container";
 import BillComp from "@/components/projects/budget/Bill/BillComp";
+import WorkTable from "@/components/projects/budget/workPlan/WorkTable";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -12,7 +14,8 @@ const Budget = () => {
         routeTwo="Mabushi Project"
         routeThree="Budget and Planning"
       />
-      <section className="my-10">
+
+      <Container className="my-5">
         <Tabs defaultValue="bill">
           <aside className="md:flex items-center justify-between">
             <div className="w-full overflow-x-auto scrollbar-hidden">
@@ -27,10 +30,19 @@ const Budget = () => {
             <BillComp />
           </TabsContent>
           <TabsContent value="work">
-            <div>work</div>
+            <div className="my-5">
+              <div className="flex items-center justify-between">
+                <p className="font-medium text-lg text-textShade my-5">
+                 Work Plan Summary
+                </p>
+              </div>
+              <section>
+                <WorkTable />
+              </section>
+            </div>
           </TabsContent>
         </Tabs>
-      </section>
+      </Container>
     </div>
   );
 };

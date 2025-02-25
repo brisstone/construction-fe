@@ -38,16 +38,24 @@ const BillTable = () => {
     return (
       <tr
         key={index}
-        className=" w-full text-grey text-[13px] text-sm h-[60px] text-left font-medium cursor-pointer"
+        className=" w-full text-grey text-[13px] text-left text-sm h-[60px]  font-medium cursor-pointer"
       >
         <td className="py-1 px-4">{item?.item}</td>
 
-        <td className="py-1 px-4"> {item?.description}</td>
+        <td  className="py-1 px-4 "> {item?.description}</td>
 
         <td className="py-1 px-4">{item?.amount?.toLocaleString()}</td>
       </tr>
+      
     );
   };
+
+  // (undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+
+  const TotalValue = sampleData.reduce(
+    (acc, item) => acc + (item.amount || 0),
+    0
+  );
 
   return (
     <div>
@@ -55,8 +63,13 @@ const BillTable = () => {
         headers={headers}
         data={sampleData}
         renderRow={renderRow}
-        className="h-[50vh]"
+        className=""
       />
+      <div className="p-4  grid grid-cols-3 border-borderColor border ">
+        <p className="font-semibold">Summary Total</p>
+        <p></p>
+        <p className="font-semibold -ml-4">{TotalValue?.toLocaleString()}</p>
+      </div>
     </div>
   );
 };
