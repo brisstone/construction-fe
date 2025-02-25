@@ -24,7 +24,7 @@ const FilterLayout = ({ pageKey }: { pageKey: PageTypes }) => {
         <SearchInputComp
           value={search}
           pageKey={pageKey}
-          className="bg-transparent border border-borderColor h-[30px] w-full "
+          className="h-[30px] w-full "
         />
       </div>
       <div className="sm:flex gap-3 sm:justify-between items-center space-y-4 sm:space-y-0">

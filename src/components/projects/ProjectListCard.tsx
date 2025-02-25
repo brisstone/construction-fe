@@ -19,7 +19,7 @@ const ProjectListCard = () => {
   ];
 
   return (
-    <Link to={"/admin/project-detail"} className="bg-white md:flex justify-between items-center gap-6 h-fit p-2 shadow-projectShadow mb-4">
+    <Link to={"/admin/project-detail"} className="bg-white md:flex border rounded-[4px] justify-between items-center gap-6 h-fit p-2 hover:shadow-projectShadow mb-4">
       <div className="md:w-1/3">
         <img src={ProjectHouse1} alt="Project" className="w-full h-auto" />
       </div>

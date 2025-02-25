@@ -1,5 +1,6 @@
 import ButtonComp from "@/components/general/ButtonComp";
 import FilterLayout from "@/components/general/FilterLayout";
+import Container from "@/components/layout/Container";
 import ProjectListCard from "@/components/projects/ProjectListCard";
 import { PageTypes } from "@/utils";
 
@@ -13,12 +14,14 @@ const Project = () => {
         </h3>
         <ButtonComp text="Add New Project" className="w-fit" />
       </section>
-      <FilterLayout pageKey={pageKey} />
-      <div>
-        <ProjectListCard />
-        <ProjectListCard />
-        <ProjectListCard />
-      </div>
+      <Container>
+        <FilterLayout pageKey={pageKey} />
+        <div>
+          <ProjectListCard />
+          <ProjectListCard />
+          <ProjectListCard />
+        </div>
+      </Container>
     </div>
   );
 };

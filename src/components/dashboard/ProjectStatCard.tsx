@@ -6,7 +6,7 @@ export interface ProjectStatCardProps {
 
 const ProjectStatCard = ({ StatData }: { StatData: ProjectStatCardProps }) => {
   return (
-    <div className="border border-borderColor bg-white p-3">
+    <div className="border border-borderColor bg-white p-3 rounded-[4px]">
       <p className="text-xs font-medium">{StatData.label}</p>
       <div className="flex items-center justify-between my-2">
         <h3 className="text-3xl font-extrabold opacity-45">{StatData.value}</h3>

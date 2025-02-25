@@ -12,7 +12,7 @@ const ActivityChart = () => {
   console.log(datePicked, "datePicked");
 
   return (
-    <div className="border border-borderColor bg-white  p-3 rounded-xl h-full">
+    <div className="border border-borderColor bg-white  p-3 rounded-[4px] h-full">
       <div className="flex justify-between items-center w-full">
         <div className="w-1/2">
           <h3 className="text-grey text-sm font-bold">Activity Overview</h3>

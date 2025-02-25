@@ -8,7 +8,7 @@ const DetailCard = ({
   children?: React.ReactNode;
 }) => {
   return (
-    <div className={`${className} bg-white h-fit p-2 shadow-detailShadow`}>
+    <div className={`${className} bg-white h-fit p-2 rounded-[4px] shadow-detailShadow`}>
       <h3 className="text-sm text-center font-bold">{title}</h3>
       <div className="overflow-y-scroll max-h-[300px] scrollableCSS my-2">{children}</div>
     </div>

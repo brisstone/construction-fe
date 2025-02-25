@@ -38,7 +38,7 @@ const AdminLayout = () => {
         }`}
       >
         <AdminHeader toggleSidebar={toggleSidebar} />
-        <div className="h-[calc(100vh-58px)] overflow-y-auto scrollbar-hidden p-6 bg-white">
+        <div className="h-[calc(100vh-58px)] overflow-y-auto scrollbar-hidden p-6 bg-[#f9f9f9]">
           <Outlet />
         </div>
       </div>
