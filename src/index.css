@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+}
+body {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  background-color: #F9F9F9;
+  font-weight: 400;
+  color: #000000;
+  width: 100vw;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  scroll-padding-top: 200px;
+}
+
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+
+
+.scrollbar-hidden {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
+}
+
+.scrollableCSS::-webkit-scrollbar {
+  width: 5px;
+  height: 3px;
+}
+
+.scrollableCSS::-webkit-scrollbar-thumb {
+  background: darkgrey;
+}
+
+.scrollableCSS::-webkit-scrollbar-thumb:hover {
+  background: #3947CB;
+}
+
+.tablingTable {
+  border-collapse: separate !important;
+  border-spacing: 0px 1px !important;
+}
+
+.sidebar {
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+
+
+.react-datepicker__close-icon::after {
+  padding-bottom: 4px !important;
+}
+
+
+
+
+
+
+
+@layer base {}
