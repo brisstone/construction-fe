@@ -140,6 +140,7 @@ const WorkTable = () => {
     { content: <>Status</> },
   ];
 
+  
   const renderRow = (section: any, index: number) => {
     return (
       <React.Fragment key={index}>
@@ -147,14 +148,14 @@ const WorkTable = () => {
           <tr>
             <td
               colSpan={6}
-              className="pl-16 text-gray-800 font-bold px-4 py-2 uppercase"
+              className="pl-16 text-grey font-bold h-[60px] px-4 py-2 uppercase"
             >
               {section.section}
             </td>
           </tr>
         )}
         {section.tasks.map((task: any) => (
-          <tr key={task.id} className="">
+          <tr key={task.id} className="text-grey text-[13px] text-left text-sm h-[60px]  font-medium cursor-pointer">
             <td className=" px-4 py-2">{task.id}</td>
             <td className=" px-4 py-2">{task.activity}</td>
             <td className=" px-4 py-2">{task.duration}</td>

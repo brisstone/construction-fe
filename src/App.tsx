@@ -6,6 +6,8 @@ import Dashboard from "./pages/admin/dashboard/Dashboard";
 import Project from "./pages/admin/project/Project";
 import ProjectDetails from "./pages/admin/project/ProjectDetails";
 import Budget from "./pages/admin/project/Budget";
+import PaymentSchedule from "./pages/admin/project/PaymentSchedule";
+import Task from "./pages/admin/project/Task";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
             <Route path="projects" element={<Project />} />
             <Route path="project/:id" element={<ProjectDetails />} />
             <Route path="project/:id/budget" element={<Budget />} />
+            <Route path="project/:id/payment-schedule" element={<PaymentSchedule />} />
+            <Route path="project/:id/tasks" element={<Task />} />
           </Route>
         </Route>
       </Routes>

@@ -1,7 +1,4 @@
 import GenericTable from "@/components/general/GenericTable";
-import ReusableDialog from "@/components/general/ReuseableDialog";
-import { useState } from "react";
-import SubBillTable from "./SubBillTable";
 export type DataItem = {
   _id: string;
   item?: string;
@@ -30,37 +27,29 @@ const sampleData: DataItem[] = [
   },
 ];
 
-const BillTable = () => {
+const SubBillTable = ({ selectedRow }: { selectedRow: any }) => {
   const headers = [
     { content: <>Item</> },
     { content: <>Description</> },
     { content: <>Amount(#)</> },
   ];
 
-  const [selectedRow, setSelectedRow] = useState<DataItem | null>(null);
+  console.log(selectedRow, "selectedRow");
 
   const renderRow = (item: DataItem, index: number) => {
-
-    const handleRowClick = (row: DataItem) => {
-      setSelectedRow(row);
-    };
     return (
       <tr
-      onClick={() => handleRowClick(item)}
         key={index}
         className=" w-full text-grey text-[13px] text-left text-sm h-[60px]  font-medium cursor-pointer"
       >
         <td className="py-1 px-4">{item?.item}</td>
 
-        <td  className="py-1 px-4 "> {item?.description}</td>
+        <td className="py-1 px-4 "> {item?.description}</td>
 
         <td className="py-1 px-4">{item?.amount?.toLocaleString()}</td>
       </tr>
-      
     );
   };
-
-  // (undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 
   const TotalValue = sampleData.reduce(
     (acc, item) => acc + (item.amount || 0),
@@ -76,26 +65,18 @@ const BillTable = () => {
         className=""
       />
       <div className="p-4  grid grid-cols-3 border-borderColor border ">
-        <p className="font-semibold">Summary Total</p>
+        <p className="font-semibold">Total</p>
         <p></p>
         <p className="font-semibold -ml-4">{TotalValue?.toLocaleString()}</p>
       </div>
-      {
-        <ReusableDialog
-          title={selectedRow?.description ?? "Header"}
-          open={selectedRow !== null}
-          onOpenChange={(open) => {
-            if (!open) setSelectedRow(null);
-          }}
-          className="sm:max-w-[70vw] !px-0"
-        >
-          {selectedRow && (
-            <SubBillTable selectedRow={selectedRow}/>
-          )}
-        </ReusableDialog>
-      }
+      <div className="my-4">
+        <h3 className="font-bold text-xs text-center">
+          Note:{" "}
+          <span className="font-normal">Kindly check “Documents” for complete breakdown of items</span>
+        </h3>
+      </div>
     </div>
   );
 };
 
-export default BillTable;
+export default SubBillTable;
