@@ -5,45 +5,44 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useNavigate } from "react-router-dom";
 export type TaskItem = {
   id: number;
-  workStage: string;
-  amount: number;
+  LabourActivity: string;
+  Unit: string;
+  totalQty: number;
+  rate: number;
+  totalCost: number;
 };
 
 const sampleData: TaskItem[] = [
   {
     id: 1,
-    workStage: "DPC",
-    amount: 350000,
+    LabourActivity: "Kiker from work",
+    Unit: "Sum",
+    totalQty: 1,
+    rate: 15000,
+    totalCost: 15000,
   },
 ];
 
-const SubSructureTable = () => {
+const LabourTable = () => {
   const headers = [
-    { content: <>S/N</> },
-    { content: <>Work Stage</> },
-    { content: <>Amount(₦)</> },
-    { content: <>Action</> },
+    { content: <>Labour Activity</> },
+    { content: <>Unit</> },
+    { content: <>Quantity</> },
+    { content: <>Rate  (₦)</> },
+    { content: <>Total Cost (₦)</> },
+    { content: <></> },
   ];
 
-  const navigate = useNavigate();
   const renderRow = (task: TaskItem, index: number) => {
-    const handleRowClick = () => {
-      navigate(`/admin/project/123/budget/workStage`);
-    };
-
     return (
-      <tr
-        onClick={handleRowClick}
-        key={index}
-        className="text-gray-700 text-sm h-[50px] border-b cursor-pointer"
-      >
-        <td className="py-2 px-4">{task.id}</td>
-        <td className="py-2 px-4">{task.workStage}</td>
-        <td className="py-2 px-4">{task.amount.toLocaleString()}</td>
-
+      <tr key={index} className="text-gray-700 text-sm h-[50px] border-b">
+        <td className="py-2 px-4">{task.LabourActivity}</td>
+        <td className="py-2 px-4">{task.Unit}</td>
+        <td className="py-2 px-4">{task.totalQty}</td>
+        <td className="py-2 px-4">{task.rate}</td>
+        <td className="py-2 px-4">{task.totalCost}</td>
         <td className="py-1 px-4">
           <Popover>
             <PopoverTrigger>
@@ -73,4 +72,4 @@ const SubSructureTable = () => {
   );
 };
 
-export default SubSructureTable;
+export default LabourTable;

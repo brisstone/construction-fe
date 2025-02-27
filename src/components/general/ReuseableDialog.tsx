@@ -20,7 +20,7 @@ ReusableDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className={`!rounded-[20px] sm:px-7 px-4  sm:!w-[50vw] !w-[90vw] ${className}`}
+        className={`!rounded-[20px] sm:px-7 px-4  sm:w-[50vw] !w-[90vw] ${className}`}
       >
         <DialogTitle className="text-xl text-center capitalize font-bold text-grey border-b border-borderColor pb-2">
           {title}

@@ -18,12 +18,12 @@ type SidebarItem = {
 const sidebarItems: SidebarItem[] = [
   {
     name: "Dashboard",
-    link: "/admin",
+    link: "/admin/dashboard",
     icon: <DashboardIcon />,
   },
   {
     name: "Projects",
-    link: "/admin/projects",
+    link: "/admin/project",
     icon: <ProjectIcon />,
   },
   {
@@ -58,7 +58,11 @@ const Sidebar = () => {
 
       <main className="">
         {sidebarItems.map((item, index) => {
-          const isActive = location.pathname === item.link
+          const isActive = location.pathname?.includes(
+            item.link?.split("/")[2]
+          );
+          // const isDashbaordActive = location.pathname === "/admin/dashboard";
+          // console.log(item.link?.split("/")[2])
           return (
             <div key={index}>
               <Link

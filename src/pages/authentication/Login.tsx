@@ -42,7 +42,7 @@ const Login = () => {
   const onSubmit = async (data: any) => {
     try {
       if(data){
-        navigate("/admin");
+        navigate("/admin/dashboard");
       }
 
      
