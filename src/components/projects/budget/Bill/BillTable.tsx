@@ -50,7 +50,7 @@ const BillTable = () => {
         key={index}
         className=" w-full text-grey text-[13px] text-left text-sm h-[60px]  font-medium cursor-pointer"
       >
-        <td className="py-1 px-4">{item?.item}</td>
+        <td className="py-1 px-4">{item?.item}</td> 
 
         <td  className="py-1 px-4 "> {item?.description}</td>
 
