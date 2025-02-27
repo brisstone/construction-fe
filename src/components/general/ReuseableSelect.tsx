@@ -11,6 +11,7 @@ interface SelectProps {
   defaultValue?: string;
   onValueChange?: (value: string) => void;
   className?: string;
+  onChange?: string;
   placeholder?: string;
 }
 

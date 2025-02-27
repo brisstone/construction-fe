@@ -2,7 +2,12 @@ import ButtonComp from "@/components/general/ButtonComp";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SubComp from "./SubStructure/SubComp";
+import ReusableDialog from "@/components/general/ReuseableDialog";
+import AddNewWorkModal from "./AddNewWorkModal";
+import { useState } from "react";
 const ViewBudget = () => {
+  const [newWork, setNewWork] = useState(false);
+
   return (
     <div>
       <aside className="sm:flex items-center justify-between">
@@ -51,6 +56,7 @@ const ViewBudget = () => {
                 Work Stage List
               </p>
               <ButtonComp
+              onClick={() => setNewWork(true)}
                 text="Add Work Stage"
                 className="w-fit mt-1 sm:mt-0"
               />
@@ -63,6 +69,18 @@ const ViewBudget = () => {
             </TabsContent>
           </div>
         </Tabs>
+        {
+          <ReusableDialog
+            title="Add New Work Stage"
+            open={newWork}
+            onOpenChange={setNewWork}
+            className="sm:max-w-[80vw]"
+          >
+            <div>
+              <AddNewWorkModal />
+            </div>
+          </ReusableDialog>
+        }
       </main>
     </div>
   );

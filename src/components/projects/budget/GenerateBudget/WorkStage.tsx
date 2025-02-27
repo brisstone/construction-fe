@@ -5,7 +5,14 @@ import Container from "@/components/layout/Container";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MaterialTable from "../../material/MaterialTable";
 import LabourTable from "../../material/LabourTable";
+import ReusableDialog from "@/components/general/ReuseableDialog";
+import { useState } from "react";
+import AddNewMaterial from "../../material/AddNewMaterial";
+import AddNewLabour from "../../material/AddNewLabour";
 const WorkStage = () => {
+  const [newMaterial, setNewMaterial] = useState(false);
+  const [newLabour, setNewLabour] = useState(false);
+
   return (
     <div>
       <RouteChain
@@ -53,6 +60,7 @@ const WorkStage = () => {
                 <div className="sm:flex items-center justify-between my-3">
                   <p className="font-medium text-lg text-textShade">Material</p>
                   <ButtonComp
+                    onClick={() => setNewMaterial(true)}
                     text="Add Material"
                     className="w-fit mt-1 sm:mt-0"
                   />
@@ -67,6 +75,7 @@ const WorkStage = () => {
                 <div className="sm:flex items-center justify-between my-3">
                   <p className="font-medium text-lg text-textShade">Labour</p>
                   <ButtonComp
+                    onClick={() => setNewLabour(true)}
                     text="Add Labour"
                     className="w-fit mt-1 sm:mt-0"
                   />
@@ -92,6 +101,30 @@ const WorkStage = () => {
             </TabsContent>
           </Tabs>
         </main>
+        {
+          <ReusableDialog
+            title="Add New Material"
+            open={newMaterial}
+            onOpenChange={setNewMaterial}
+            className="sm:max-w-[40vw]"
+          >
+            <div>
+              <AddNewMaterial />
+            </div>
+          </ReusableDialog>
+        }
+        {
+          <ReusableDialog
+            title="Add New Labour"
+            open={newLabour}
+            onOpenChange={setNewLabour}
+            className="sm:max-w-[40vw]"
+          >
+            <div>
+              <AddNewLabour />
+            </div>
+          </ReusableDialog>
+        }
       </Container>
     </div>
   );
