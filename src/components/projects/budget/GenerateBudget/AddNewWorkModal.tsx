@@ -3,7 +3,7 @@ import TextAreaField from "@/components/input/TextAreaField";
 import { useState } from "react";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import MaterialArray from "./workStage/materialArray";
+import MaterialArray from "./workStage/MaterialArray";
 import ButtonComp from "@/components/general/ButtonComp";
 import LabourArray from "./workStage/LabourArray";
 
