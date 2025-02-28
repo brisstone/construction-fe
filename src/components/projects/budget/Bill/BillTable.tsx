@@ -13,7 +13,7 @@ const sampleData: DataItem[] = [
   {
     _id: "1",
     item: "A",
-    description: "Substructure",
+    description: "Substructure", 
     amount: 1000000,
   },
   {
