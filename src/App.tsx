@@ -13,6 +13,7 @@ import Setting from "./pages/admin/settings/Setting";
 import MaterialComp from "./pages/admin/settings/MaterialComp";
 import Amenities from "./pages/admin/settings/Amenities";
 import Units from "./pages/admin/settings/Units";
+import ClientDetail from "./pages/admin/clientDetail/ClientDetail";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="project/:id/budget/workStage" element={<WorkStage />} />
             <Route path="project/:id/payment-schedule" element={<PaymentSchedule />} />
             <Route path="project/:id/tasks" element={<Task />} />
+            <Route path="clients" element={<ClientDetail />} />
             <Route path="settings" element={<Setting />} />
             <Route path="settings/materials" element={<MaterialComp />} />
             <Route path="settings/amenities" element={<Amenities />} />

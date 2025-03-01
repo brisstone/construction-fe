@@ -1,5 +1,6 @@
 export enum PageTypes {
   PROJECTS = "PROJECTS",
+  CLIENTS = "CLIENTS",
 }
 
 export enum sortOrder {
