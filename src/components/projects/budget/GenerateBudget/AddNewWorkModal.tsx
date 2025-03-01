@@ -13,7 +13,7 @@ interface Material {
   quantity: number;
   materialUnit: string;
   marketPrice: number;
-}
+} 
 
 interface Labour {
   activity: string;
