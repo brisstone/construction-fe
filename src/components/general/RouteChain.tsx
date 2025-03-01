@@ -14,7 +14,7 @@ const RouteChain = ({
 }) => {
   const navigate = useNavigate();
   return (
-    <div className="flex items-center gap-4 text-xs text-iconColor">
+    <div className="flex items-center font-medium gap-4 text-xs text-iconColor">
       <main
         onClick={() => navigate(-1)}
         className="flex items-center gap-3 cursor-pointer"

@@ -1,11 +1,13 @@
 const Container = ({
-  children,
   className,
+  children,
 }: {
   className?: string;
   children?: React.ReactNode;
 }) => {
-  return <div className={`${className} bg-white p-4 rounded-[4px]`}>{children}</div>;
+  return (
+    <div className={`bg-white p-4 rounded-[4px] ${className}`}>{children}</div>
+  );
 };
 
 export default Container;

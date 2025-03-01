@@ -1,4 +1,4 @@
-import { ExportIcon } from "@/assets/svgComp/General";
+import { PlusIcon } from "@/assets/svgComp/General";
 import { Button } from "../ui/button";
 
 interface ButtonCompProps {
@@ -12,7 +12,7 @@ interface ButtonCompProps {
 
 const ButtonComp: React.FC<ButtonCompProps> = ({
   className,
-  icon = <ExportIcon />,
+  icon = <PlusIcon />,
   showIcon = false,
   disabled = false,
   text,
