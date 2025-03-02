@@ -9,7 +9,7 @@ const PropertyFeature = ({
   title: string;
 }) => {
   return (
-    <div className="flex gap-1 items-center">
+    <div className="flex gap-1 items-center mb-2">
       {icon}
       <p className="text-xs">{title}</p>
     </div>

@@ -1,9 +1,38 @@
+import ButtonComp from "@/components/general/ButtonComp";
 import UploadImg from "@/components/general/UploadImage";
 import InputField from "@/components/input/InputField";
 import TextAreaField from "@/components/input/TextAreaField";
 import { useState } from "react";
+import AmenityArray from "./AmenityArray";
+
+interface Amenity {
+  amenities: string;
+  quantity: number;
+}
 
 const CreateProperty = () => {
+  const [Amenities, setAmenities] = useState<Amenity[]>([]);
+
+  const addAmenity = () => {
+    setAmenities([
+      ...Amenities,
+      {
+        amenities: "",
+        quantity: 0,
+      },
+    ]);
+  };
+
+  const updateAmenity = (index: number, updatedAmenity: Amenity) => {
+    const newAmenities = [...Amenities];
+    newAmenities[index] = updatedAmenity;
+    setAmenities(newAmenities);
+  };
+
+  const removeAmenity = (index: number) => {
+    setAmenities(Amenities.filter((_, i) => i !== index));
+  };
+
   const [files, setFiles] = useState<any>({
     amenityIcon: null,
   });
@@ -47,6 +76,26 @@ const CreateProperty = () => {
           </div>
         </aside>
       </div>
+      <section className="py-4 border-y my-4">
+        <p className="text-xl font-semibold text-grey mb-2">Amenities</p>
+        {Amenities.map((amenities, index) => (
+          <AmenityArray
+            key={index}
+            index={index}
+            amenities={amenities}
+            onUpdate={updateAmenity}
+            onRemove={removeAmenity}
+          />
+        ))}
+        <ButtonComp
+          text="Add Amenities"
+          className="w-fit mt-1 sm:mt-0"
+          showIcon
+          onClick={addAmenity}
+        />
+      </section>
+
+      <ButtonComp className="flex justify-self-end w-fit" text="Create Property" />
     </div>
   );
 };

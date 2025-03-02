@@ -15,6 +15,8 @@ import Amenities from "./pages/admin/settings/Amenities";
 import Units from "./pages/admin/settings/Units";
 import ClientDetail from "./pages/admin/clientDetail/ClientDetail";
 import Properties from "./pages/admin/project/Properties";
+import DocumentPage from "./pages/admin/project/Document";
+import PropertyDetail from "./pages/admin/project/PropertyDetail";
 
 function App() {
   return (
@@ -29,8 +31,19 @@ function App() {
             <Route path="project/:id" element={<ProjectDetails />} />
             <Route path="project/:id/budget" element={<Budget />} />
             <Route path="project/:id/properties" element={<Properties />} />
-            <Route path="project/:id/budget/workStage" element={<WorkStage />} />
-            <Route path="project/:id/payment-schedule" element={<PaymentSchedule />} />
+            <Route
+              path="project/:id/properties/:id"
+              element={<PropertyDetail />}
+            />
+            <Route path="project/:id/documents" element={<DocumentPage />} />
+            <Route
+              path="project/:id/budget/workStage"
+              element={<WorkStage />}
+            />
+            <Route
+              path="project/:id/payment-schedule"
+              element={<PaymentSchedule />}
+            />
             <Route path="project/:id/tasks" element={<Task />} />
             <Route path="clients" element={<ClientDetail />} />
             <Route path="settings" element={<Setting />} />

@@ -8,10 +8,11 @@ import {
   PoolIcon,
 } from "@/assets/svgComp/PropertyIcon";
 import { ThreeDotsVertical } from "@/assets/svgComp/General";
+import { Link } from "react-router-dom";
 
 const PropertyCard = () => {
   return (
-    <div className="relative group">
+    <Link to={"/admin/project/123/properties/333"} className="relative group">
       <div className="absolute top-2 right-2 hidden group-hover:flex gap-2">
         <button className=" bg-white rounded-full shadow-md">
           <ThreeDotsVertical />
@@ -32,7 +33,7 @@ const PropertyCard = () => {
           <PropertyFeature icon={<LivingRoomIcon />} title="2 Living Room" />
         </div>
       </section>
-    </div>
+    </Link>
   );
 };
 
