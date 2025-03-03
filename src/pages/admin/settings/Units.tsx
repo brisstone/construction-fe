@@ -1,7 +1,5 @@
 import ReusableDialog from "@/components/general/ReuseableDialog";
 import RouteChain from "@/components/general/RouteChain";
-import AddAmenitiesSettings from "@/components/settings/amenities/AddAmenitiesSettings";
-import AmenityTable from "@/components/settings/amenities/AmenityTable";
 import AddUnit from "@/components/settings/units/AddUnit";
 import UnitTable from "@/components/settings/units/UnitTable";
 import TopHeader from "@/components/ui/TopHeader";

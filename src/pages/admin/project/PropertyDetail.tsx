@@ -15,6 +15,13 @@ import ButtonComp from "@/components/general/ButtonComp";
 import ReusableDialog from "@/components/general/ReuseableDialog";
 import { useState } from "react";
 import ClientDetailModal from "@/components/clientDetail/ClientDetailModal";
+import PropertyGallery from "@/components/projects/properties/PropertyGallery";
+import gall1 from "@/assets/images/gallery/gall1.png";
+import gall2 from "@/assets/images/gallery/gall2.png";
+import gall3 from "@/assets/images/ProjectHouse1.png";
+
+
+
 const PropertyDetail = () => {
   const client: boolean = true;
 
@@ -27,8 +34,19 @@ const PropertyDetail = () => {
         routeThree="Properties"
       />
       <Container className="my-5">
-        <div className="h-48 w-full rounded-[4px] flex bg-teal-400 justify-center items-center">
-          Gallery
+        <div >
+          <PropertyGallery
+            id={` 1`}
+            allImageSets={[
+              {
+                images: [gall1, gall2, gall3, gall1, gall2]
+              },
+            ]}
+            isNotStarLot={false}
+            backoffice={true}
+            showNavigation={true}
+            dynamicHeight={true}
+          />
         </div>
         <section className="md:flex justify-between my-5">
           <div className="md:w-[54%] ">

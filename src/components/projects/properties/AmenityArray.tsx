@@ -1,5 +1,4 @@
 import { RemoveIcon } from "@/assets/svgComp/PropertyIcon";
-import ButtonComp from "@/components/general/ButtonComp";
 import ReusableSelect from "@/components/general/ReuseableSelect";
 import InputField from "@/components/input/InputField";
 
