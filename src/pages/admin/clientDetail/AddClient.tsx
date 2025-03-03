@@ -1,4 +1,5 @@
 import ButtonComp from "@/components/general/ButtonComp";
+import FileUpload from "@/components/general/FileDrags";
 import ReusableSelect from "@/components/general/ReuseableSelect";
 import UploadImg from "@/components/general/UploadImage";
 import InputField from "@/components/input/InputField";
@@ -67,6 +68,10 @@ const AddClient = () => {
         />
       </div>
       <InputField type="date" label="Date of Entry" name="dateOfEntry" />
+      <div>
+        <p className="text-sm font-semibold text-grey mb-2">Proof of Payment</p>
+        <FileUpload onFileUpload={(file) => console.log(file)} />
+      </div>
       <div className="flex gap-3 items-center justify-self-end mt-4">
         <ButtonComp text="Save" />
       </div>

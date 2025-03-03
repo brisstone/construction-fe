@@ -19,6 +19,8 @@ import PropertyGallery from "@/components/projects/properties/PropertyGallery";
 import gall1 from "@/assets/images/gallery/gall1.png";
 import gall2 from "@/assets/images/gallery/gall2.png";
 import gall3 from "@/assets/images/ProjectHouse1.png";
+import PaymentDetailModal from "@/components/clientDetail/PaymentDetailModal";
+import AddClient from "../clientDetail/AddClient";
 
 
 
@@ -26,6 +28,8 @@ const PropertyDetail = () => {
   const client: boolean = true;
 
   const [clientDetail, setClientDetail] = useState(false);
+  const [paymentDetail, setPaymentDetail] = useState(false);
+  const [addClient, setAddClient] = useState(false);
   return (
     <div>
       <RouteChain
@@ -34,12 +38,12 @@ const PropertyDetail = () => {
         routeThree="Properties"
       />
       <Container className="my-5">
-        <div >
+        <div>
           <PropertyGallery
             id={` 1`}
             allImageSets={[
               {
-                images: [gall1, gall2, gall3, gall1, gall2]
+                images: [gall1, gall2, gall3, gall1, gall2],
               },
             ]}
             isNotStarLot={false}
@@ -92,7 +96,11 @@ const PropertyDetail = () => {
                   </aside>
                 </div>
                 <div className="sm:flex gap-6 items-center">
-                  <ButtonComp text="View Payments" className="w-fit" />
+                  <ButtonComp
+                    onClick={() => setPaymentDetail(true)}
+                    text="View Payments"
+                    className="w-fit"
+                  />
                   <Button
                     onClick={() => setClientDetail(true)}
                     className="bg-transparent border rounded-[4px] mt-2 sm:mt-0 text-black hover:text-white"
@@ -104,12 +112,27 @@ const PropertyDetail = () => {
             ) : (
               <div className="flex flex-col justify-center mt-5 items-center gap-5">
                 <img src={clientBook} alt="clientBook" />
-                <ButtonComp text="Add Client" />
+                <ButtonComp
+                  onClick={() => setAddClient(true)}
+                  text="Add Client"
+                />
               </div>
             )}
           </div>
         </section>
       </Container>
+      {
+        <ReusableDialog
+          title="Add Client"
+          open={addClient}
+          onOpenChange={setAddClient}
+          className="sm:max-w-[60vw]"
+        >
+          <div>
+            <AddClient />
+          </div>
+        </ReusableDialog>
+      }
       {
         <ReusableDialog
           title="Client Information"
@@ -119,6 +142,18 @@ const PropertyDetail = () => {
         >
           <div>
             <ClientDetailModal />
+          </div>
+        </ReusableDialog>
+      }
+      {
+        <ReusableDialog
+          title="Payment Information"
+          open={paymentDetail}
+          onOpenChange={setPaymentDetail}
+          className="sm:max-w-[60vw]"
+        >
+          <div>
+            <PaymentDetailModal />
           </div>
         </ReusableDialog>
       }

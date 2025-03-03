@@ -1,9 +1,9 @@
 import ButtonComp from "@/components/general/ButtonComp";
-import UploadImg from "@/components/general/UploadImage";
 import InputField from "@/components/input/InputField";
 import TextAreaField from "@/components/input/TextAreaField";
 import { useState } from "react";
 import AmenityArray from "./AmenityArray";
+import MultipleFileUpload from "@/components/general/MultipleFileUpload";
 
 interface Amenity {
   amenities: string;
@@ -33,24 +33,40 @@ const CreateProperty = () => {
     setAmenities(Amenities.filter((_, i) => i !== index));
   };
 
-  const [files, setFiles] = useState<any>({
-    amenityIcon: null,
-  });
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
-  console.log(files, "files");
-
-  const handleFileChange = (file: File | null, name: string) => {
-    console.log("File received:", file, "for", name);
-
-    setFiles((prevFiles: any) => ({ ...prevFiles, [name]: file }));
+  const handleFileUpload = (files: File[], name: string) => {
+    console.log("Uploaded files for", name, ":", files);
+    setUploadedFiles(files);
   };
+
+  console.log(uploadedFiles, "uploadedFiles");
 
   return (
     <div>
-      <div>
-        <p className="text-sm font-semibold text-grey">Upload Property Photo</p>
-        <UploadImg name="clientIcon" onFileChange={handleFileChange} />
-      </div>
+      <aside>
+        <div>
+          <p className="text-sm font-semibold text-grey">
+            Upload Property Photo
+          </p>
+          <MultipleFileUpload
+            name="clientIcon"
+            onFileChange={handleFileUpload}
+          />
+        </div>
+        {/* {uploadedFiles.length > 0 && (
+          <div className="mt-4">
+            <h3 className="text-md font-medium">Uploaded Files:</h3>
+            <ul className="list-disc pl-4">
+              {uploadedFiles.map((file, index) => (
+                <li key={index} className="text-sm">
+                  {file.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )} */}
+      </aside>
       <InputField
         type="text"
         label="Property Name/Number"
@@ -95,7 +111,10 @@ const CreateProperty = () => {
         />
       </section>
 
-      <ButtonComp className="flex justify-self-end w-fit" text="Create Property" />
+      <ButtonComp
+        className="flex justify-self-end w-fit"
+        text="Create Property"
+      />
     </div>
   );
 };

@@ -23,6 +23,7 @@ export default {
         placeholderColor: "#98A2B3",
         green: "#40A74E",
         deepRed: "#DE0E1A",
+        textRed: "#DD2025",
         darkGrey: "#7d7d7d",
         textGrey: "#667185",
         yellow: "#EACB16",
@@ -40,11 +41,10 @@ export default {
       boxShadow: {
         tableShadow: "0px 1px 2px 0px #0A0D120D",
         detailShadow: "0px 1px 2px 0px #00000040",
-        projectShadow: "0px 4px 4px 0px #00000040"
-
+        projectShadow: "0px 4px 4px 0px #00000040",
       },
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};
 
