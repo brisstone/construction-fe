@@ -82,7 +82,7 @@ const MultipleFileUpload = ({
 
         {/* Display Files */}
         {files.length > 0 && (
-          <div className="mt-3 flex gap-2">
+          <div className="mt-3 flex flex-wrap gap-2">
             {files.map((file, index) => (
               <div key={index} className="flex items-center gap-2">
                 {accept.startsWith("image/") ? (

@@ -69,7 +69,7 @@ const Properties = () => {
             showIcon
           />
           <SearchInputComp pageKey={PageTypes?.PROJECTS} />
-          <section className="my-10 grid gap-6 grid-cols-3">
+          <section className="my-10 grid gap-6 md:grid-cols-3 grid-cols-1">
             <PropertyCard />
             <PropertyCard />
             <PropertyCard />
