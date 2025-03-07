@@ -17,6 +17,7 @@ import ClientDetail from "./pages/admin/clientDetail/ClientDetail";
 import Properties from "./pages/admin/project/Properties";
 import DocumentPage from "./pages/admin/project/Document";
 import PropertyDetail from "./pages/admin/project/PropertyDetail";
+import UserPage from "./pages/admin/user/UserPage";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
             />
             <Route path="project/:id/tasks" element={<Task />} />
             <Route path="clients" element={<ClientDetail />} />
+            <Route path="users" element={<UserPage />} />
             <Route path="settings" element={<Setting />} />
             <Route path="settings/materials" element={<MaterialComp />} />
             <Route path="settings/amenities" element={<Amenities />} />

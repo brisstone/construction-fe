@@ -65,7 +65,7 @@ const ClientTable = () => {
         <td className="py-2 px-4">{task.email}</td>
         <td className="py-2 px-4">{task.clientType}</td>
         <td className="py-2 px-4">{task.occupation}</td>
-      
+
         <td className="py-1 px-4">
           <Popover>
             <PopoverTrigger>
