@@ -9,7 +9,7 @@ interface FileUploadProps {
   maxSize?: number;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({
+const FileUpload: React.FC<FileUploadProps> = ({ 
   onFileUpload,
   accept = {
     "image/png": [],
