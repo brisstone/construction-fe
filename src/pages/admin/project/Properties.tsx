@@ -19,7 +19,7 @@ const StatData: StatCardProps[] = [
     value: "2",
   },
   {
-    label: "Available Property",
+    label: "Available Property", 
     value: "2",
   },
   {
