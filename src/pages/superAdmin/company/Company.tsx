@@ -4,7 +4,6 @@ import ButtonComp from "@/components/general/ButtonComp";
 import FilterLayout from "@/components/general/FilterLayout";
 import Pagination from "@/components/general/Pagination";
 import ReusableDialog from "@/components/general/ReuseableDialog";
-import SearchInputComp from "@/components/input/SearchInputComp";
 import { PageTypes } from "@/utils";
 import { useState } from "react";
 
