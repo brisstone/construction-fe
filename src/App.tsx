@@ -18,6 +18,8 @@ import Properties from "./pages/admin/project/Properties";
 import DocumentPage from "./pages/admin/project/Document";
 import PropertyDetail from "./pages/admin/project/PropertyDetail";
 import UserPage from "./pages/admin/user/UserPage";
+import SuperAdminLayout from "./components/layout/SuperAdminLayout";
+import Company from "./pages/superAdmin/company/Company";
 
 function App() {
   return (
@@ -52,6 +54,12 @@ function App() {
             <Route path="settings/materials" element={<MaterialComp />} />
             <Route path="settings/amenities" element={<Amenities />} />
             <Route path="settings/units" element={<Units />} />
+          </Route>
+        </Route>
+
+        <Route path="/super-admin">
+          <Route path="" element={<SuperAdminLayout />}>
+            <Route index element={<Company />} />
           </Route>
         </Route>
       </Routes>
