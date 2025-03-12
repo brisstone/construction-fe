@@ -18,7 +18,7 @@ type CompanyType = {
   ownerId: {
     role: string;
   };
-  createdAt: Date;
+  createdAt: Date; 
 };
 
 const companyData: CompanyType[] = [

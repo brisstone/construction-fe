@@ -6,7 +6,7 @@ import { useDropzone, Accept } from "react-dropzone";
 interface FileUploadProps {
   onFileUpload: (file: File) => void;
   accept?: Accept;
-  maxSize?: number;
+  maxSize?: number; 
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({ 
