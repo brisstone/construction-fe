@@ -12,8 +12,12 @@ import SubReqItemTable, {
 } from "@/components/procurement/requisition/SubReqItemTable";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const AddRequisition = () => {
+  const [searchParams] = useSearchParams();
+
+  const isEditing = searchParams.get("isEdit");
   const [addItem, setAddItem] = useState(false);
 
   const [items, setItems] = useState<SubReqItem[]>([]);
@@ -36,7 +40,9 @@ const AddRequisition = () => {
       />
       <Container className="my-5">
         <aside className="flex justify-between items-center my-4">
-          <h1 className="text-xl font-bold">New Requisition Form</h1>
+          <h1 className="text-xl font-bold">
+            {isEditing ? "Edit  Requisition Form" : " New Requisition Form"}
+          </h1>
         </aside>
         <main>
           <div className="grid sm:grid-cols-2 grid-cols-1 gap-5 ">

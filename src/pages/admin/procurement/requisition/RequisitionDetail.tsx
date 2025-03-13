@@ -5,6 +5,7 @@ import SubReqItemTable, {
   SubReqItem,
 } from "@/components/procurement/requisition/SubReqItemTable";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const RequisitionDetail = () => {
   const RequisitionDetails = [
@@ -35,6 +36,9 @@ const RequisitionDetail = () => {
     },
   ];
 
+  
+  const navigate = useNavigate();
+
   return (
     <div>
       <RouteChain
@@ -45,7 +49,10 @@ const RequisitionDetail = () => {
       <Container className="my-5">
         <aside className="flex justify-between items-center my-4">
           <h1 className="text-xl font-bold">Requisition Details</h1>
-          <Button className="bg-white border rounded-[8px] text-black">
+          <Button
+            onClick={() => navigate("/admin/add-requistion?isEdit=true")}
+            className="bg-white border rounded-[8px] text-black"
+          >
             <EditPlusIcon /> Edit
           </Button>
         </aside>
