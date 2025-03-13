@@ -20,6 +20,9 @@ import PropertyDetail from "./pages/admin/project/PropertyDetail";
 import UserPage from "./pages/admin/user/UserPage";
 import SuperAdminLayout from "./components/layout/SuperAdminLayout";
 import Company from "./pages/superAdmin/company/Company";
+import Procurement from "./pages/admin/procurement/Procurement";
+import RequisitionDetail from "./pages/admin/procurement/requisition/RequisitionDetail";
+import AddRequisition from "./pages/admin/procurement/requisition/AddRequisition";
 
 function App() {
   return (
@@ -50,6 +53,9 @@ function App() {
             <Route path="project/:id/tasks" element={<Task />} />
             <Route path="clients" element={<ClientDetail />} />
             <Route path="users" element={<UserPage />} />
+            <Route path="procurement" element={<Procurement />} />
+            <Route path="requistion-detail" element={<RequisitionDetail />} />
+            <Route path="add-requistion" element={<AddRequisition />} />
             <Route path="settings" element={<Setting />} />
             <Route path="settings/materials" element={<MaterialComp />} />
             <Route path="settings/amenities" element={<Amenities />} />
