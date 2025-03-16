@@ -60,7 +60,7 @@ function App() {
         <Route path="/super-admin">
           <Route path="" element={<SuperAdminLayout />}>
             <Route index element={<Company />} />
-          </Route>
+          </Route> 
         </Route>
       </Routes>
     </div>
