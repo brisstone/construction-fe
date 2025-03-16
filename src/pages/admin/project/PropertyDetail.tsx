@@ -21,8 +21,7 @@ import gall2 from "@/assets/images/gallery/gall2.png";
 import gall3 from "@/assets/images/ProjectHouse1.png";
 import PaymentDetailModal from "@/components/clientDetail/PaymentDetailModal";
 import AddClient from "../clientDetail/AddClient";
-
-
+import CreateProperty from "@/components/projects/properties/CreateProperty";
 
 const PropertyDetail = () => {
   const client: boolean = true;
@@ -30,6 +29,9 @@ const PropertyDetail = () => {
   const [clientDetail, setClientDetail] = useState(false);
   const [paymentDetail, setPaymentDetail] = useState(false);
   const [addClient, setAddClient] = useState(false);
+
+  const [editProperty, setEditProperty] = useState(false);
+
   return (
     <div>
       <RouteChain
@@ -56,7 +58,7 @@ const PropertyDetail = () => {
           <div className="md:w-[54%] ">
             <aside className="flex justify-between items-center my-4">
               <h1 className="text-xl font-bold">Mabushi Project Phase 1/A05</h1>
-              <Button className="bg-white border rounded-[8px] text-black">
+              <Button onClick={() => setEditProperty(true)} className="bg-white border rounded-[8px] text-black">
                 Edit Detail
               </Button>
             </aside>
@@ -154,6 +156,18 @@ const PropertyDetail = () => {
         >
           <div>
             <PaymentDetailModal />
+          </div>
+        </ReusableDialog>
+      }
+      {
+        <ReusableDialog
+          title="Edit New Property"
+          open={editProperty}
+          onOpenChange={setEditProperty}
+          className="sm:max-w-[60vw]"
+        >
+          <div>
+            <CreateProperty />
           </div>
         </ReusableDialog>
       }

@@ -37,6 +37,16 @@ const sidebarItems: SidebarItem[] = [
     icon: <StaffIcon />,
   },
   {
+    name: "Procurement",
+    link: "/admin/procurement",
+    icon: <StaffIcon />,
+  },
+  {
+    name: "Storage",
+    link: "/admin/storage",
+    icon: <StaffIcon />,
+  },
+  {
     name: "Settings",
     link: "/admin/settings",
     icon: <SettingsIcon />,
