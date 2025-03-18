@@ -37,7 +37,7 @@ const authStore = createStore<AuthState>()(
         if (currentUser?.primaryColor) {
           document.documentElement.style.setProperty('--primary-color', currentUser.primaryColor);
         }
-      },
+      }, 
     }),
     {
       name: "auth",
