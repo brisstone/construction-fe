@@ -28,7 +28,7 @@ const authStore = createStore<AuthState>()(
       setCurrentUser: (user) => set({ currentUser: user }),
       logout: () => {
         // Reset theme to default when logging out
-        document.documentElement.style.setProperty('--primary-color', '#default-color');
+        document.documentElement.style.setProperty('--primary-color', '#3947CB');
         set({ accessToken: null, currentUser: null });
       },
       // Function to apply the user's theme
