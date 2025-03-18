@@ -6,6 +6,7 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/store/authStore";
 
 const Loginschema = z.object({
   email: z
@@ -22,6 +23,7 @@ const Loginschema = z.object({
 type FormData = z.infer<typeof Loginschema>;
 
 const Login = () => {
+  const { setCurrentUser, applyUserTheme } = useAuthStore();
   const navigate = useNavigate();
 
   const {
@@ -37,15 +39,21 @@ const Login = () => {
     mode: "onChange",
   });
 
-  
-
   const onSubmit = async (data: any) => {
+    const response = {
+      email: data?.email,
+      primaryColor: "red",
+    };
     try {
-      if(data){
+      if (data) {
+        const user = response;
+        setCurrentUser(user);
+
+        // Apply the user's theme immediately after login
+        applyUserTheme();
+
         navigate("/admin/dashboard");
       }
-
-     
     } catch (error) {
       console.log("An error occurred: ", error);
     }
@@ -85,7 +93,7 @@ const Login = () => {
           />
           <Button className="h-14 w-full mt-8  rounded-[28px] text-white bg-deepBlue mx-auto">
             {/* {isPending ? "loading..." : "Login"} */}
-           Login
+            Login
           </Button>
         </section>
       </form>

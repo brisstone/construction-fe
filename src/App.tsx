@@ -26,8 +26,17 @@ import AddRequisition from "./pages/admin/procurement/requisition/AddRequisition
 import Storage from "./pages/admin/storage/Storage";
 import InventoryDetail from "./pages/admin/storage/inventory/InventoryDetail";
 import AddStock from "./pages/admin/storage/inventory/AddStock";
+import { useAuthStore } from "./store/authStore";
+import { useEffect } from "react";
 
 function App() {
+
+  const { applyUserTheme } = useAuthStore();
+
+    useEffect(() => {
+      applyUserTheme();
+    }, []);
+
   return (
     <div>
       <Routes>

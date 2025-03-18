@@ -12,7 +12,8 @@ export default {
       colors: {
         borderColor: "#E4E7EC",
         fadedBlue: "#3947CB1A",
-        deepBlue: "#3947CB",
+        deepBlue: "var(--primary-color)",
+        // deepBlue: "#3947CB",
         lightBlueGrey: "#344054",
         textNude: "#9A9A9A",
         textShade: "#2D2C2CBD",

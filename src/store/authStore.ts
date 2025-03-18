@@ -1,14 +1,13 @@
 import { createStore } from "zustand";
-
 import { createJSONStorage, persist } from "zustand/middleware";
 
 export interface AuthData {
   email: string;
-  role: string;
   companyId?: string;
   _id?: string;
   firstName?: string;
   lastName?: string;
+  primaryColor?: string; 
 }
 
 interface AuthState {
@@ -17,16 +16,28 @@ interface AuthState {
   setAccessToken: (token: string | null) => void;
   setCurrentUser: (user: AuthData | null) => void;
   logout: () => void;
+  applyUserTheme: () => void;
 }
 
 const authStore = createStore<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       accessToken: null,
       currentUser: null,
       setAccessToken: (token) => set({ accessToken: token }),
       setCurrentUser: (user) => set({ currentUser: user }),
-      logout: () => set({ accessToken: null, currentUser: null }),
+      logout: () => {
+        // Reset theme to default when logging out
+        document.documentElement.style.setProperty('--primary-color', '#default-color');
+        set({ accessToken: null, currentUser: null });
+      },
+      // Function to apply the user's theme
+      applyUserTheme: () => {
+        const { currentUser } = get();
+        if (currentUser?.primaryColor) {
+          document.documentElement.style.setProperty('--primary-color', currentUser.primaryColor);
+        }
+      },
     }),
     {
       name: "auth",

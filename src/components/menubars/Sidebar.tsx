@@ -1,13 +1,16 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "@/assets/Logo.svg";
 import { ReactNode } from "react";
 import {
   DashboardIcon,
+  LogoutIcon,
   ProjectIcon,
   SettingsIcon,
   StaffIcon,
 } from "@/assets/svgComp/SidebarIcon";
 import { useSidebarStore } from "@/store/SidebarStore";
+import { useAuthStore } from "@/store/authStore";
+import { toast } from "sonner";
 
 type SidebarItem = {
   name: string;
@@ -55,7 +58,15 @@ const sidebarItems: SidebarItem[] = [
 
 const Sidebar = () => {
   const { closeSidebar } = useSidebarStore();
+   const navigate = useNavigate();
   const location = useLocation();
+   const { logout } = useAuthStore();
+
+   const handleLogout = () => {
+     logout();
+     toast.success("Logged out successfully");
+     navigate("/");
+   };
 
   // console.log(location.pathname);
   return (
@@ -101,6 +112,11 @@ const Sidebar = () => {
           );
         })}
       </main>
+      <div className="absolute bottom-0">
+        <div className="cursor-pointer" onClick={handleLogout}>
+          <LogoutIcon />
+        </div>
+      </div>
     </div>
   );
 };
