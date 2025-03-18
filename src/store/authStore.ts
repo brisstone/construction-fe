@@ -8,6 +8,7 @@ export interface AuthData {
   firstName?: string;
   lastName?: string;
   primaryColor?: string; 
+  role?: string;
 }
 
 interface AuthState {
