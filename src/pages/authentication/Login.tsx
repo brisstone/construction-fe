@@ -42,7 +42,7 @@ const Login = () => {
   const onSubmit = async (data: any) => {
     const response = {
       email: data?.email,
-      primaryColor: "red",
+      primaryColor: "purple",
     };
     try {
       if (data) {
