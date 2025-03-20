@@ -14,25 +14,16 @@ export interface ClientType {
   firstName: string;
   lastName: string;
   phoneNumber: string;
+  occupation: string;
+  dob: string;
   password: string;
+  type: string;
   email: string;
-  address: LocationType;
+  geometry: GeometryType;
   role: string;
   emailVerified: string;
   kycVerified: string;
   permissionIds: [];
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-}
-
-
-export interface LocationType {
-  geometry: GeometryType;
-  _id: string;
-  name: string;
-  type: string;
-  companyId: string;
   createdAt: string;
   updatedAt: string;
   __v: number;

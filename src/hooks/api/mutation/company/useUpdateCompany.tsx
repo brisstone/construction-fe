@@ -13,7 +13,7 @@ type ErrorType = { error: string; success: boolean };
 
 
 const updateCompany = (id: string, formData: FormData): Promise<ResponseType> => {
-  return axiosInstance.patch(`/company/${id}`, formData, {
+  return axiosInstance.put(`/company/${id}`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

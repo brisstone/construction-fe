@@ -7,11 +7,15 @@ import TopHeader from "@/components/ui/TopHeader";
 import { PageTypes } from "@/utils";
 import { useState } from "react";
 import AddClient from "./AddClient";
-import useGetClients from "@/hooks/api/queries/clients/getClients";
+import useGetClients, {
+  ClientType,
+} from "@/hooks/api/queries/clients/getClients";
 import { useAuthStore } from "@/store/authStore";
 
 const ClientDetail = () => {
   const [openClient, setOpenClient] = useState(false);
+
+  const [editClient, setEditClient] = useState<ClientType | null>(null);
 
   const { currentUser } = useAuthStore();
 
@@ -39,8 +43,14 @@ const ClientDetail = () => {
     currentPage * entriesPerPage
   );
 
+  const handleEdit = (client: ClientType) => {
+    setEditClient(client);
+    setOpenClient(true);
+  };
+
   const handleModalClose = () => {
     setOpenClient(false);
+    setEditClient(null);
   };
 
   return (
@@ -49,14 +59,17 @@ const ClientDetail = () => {
         className="my-5"
         title="Client Details"
         text="Add New Clients"
-        onClick={() => setOpenClient(true)}
+        onClick={() => {
+          setEditClient(null);
+          setOpenClient(true);
+        }}
       />
       {isPending ? (
         <div className="text-center">Loading...</div>
       ) : (
         <>
           <FilterLayout pageKey={PageTypes?.CLIENTS} />
-          <ClientTable clientData={paginatedData ?? []} />
+          <ClientTable onEdit={handleEdit} clientData={paginatedData ?? []} />
           <Pagination
             currentPage={currentPage}
             totalEntries={totalEntries}
@@ -67,7 +80,11 @@ const ClientDetail = () => {
       )}
       {
         <ReusableDialog
-          title="Enter New Client Information"
+          title={
+            editClient
+              ? "Edit Client Information"
+              : "Enter New Client Information"
+          }
           open={openClient}
           onOpenChange={setOpenClient}
           className="sm:max-w-[60vw]"
@@ -75,7 +92,8 @@ const ClientDetail = () => {
           <div>
             <AddClient
               handleModalClose={handleModalClose}
-              defaultValues={ undefined}
+              defaultValues={editClient || undefined}
+              isEditMode={!!editClient}
             />
           </div>
         </ReusableDialog>

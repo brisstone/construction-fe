@@ -5,35 +5,56 @@ import ReusableSelect from "@/components/general/ReuseableSelect";
 import UploadImg from "@/components/general/UploadImage";
 import InputField from "@/components/input/InputField";
 import useCreateClients from "@/hooks/api/mutation/clients/useCreateClients";
+import useUpdateClient from "@/hooks/api/mutation/clients/useUpdateClient";
 import {
   ClientType,
   QUERY_KEY_CLIENTS,
 } from "@/hooks/api/queries/clients/getClients";
 import { useQueryClient } from "@tanstack/react-query";
+import { format } from "date-fns";
 import { useState } from "react";
 import { toast } from "sonner";
 
 type clientTypeProps = {
   handleModalClose: () => void;
   defaultValues?: ClientType;
+  isEditMode?: boolean;
 };
 
-const AddClient = ({ handleModalClose, defaultValues }: clientTypeProps) => {
-  const [clientName, setClientName] = useState("");
-  const [clientAddress, setClientAddress] = useState("");
-  const [occupation, setOccupation] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [dob, setDob] = useState("");
-  const [clientType, setClientType] = useState<string>("");
+const AddClient = ({
+  handleModalClose,
+  defaultValues,
+  isEditMode,
+}: clientTypeProps) => {
+  const [clientName, setClientName] = useState(defaultValues?.firstName || "");
+  const [clientAddress, setClientAddress] = useState(
+    defaultValues?.geometry.address || ""
+  );
+  const [occupation, setOccupation] = useState(defaultValues?.occupation || "");
+  const [phoneNumber, setPhoneNumber] = useState(
+    defaultValues?.phoneNumber || ""
+  );
+  const [dob, setDob] = useState<Date | null>(
+    defaultValues?.dob ? new Date(defaultValues.dob) : null
+  );
+
+  // const localDate = new Date();
+  const utcDateString = dob ? format(dob, "yyyy-MM-dd'T'HH:mm:ss'Z'") : "";
+
+  console.log(utcDateString);
+
+  const [clientType, setClientType] = useState<string>(
+    defaultValues?.type || ""
+  );
   const [clientEmail, setClientEmail] = useState(defaultValues?.email || "");
   const [coordinates, setCoordinates] = useState<{
     lat: number;
     lng: number;
   } | null>(
-    defaultValues?.address
+    defaultValues?.geometry
       ? {
-          lat: Number(defaultValues?.address?.geometry?.lat),
-          lng: Number(defaultValues?.address?.geometry?.long),
+          lat: Number(defaultValues?.geometry?.lat),
+          lng: Number(defaultValues?.geometry?.long),
         }
       : null
   );
@@ -56,6 +77,8 @@ const AddClient = ({ handleModalClose, defaultValues }: clientTypeProps) => {
 
   const { mutate: createClient, isPending: isCreating } = useCreateClients();
 
+  const { mutate: updateClient, isPending: isUpdating } = useUpdateClient();
+
   const queryClient = useQueryClient();
 
   const onSubmit = () => {
@@ -66,7 +89,7 @@ const AddClient = ({ handleModalClose, defaultValues }: clientTypeProps) => {
       email: clientEmail,
       type: clientType,
       occupation,
-      dob,
+      dob: dob?.toISOString(),
       geometry: {
         address: clientAddress,
         lat: coordinates?.lat,
@@ -74,16 +97,36 @@ const AddClient = ({ handleModalClose, defaultValues }: clientTypeProps) => {
       },
     };
 
-    createClient(data, {
-      onSuccess: (response: any) => {
-        toast.success(response?.data?.message || "client added successfully");
-        queryClient.invalidateQueries({ queryKey: [QUERY_KEY_CLIENTS] });
-        handleModalClose();
-      },
-      onError: (error: any) => {
-        toast.error(error?.response?.data?.message || "Error creating client");
-      },
-    });
+    if (isEditMode && defaultValues?._id) {
+      updateClient(
+        { ...data, id: defaultValues._id },
+        {
+          onSuccess: (response: any) => {
+            toast.success(response?.data?.message || "edited successfully");
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEY_CLIENTS] });
+            handleModalClose();
+          },
+          onError: (error: any) => {
+            toast.error(
+              error?.response?.data?.message || "Error updating client"
+            );
+          },
+        }
+      );
+    } else {
+      createClient(data, {
+        onSuccess: (response: any) => {
+          toast.success(response?.data?.message || "client added successfully");
+          queryClient.invalidateQueries({ queryKey: [QUERY_KEY_CLIENTS] });
+          handleModalClose();
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message || "Error creating client"
+          );
+        },
+      });
+    }
   };
 
   return (
@@ -101,7 +144,7 @@ const AddClient = ({ handleModalClose, defaultValues }: clientTypeProps) => {
         <p className="text-sm font-semibold text-grey mb-2">Client Address</p>
         <div>
           <GooglePlacesInput
-            defaultValue={""}
+            defaultValue={defaultValues?.geometry?.address}
             apiKey={import.meta.env.VITE_GOOGLE_APIKEY}
             onSelect={handleAddressSelect}
           />
@@ -141,8 +184,8 @@ const AddClient = ({ handleModalClose, defaultValues }: clientTypeProps) => {
       </div>
       <div className="grid sm:grid-cols-2 grid-cols-1 gap-5 ">
         <InputField
-          value={dob}
-          onChange={(e) => setDob(e.target.value)}
+          value={dob ? dob.toISOString().split("T")[0] : ""}
+          onChange={(e) => setDob(new Date(e.target.value))}
           type="date"
           label="Birth date"
           name="Birth"
@@ -164,7 +207,16 @@ const AddClient = ({ handleModalClose, defaultValues }: clientTypeProps) => {
       <div className="flex gap-3 items-center justify-self-end mt-4">
         <ButtonComp
           onClick={onSubmit}
-          text={isCreating ? "creating" : "Create"}
+          text={
+            isEditMode
+              ? isUpdating
+                ? "Updating..."
+                : "Update"
+              : isCreating
+              ? "Creating..."
+              : "Create"
+          }
+          // text={isCreating ? "creating" : "Create"}
         />
       </div>
     </div>

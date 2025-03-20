@@ -48,9 +48,10 @@ const sampleData: ClientItem[] = [
 
 type ClientTableProps = {
   clientData: ClientType[];
+  onEdit: (client: ClientType) => void;
 };
 
-const ClientTable = ({ clientData }: ClientTableProps) => {
+const ClientTable = ({ clientData, onEdit }: ClientTableProps) => {
   const headers = [
     { content: <>Client Name</> },
     { content: <>Address</> },
@@ -69,11 +70,11 @@ const ClientTable = ({ clientData }: ClientTableProps) => {
     return (
       <tr key={index} className="text-gray-700 text-sm h-[50px] border-b">
         <td className="py-2 px-4">{client?.firstName + client?.lastName}</td>
-        <td className="py-2 px-4">{client?.address?.geometry?.address}</td>
+        <td className="py-2 px-4">{client?.geometry?.address}</td>
         <td className="py-2 px-4">{client?.phoneNumber}</td>
         <td className="py-2 px-4">{client?.email}</td>
         <td className="py-2 px-4">{client?.clientId}</td>
-        <td className="py-2 px-4">{client?.role}</td>
+        <td className="py-2 px-4">{client?.occupation}</td>
 
         <td className="py-1 px-4">
           <Popover>
@@ -82,7 +83,9 @@ const ClientTable = ({ clientData }: ClientTableProps) => {
             </PopoverTrigger>
             <PopoverContent className="w-[100px] rounded-[4px]">
               <div>
-                <p className="cursor-pointer">Edit</p>
+                <p onClick={() => onEdit(client)} className="cursor-pointer">
+                  Edit
+                </p>
                 <p className="cursor-pointer">Delete</p>
               </div>
             </PopoverContent>
