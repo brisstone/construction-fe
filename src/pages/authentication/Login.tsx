@@ -57,7 +57,7 @@ const Login = () => {
         onSuccess: (response: any) => {
           const token = response?.data?.data?.accessToken;
           const user = response?.data?.data;
-          response.data.data.primaryColor = "green";
+          response.data.data.primaryColor = "purple";
 
           console.log(response)
           if (token && user) {

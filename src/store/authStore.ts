@@ -8,6 +8,7 @@ export interface AuthData {
   firstName?: string;
   lastName?: string;
   primaryColor?: string; 
+  role?: string;
 }
 
 interface AuthState {
@@ -37,7 +38,7 @@ const authStore = createStore<AuthState>()(
         if (currentUser?.primaryColor) {
           document.documentElement.style.setProperty('--primary-color', currentUser.primaryColor);
         }
-      },
+      }, 
     }),
     {
       name: "auth",
