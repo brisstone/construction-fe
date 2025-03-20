@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "@/assets/Logo.svg";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+// import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ReactNode } from "react";
 import { DashboardIcon, LogoutIcon } from "@/assets/svgComp/SidebarIcon";
 import { useSidebarStore } from "@/store/SidebarStore";

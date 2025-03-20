@@ -131,7 +131,7 @@ const PropertyDetail = () => {
           className="sm:max-w-[60vw]"
         >
           <div>
-            <AddClient />
+            <AddClient handleModalClose={()=>{}} />
           </div>
         </ReusableDialog>
       }

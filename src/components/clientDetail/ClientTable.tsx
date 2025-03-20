@@ -16,35 +16,35 @@ export type ClientItem = {
   occupation: string;
 };
 
-const sampleData: ClientItem[] = [
-  {
-    id: 1,
-    clientName: "Alh. Musa Bawa",
-    address: "1 Masarki Close Wuse 2",
-    phone: "080312345678",
-    email: "aamusabawa@gmail.com",
-    clientType: "Individual",
-    occupation: "Business",
-  },
-  {
-    id: 2,
-    clientName: "Mr Joseph Aboderin",
-    address: "12 Dalaba Street, Lugbe",
-    phone: "080312345678",
-    email: "jaboderim@yahoo.com",
-    clientType: "Individual",
-    occupation: "Lawyer",
-  },
-  {
-    id: 3,
-    clientName: "Dr. Stanley Ojugo",
-    address: "1 Ontario Crecs Maitama ",
-    phone: "080312345678",
-    email: "askdrstan@limihl.com",
-    clientType: "Individual",
-    occupation: "Doctor",
-  },
-];
+// const sampleData: ClientItem[] = [
+//   {
+//     id: 1,
+//     clientName: "Alh. Musa Bawa",
+//     address: "1 Masarki Close Wuse 2",
+//     phone: "080312345678",
+//     email: "aamusabawa@gmail.com",
+//     clientType: "Individual",
+//     occupation: "Business",
+//   },
+//   {
+//     id: 2,
+//     clientName: "Mr Joseph Aboderin",
+//     address: "12 Dalaba Street, Lugbe",
+//     phone: "080312345678",
+//     email: "jaboderim@yahoo.com",
+//     clientType: "Individual",
+//     occupation: "Lawyer",
+//   },
+//   {
+//     id: 3,
+//     clientName: "Dr. Stanley Ojugo",
+//     address: "1 Ontario Crecs Maitama ",
+//     phone: "080312345678",
+//     email: "askdrstan@limihl.com",
+//     clientType: "Individual",
+//     occupation: "Doctor",
+//   },
+// ];
 
 type ClientTableProps = {
   clientData: ClientType[];
