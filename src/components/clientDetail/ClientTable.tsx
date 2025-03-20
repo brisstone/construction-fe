@@ -5,6 +5,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { ClientType } from "@/hooks/api/queries/clients/getClients";
 export type ClientItem = {
   id: number;
   clientName: string;
@@ -45,7 +46,11 @@ const sampleData: ClientItem[] = [
   },
 ];
 
-const ClientTable = () => {
+type ClientTableProps = {
+  clientData: ClientType[];
+};
+
+const ClientTable = ({ clientData }: ClientTableProps) => {
   const headers = [
     { content: <>Client Name</> },
     { content: <>Address</> },
@@ -56,15 +61,19 @@ const ClientTable = () => {
     { content: <></> },
   ];
 
-  const renderRow = (task: ClientItem, index: number) => {
+  if (!clientData || clientData?.length === 0) {
+    return <div className="text-center">Data not available</div>;
+  }
+
+  const renderRow = (client: ClientType, index: number) => {
     return (
       <tr key={index} className="text-gray-700 text-sm h-[50px] border-b">
-        <td className="py-2 px-4">{task.clientName}</td>
-        <td className="py-2 px-4">{task.address}</td>
-        <td className="py-2 px-4">{task.phone}</td>
-        <td className="py-2 px-4">{task.email}</td>
-        <td className="py-2 px-4">{task.clientType}</td>
-        <td className="py-2 px-4">{task.occupation}</td>
+        <td className="py-2 px-4">{client?.firstName + client?.lastName}</td>
+        <td className="py-2 px-4">{client?.address?.geometry?.address}</td>
+        <td className="py-2 px-4">{client?.phoneNumber}</td>
+        <td className="py-2 px-4">{client?.email}</td>
+        <td className="py-2 px-4">{client?.clientId}</td>
+        <td className="py-2 px-4">{client?.role}</td>
 
         <td className="py-1 px-4">
           <Popover>
@@ -87,7 +96,7 @@ const ClientTable = () => {
     <div>
       <GenericTable
         headers={headers}
-        data={sampleData}
+        data={clientData}
         renderRow={renderRow}
         className=""
       />

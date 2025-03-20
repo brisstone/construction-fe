@@ -1,10 +1,12 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "@/assets/Logo.svg";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ReactNode } from "react";
 import { DashboardIcon, LogoutIcon } from "@/assets/svgComp/SidebarIcon";
 import { useSidebarStore } from "@/store/SidebarStore";
+import { useAuthStore } from "@/store/authStore";
+import { toast } from "sonner";
 
 type SidebarItem = {
   name: string;
@@ -22,7 +24,16 @@ const sidebarItems: SidebarItem[] = [
 
 const SuperAdminSidebar = () => {
   const { closeSidebar } = useSidebarStore();
+
+  const navigate = useNavigate();
   const location = useLocation();
+  const { logout } = useAuthStore();
+
+  const handleLogout = () => {
+    logout();
+    toast.success("Logged out successfully");
+    navigate("/");
+  };
 
   return (
     <div className="relative h-[95vh] px-2">
@@ -65,6 +76,12 @@ const SuperAdminSidebar = () => {
       </main>
 
       <div className="absolute bottom-0">
+        <div className="cursor-pointer" onClick={handleLogout}>
+          <LogoutIcon />
+        </div>
+      </div>
+
+      {/* <div className="absolute bottom-0">
         <div className="flex items-center gap-10">
           <aside className="flex items-center gap-2">
             <Avatar className="bg-disabledText h-[35px] w-[35px] rounded-[100px] bg-lightPink">
@@ -83,7 +100,7 @@ const SuperAdminSidebar = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

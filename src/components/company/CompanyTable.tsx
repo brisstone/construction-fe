@@ -8,52 +8,21 @@ import {
 } from "@/components/ui/popover";
 
 import avatar2 from "@/assets/images/WebAvatar.png";
+import { CompanyType } from "@/hooks/api/queries/company/getCompany";
+import { truncateText } from "@/lib/fns"; 
 import { format } from "date-fns";
+import { useState } from "react";
+import ReusableDialog from "../general/ReuseableDialog";
+import DeleteCompanyModal from "./DeleteCompanyModal";
 
-type CompanyType = {
-  _id: string;
-  name: string;
-  email: string;
-  logo?: string;
-  ownerId: {
-    role: string;
-  };
-  createdAt: Date; 
-};
-
-const companyData: CompanyType[] = [
-  {
-    _id: "1",
-    name: "Company One",
-    email: "companyone@example.com",
-    logo: avatar2,
-    ownerId: {
-      role: "Admin",
-    },
-    createdAt: new Date("2023-01-01"),
-  },
-  {
-    _id: "2",
-    name: "Company Two",
-    email: "companytwo@example.com",
-    ownerId: {
-      role: "User",
-    },
-    createdAt: new Date("2023-02-01"),
-  },
-  {
-    _id: "3",
-    name: "Company Three",
-    email: "companythree@example.com",
-    logo: avatar2,
-    ownerId: {
-      role: "Manager",
-    },
-    createdAt: new Date("2023-03-01"),
-  },
-];
-
-const CompanyTable = () => {
+const CompanyTable = ({
+  companyData,
+  onEdit,
+}: {
+  companyData: CompanyType[];
+  onEdit: (company: CompanyType) => void;
+}) => {
+  console.log("Company Data:", companyData);
   const headers = [
     {
       content: <input type="checkbox" />,
@@ -66,6 +35,14 @@ const CompanyTable = () => {
     { content: <>Action </> },
   ];
 
+  const [deleteCompany, setDeleteCompany] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
+
+  const handleDelete = (id: string) => {
+    setSelectedCompany(id);
+    setDeleteCompany(true);
+  };
+
   const renderRow = (item: CompanyType, index: number) => {
     return (
       <tr
@@ -77,7 +54,7 @@ const CompanyTable = () => {
             <input type="checkbox" />
           </span>
         </td>
-        <td className="py-1 px-4">{item?._id}</td>
+        <td className="py-1 px-4">{truncateText(item?._id, 10)}</td>
         <td className="py-1 px-4">
           <div className="flex gap-2 items-center">
             <Avatar className="cursor-pointer">
@@ -98,8 +75,15 @@ const CompanyTable = () => {
             </PopoverTrigger>
             <PopoverContent className="w-[100px] rounded-[4px]">
               <div>
-                <p className="cursor-pointer">Edit</p>
-                <p className="cursor-pointer">Delete</p>
+                <p className="cursor-pointer" onClick={() => onEdit(item)}>
+                  Edit
+                </p>
+                <p
+                  className="cursor-pointer"
+                  onClick={() => handleDelete(item?._id)}
+                >
+                  Delete
+                </p>
               </div>
             </PopoverContent>
           </Popover>
@@ -116,6 +100,19 @@ const CompanyTable = () => {
         renderRow={renderRow}
         className="!h-full"
       />
+      {
+        <ReusableDialog
+          title={"Delete Company"}
+          open={deleteCompany}
+          onOpenChange={setDeleteCompany}
+          className="max-w-xl"
+        >
+          <DeleteCompanyModal
+            setDeleteCompany={setDeleteCompany}
+            selectedCompany={selectedCompany || ""}
+          />
+        </ReusableDialog>
+      }
     </div>
   );
 };
