@@ -3,33 +3,33 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import ButtonComp from "@/components/general/ButtonComp";
-import useDeleteMaterial from "@/hooks/api/mutation/settings/material/useDeleteMaterial";
-import { QUERY_KEY_MATERIAL } from "@/hooks/api/queries/settings/material/getMaterial";
+import useDeleteUnit from "@/hooks/api/mutation/settings/unit/useDeleteUnit";
+import { QUERY_KEY_UNIT } from "@/hooks/api/queries/settings/unit/getUnit";
 
-const DeleteMaterialModal = ({
-  setDeleteMaterial,
-  selectedMaterial,
+const DeleteUnitModal = ({
+  setDeleteUnit,
+  selectedUnit,
 }: {
-  setDeleteMaterial: (value: boolean) => void;
-  selectedMaterial: string;
+  setDeleteUnit: (value: boolean) => void;
+  selectedUnit: string;
 }) => {
-  const { mutate: DeleteMaterial, isPending } = useDeleteMaterial();
+  const { mutate: DeleteUnit, isPending } = useDeleteUnit();
 
   const queryClient = useQueryClient();
 
   const onSubmit = () => {
-    DeleteMaterial(
-      { id: selectedMaterial },
+    DeleteUnit(
+      { id: selectedUnit },
       {
         onSuccess: (response: any) => {
           console.log(response, "res");
-          toast.success(response?.data?.message || "Deleted Materials");
-          queryClient.invalidateQueries({ queryKey: [QUERY_KEY_MATERIAL] });
-          setDeleteMaterial(false);
+          toast.success(response?.data?.message || "Deleted Units");
+          queryClient.invalidateQueries({ queryKey: [QUERY_KEY_UNIT] });
+          setDeleteUnit(false);
         },
         onError: (error: any) => {
           toast.error(
-            error?.response?.data?.message || "Error deleting Materials"
+            error?.response?.data?.message || "Error deleting Units"
           );
         },
       }
@@ -40,18 +40,18 @@ const DeleteMaterialModal = ({
     <div className="">
       <AlertCircle className="text-red-700 mx-auto " />
       <p className="text-grey text-sm text-center my-2">
-        Delete Material Permanently!
+        Delete Unit Permanently!
       </p>
       <div className="flex gap-3 justify-between w-1/2 mx-auto items-center mt-4">
         <Button
-          onClick={() => setDeleteMaterial(false)}
+          onClick={() => setDeleteUnit(false)}
           className="bg-fadedWhite border border-borderColor rounded-[8px] hover:text-white text-black sm:w-[40%]"
         >
           Cancel
         </Button>
         <ButtonComp
           onClick={onSubmit}
-          text={isPending ? "Deleting..." : "Delete Material"}
+          text={isPending ? "Deleting..." : "Delete Unit"}
           className="bg-red-700 w-fit"
         />
       </div>
@@ -59,4 +59,4 @@ const DeleteMaterialModal = ({
   );
 };
 
-export default DeleteMaterialModal;
+export default DeleteUnitModal;

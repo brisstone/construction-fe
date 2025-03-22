@@ -20,8 +20,6 @@ const MaterialComp = () => {
     currentUser?.companyId || ""
   );
 
-  console.log(material, "material");
-
   const MaterialData = material?.data;
 
   const handleEdit = (mat: MaterialType) => {
