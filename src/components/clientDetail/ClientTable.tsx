@@ -6,6 +6,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ClientType } from "@/hooks/api/queries/clients/getClients";
+import ReusableDialog from "../general/ReuseableDialog";
+import { useState } from "react";
+import DeleteClientModal from "./DeleteClientModal";
 export type ClientItem = {
   id: number;
   clientName: string;
@@ -62,6 +65,14 @@ const ClientTable = ({ clientData, onEdit }: ClientTableProps) => {
     { content: <></> },
   ];
 
+  const [deleteClient, setDeleteClient] = useState(false);
+  const [selectedClient, setSelectedClient] = useState<string | null>(null);
+
+  const handleDelete = (id: string) => {
+    setSelectedClient(id);
+    setDeleteClient(true);
+  };
+
   if (!clientData || clientData?.length === 0) {
     return <div className="text-center">Data not available</div>;
   }
@@ -86,7 +97,12 @@ const ClientTable = ({ clientData, onEdit }: ClientTableProps) => {
                 <p onClick={() => onEdit(client)} className="cursor-pointer">
                   Edit
                 </p>
-                <p className="cursor-pointer">Delete</p>
+                <p
+                  onClick={() => handleDelete(client?._id)}
+                  className="cursor-pointer"
+                >
+                  Delete
+                </p>
               </div>
             </PopoverContent>
           </Popover>
@@ -103,6 +119,19 @@ const ClientTable = ({ clientData, onEdit }: ClientTableProps) => {
         renderRow={renderRow}
         className=""
       />
+      {
+        <ReusableDialog
+          title={"Delete Client"}
+          open={deleteClient}
+          onOpenChange={setDeleteClient}
+          className="max-w-xl"
+        >
+          <DeleteClientModal
+            setDeleteClient={setDeleteClient}
+            selectedClient={selectedClient || ""}
+          />
+        </ReusableDialog>
+      }
     </div>
   );
 };

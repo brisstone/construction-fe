@@ -28,6 +28,7 @@ import InventoryDetail from "./pages/admin/storage/inventory/InventoryDetail";
 import AddStock from "./pages/admin/storage/inventory/AddStock";
 import { useAuthStore } from "./store/authStore";
 import { useEffect } from "react";
+import { AdminProtectedRoute, SuperAdminProtectedRoute } from "./utils/ProtectedRoute";
 
 function App() {
 
@@ -42,7 +43,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />}></Route>
 
-        <Route path="/admin">
+        <Route path="/admin" element={<AdminProtectedRoute />}>
           <Route path="" element={<AdminLayout />}>
             <Route index path="dashboard" element={<Dashboard />} />
             <Route path="project" element={<Project />} />
@@ -78,10 +79,10 @@ function App() {
           </Route>
         </Route>
 
-        <Route path="/super-admin">
+        <Route path="/super-admin" element={<SuperAdminProtectedRoute />}>
           <Route path="" element={<SuperAdminLayout />}>
             <Route index element={<Company />} />
-          </Route> 
+          </Route>
         </Route>
       </Routes>
     </div>

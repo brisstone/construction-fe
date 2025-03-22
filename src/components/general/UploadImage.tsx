@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { UploadImage } from "@/assets/svgComp/General";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, UploadCloud } from "lucide-react";
 type UploadProps = {
   onFileChange: (file: File | null, name: string) => void;
   name: string;
@@ -8,6 +8,7 @@ type UploadProps = {
   resetImage?: boolean;
 
   accept?: string;
+  userUpload?: string;
 };
 
 const UploadImg = ({
@@ -15,6 +16,7 @@ const UploadImg = ({
   name,
   logo,
   resetImage,
+  userUpload,
   accept = "image/*",
 }: UploadProps) => {
   const [image, setImage] = useState<string | null>(null);
@@ -60,8 +62,10 @@ const UploadImg = ({
                 alt="logoError"
                 className="rounded-full border p-1 h-[100px] w-[100px]"
               />
-            ) : (
+            ) : userUpload ? (
               <UploadImage />
+            ) : (
+              <UploadCloud />
             )}
           </label>
         ) : (
