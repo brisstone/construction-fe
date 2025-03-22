@@ -10,7 +10,7 @@ export interface AmenityType {
   _id: string;
   name: string;
   companyId: number;
-  unitId: string;
+  image: string;
   __v: number;
 }
 

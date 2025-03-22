@@ -3,12 +3,16 @@ import RouteChain from "@/components/general/RouteChain";
 import AddAmenitiesSettings from "@/components/settings/amenities/AddAmenitiesSettings";
 import AmenityTable from "@/components/settings/amenities/AmenityTable";
 import TopHeader from "@/components/ui/TopHeader";
-import useGetAmenity from "@/hooks/api/queries/settings/amenity/getAmenity";
+import useGetAmenity, {
+  AmenityType,
+} from "@/hooks/api/queries/settings/amenity/getAmenity";
 import { useAuthStore } from "@/store/authStore";
 import { useState } from "react";
 
 const Amenities = () => {
   const [addSettingMAmenities, setAddSettingAmenities] = useState(false);
+
+  const [editAmenity, setEditAmenity] = useState<AmenityType | null>(null);
 
   const { currentUser } = useAuthStore();
 
@@ -17,6 +21,16 @@ const Amenities = () => {
   );
 
   const amenityData = amenity?.data;
+
+  const handleEdit = (amenity: AmenityType) => {
+    setEditAmenity(amenity);
+    setAddSettingAmenities(true);
+  };
+
+  const handleModalClose = () => {
+    setAddSettingAmenities(false);
+    setEditAmenity(null);
+  };
 
   return (
     <div>
@@ -31,17 +45,21 @@ const Amenities = () => {
       {isPending ? (
         <p>Loading...</p>
       ) : (
-        <AmenityTable amenityData={amenityData ?? []} />
+        <AmenityTable onEdit={handleEdit} amenityData={amenityData ?? []} />
       )}
       {
         <ReusableDialog
-          title="Add Amenities"
+          title={editAmenity ? "Edit Amenities" : "Add Amenities"}
           open={addSettingMAmenities}
           onOpenChange={setAddSettingAmenities}
           className="sm:max-w-[40vw]"
         >
           <div>
-            <AddAmenitiesSettings />
+            <AddAmenitiesSettings
+              handleModalClose={handleModalClose}
+              defaultValues={editAmenity || undefined}
+              isEditMode={!!editAmenity}
+            />
           </div>
         </ReusableDialog>
       }

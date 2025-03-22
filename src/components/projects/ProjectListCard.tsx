@@ -54,7 +54,7 @@ const ProjectListCard = ({
     <>
       <section
         onClick={() => {
-          navigate("/admin/project/123");
+          navigate(`/admin/project/${project._id}`);
         }}
         className="bg-white md:flex border relative group rounded-[4px] justify-between items-center gap-6 h-fit p-2 hover:shadow-projectShadow mb-4"
       >
