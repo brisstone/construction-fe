@@ -58,7 +58,7 @@ const ProjectListCard = ({
         }}
         className="bg-white md:flex border relative group rounded-[4px] justify-between items-center gap-6 h-fit p-2 hover:shadow-projectShadow mb-4"
       >
-        <div className="absolute top-2 right-2 group-hover:flex gap-2">
+        <div className="absolute top-2 right-2 group-hover:block gap-2">
           <Popover>
             <PopoverTrigger asChild>
               <button

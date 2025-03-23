@@ -4,20 +4,47 @@ import TextAreaField from "@/components/input/TextAreaField";
 import { useState } from "react";
 import AmenityArray from "./AmenityArray";
 import MultipleFileUpload from "@/components/general/MultipleFileUpload";
+import useMultipleFileUpload from "@/hooks/api/mutation/imageUploads/useMultipleFileUpload";
+import { toast } from "sonner";
+import useCreateProperty from "@/hooks/api/mutation/project/property/useCreateProperty";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEY_PROPERTY } from "@/hooks/api/queries/projects/property/getProperty";
+import { useParams } from "react-router-dom";
 
 interface Amenity {
-  amenities: string;
+  amenityId: string;
   quantity: number;
 }
 
-const CreateProperty = () => {
+type PropertyTypeProps = {
+  handleModalClose: () => void;
+  // defaultValues?: UnitType;
+  // isEditMode?: boolean;
+};
+interface PropertyFormData {
+  name: string;
+  amount: string;
+  description: string;
+  dwellingType: "Single" | "Multi_Story";
+}
+
+const CreateProperty = ({ handleModalClose }: PropertyTypeProps) => {
+
+  const {id} = useParams<{id: string}>();
+  const [formData, setFormData] = useState<PropertyFormData>({
+    name: "",
+    description: "",
+    amount: "",
+    dwellingType: "Single",
+  });
+
   const [Amenities, setAmenities] = useState<Amenity[]>([]);
 
   const addAmenity = () => {
     setAmenities([
       ...Amenities,
       {
-        amenities: "",
+        amenityId: "",
         quantity: 0,
       },
     ]);
@@ -35,12 +62,74 @@ const CreateProperty = () => {
 
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
-  const handleFileUpload = (files: File[], name: string) => {
+  const { mutate: uploadImage } = useMultipleFileUpload();
+
+  const handleFileChange = (files: File[], name: string) => {
     console.log("Uploaded files for", name, ":", files);
     setUploadedFiles(files);
+
+    // Upload new files
+    const formData = new FormData();
+    files.forEach((file) => formData.append("files", file));
+    uploadImage(
+      { formData },
+      {
+        onSuccess: (response: any) => {
+          setUploadedFiles(response?.data?.urls);
+          toast.success("Images uploaded successfully");
+          // Handle the response, e.g., save the URLs to state
+        },
+        onError: (error: any) => {
+          toast.error(error?.data?.message || "No Uploaded file");
+        },
+      }
+    );
   };
 
-  console.log(uploadedFiles, "uploadedFiles");
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleDwellingTypeChange = (type: "Single" | "Multi_Story") => {
+    setFormData({
+      ...formData,
+      dwellingType: type,
+    });
+  };
+
+  const queryClient = useQueryClient();
+  const { mutate: createProperty, isPending: isCreating } = useCreateProperty();
+
+  const handleSubmit = () => {
+    const payload = {
+      ...formData,
+      projectId: id,
+      photos: uploadedFiles,
+      amenities: Amenities,
+    };
+
+    createProperty(payload, {
+      onSuccess: (response: any) => {
+        toast.success(response?.data?.message || "property added successfully");
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEY_PROPERTY] });
+        handleModalClose();
+      },
+      onError: (error: any) => {
+        toast.error(
+          error?.response?.data?.message || "Error creating property"
+        );
+      },
+    });
+
+  };
 
   return (
     <div>
@@ -50,8 +139,8 @@ const CreateProperty = () => {
             Upload Property Photo
           </p>
           <MultipleFileUpload
-            name="clientIcon"
-            onFileChange={handleFileUpload}
+            name="propertyPhotos"
+            onFileChange={handleFileChange}
           />
         </div>
         {/* {uploadedFiles.length > 0 && (
@@ -70,24 +159,50 @@ const CreateProperty = () => {
       <InputField
         type="text"
         label="Property Name/Number"
-        name="propertyName"
+        value={formData.name}
+        name="name"
         placeholder="Mabushi Project Phase 1/A05"
+        onChange={handleInputChange}
       />
       <TextAreaField
         label="Property Description"
         name="description"
         rows={2}
         placeholder="5 Bedroom Stand-alone Duplex with BQ (House A05)"
+        onChange={handleInputChange}
+        value={formData.description}
+      />
+      <InputField
+        type="number"
+        label="Property Amount"
+        value={formData.amount}
+        name="amount"
+        placeholder="2000"
+        onChange={handleInputChange}
       />
       <div>
         <p className="text-sm font-semibold text-grey mb-2">Dwelling Type:</p>
         <aside className="flex gap-3 items-center">
           <div className="flex gap-3 items-center">
-            <input className="h-4 w-4" type="radio" name="single" id="single" />
+            <input
+              className="h-4 w-4"
+              type="radio"
+              name="single"
+              id="single"
+              checked={formData.dwellingType === "Single"}
+              onChange={() => handleDwellingTypeChange("Single")}
+            />
             <label htmlFor="single">Single</label>
           </div>
           <div className="flex gap-3 items-center">
-            <input className="h-4 w-4" type="radio" name="multi" id="multi" />
+            <input
+              className="h-4 w-4"
+              type="radio"
+              name="multi"
+              id="multi"
+              checked={formData.dwellingType === "Multi_Story"}
+              onChange={() => handleDwellingTypeChange("Multi_Story")}
+            />
             <label htmlFor="multi">Multi-Storey</label>
           </div>
         </aside>
@@ -113,7 +228,8 @@ const CreateProperty = () => {
 
       <ButtonComp
         className="flex justify-self-end w-fit"
-        text="Create Property"
+        text={isCreating ? "creating..." : "Create Property"}
+        onClick={handleSubmit}
       />
     </div>
   );

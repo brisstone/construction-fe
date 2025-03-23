@@ -6,8 +6,10 @@ import Container from "@/components/layout/Container";
 import CreateProperty from "@/components/projects/properties/CreateProperty";
 import PropertyCard from "@/components/projects/properties/PropertyCard";
 import TopHeader from "@/components/ui/TopHeader";
+import useGetProperty from "@/hooks/api/queries/projects/property/getProperty";
 import { PageTypes } from "@/utils";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 const StatData: StatCardProps[] = [
   {
@@ -19,7 +21,7 @@ const StatData: StatCardProps[] = [
     value: "2",
   },
   {
-    label: "Available Property", 
+    label: "Available Property",
     value: "2",
   },
   {
@@ -38,6 +40,16 @@ const StatData: StatCardProps[] = [
 
 const Properties = () => {
   const [createProperty, setCreateProperty] = useState(false);
+
+  const { id } = useParams<{ id: string }>();
+
+  const { data: property, isPending } = useGetProperty(id ?? "");
+
+  const propertyData = property?.data;
+
+  const handleModalClose = () => {
+    setCreateProperty(false);
+  };
 
   return (
     <div>
@@ -69,10 +81,20 @@ const Properties = () => {
             showIcon
           />
           <SearchInputComp pageKey={PageTypes?.PROJECTS} />
+
           <section className="my-10 grid gap-6 md:grid-cols-3 grid-cols-1">
+            {isPending ? (
+              <div>Loading...</div>
+            ) : propertyData?.length !== 0 ? (
+              propertyData?.map((propertyItem) => (
+                <PropertyCard propertyItem={propertyItem} />
+              ))
+            ) : (
+              <div>No projects found</div>
+            )}
+            {/* <PropertyCard />
             <PropertyCard />
-            <PropertyCard />
-            <PropertyCard />
+            <PropertyCard /> */}
           </section>
 
           {
@@ -83,7 +105,7 @@ const Properties = () => {
               className="sm:max-w-[60vw]"
             >
               <div>
-                <CreateProperty />
+                <CreateProperty handleModalClose={handleModalClose} />
               </div>
             </ReusableDialog>
           }
