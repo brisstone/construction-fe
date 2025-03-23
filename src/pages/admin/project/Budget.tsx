@@ -7,12 +7,61 @@ import WorkTable from "@/components/projects/budget/workPlan/WorkTable";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ViewBudget from "@/components/projects/budget/GenerateBudget/ViewBudget";
+import ReusableDialog from "@/components/general/ReuseableDialog";
+import InputField from "@/components/input/InputField";
+import useCreateBudget from "@/hooks/api/mutation/project/budget/useCreateBudget";
+import { toast } from "sonner";
+import { useParams } from "react-router-dom";
+import useGetSingleProject from "@/hooks/api/queries/projects/getSingleProject";
 
 const Budget = () => {
+  const { id } = useParams<{ id: string }>();
+
   const [showGenerated, setShowGenerated] = useState(false);
+  const [addBudget, setAddBudget] = useState(false);
+  const [budgetData, setBudgetData] = useState({
+    name: "",
+    description: "",
+  });
+
+  const { data: project } = useGetSingleProject(id ?? "");
 
   const handleGenerateClick = () => {
-    setShowGenerated(true);
+    project?.budgetId ? setShowGenerated(true) : setAddBudget(true);
+    // setShowGenerated(true);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setBudgetData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const { mutate, isPending } = useCreateBudget();
+
+  const handleAddBudget = () => {
+    if (id) {
+      mutate(
+        { ...budgetData, projectId: id },
+        {
+          onSuccess: (response: any) => {
+            toast.success(
+              response?.data?.message || "Budget added successfully"
+            );
+            setAddBudget(false);
+          },
+          onError: (error: any) => {
+            toast.error(
+              error?.response?.data?.message || "Error creating Budget"
+            );
+          },
+        }
+      );
+    } else {
+      toast.error("Project ID is missing");
+    }
   };
 
   return (
@@ -59,6 +108,39 @@ const Budget = () => {
           </Tabs>
         )}
       </Container>
+      {
+        <ReusableDialog
+          title={"Add Budget"}
+          open={addBudget}
+          onOpenChange={setAddBudget}
+          className="sm:max-w-[60vw]"
+        >
+          <div>
+            <InputField
+              type="text"
+              label="Budget Name"
+              value={budgetData.name}
+              name="name"
+              placeholder="Budget Name"
+              onChange={handleInputChange}
+            />
+
+            <InputField
+              type="text"
+              label="Budget Description"
+              value={budgetData.description}
+              name="description"
+              placeholder="Budget Description"
+              onChange={handleInputChange}
+            />
+            <ButtonComp
+              text={isPending ? "adding" : "Add Budget"}
+              className="w-fit mt-5"
+              onClick={handleAddBudget}
+            />
+          </div>
+        </ReusableDialog>
+      }
     </div>
   );
 };

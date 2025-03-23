@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 
 import axiosInstance from "@/hooks/axiosInstace";
 
-
 export interface ResponseType {
   data: ProjectType[];
 }
@@ -21,8 +20,19 @@ export interface ProjectType {
   createdAt: Date;
   updatedAt: Date;
   __v: number;
+  budgetId?: BudgetID;
 }
 
+export interface BudgetID {
+  _id: string;
+  name: string;
+  description: string;
+  companyId: string;
+  projectId: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
 export interface CompanyID {
   _id: string;
   name: string;
