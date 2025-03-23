@@ -8,16 +8,18 @@ type UploadProps = {
   logo?: string;
   resetImage?: boolean;
   accept?: string;
+  defaultFiles?: File[];
 };
 
 const MultipleFileUpload = ({
   onFileChange,
   name,
   logo,
+  defaultFiles,
   resetImage,
   accept = "image/*",
 }: UploadProps) => {
-  const [files, setFiles] = useState<File[]>([]);
+  const [files, setFiles] = useState<File[]>(defaultFiles || []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newFiles = e.target.files ? Array.from(e.target.files) : [];

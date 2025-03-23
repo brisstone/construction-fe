@@ -19,6 +19,7 @@ const Project = () => {
 
   const handleModalClose = () => {
     setAddProject(false);
+    setEditProject(null);
   };
 
   const params: Record<string, string | number> = {};

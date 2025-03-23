@@ -1,86 +1,117 @@
-import PropertyHouse from "@/assets/images/PropertyHouse.png";
 import PropertyFeature from "./PropertyFeature";
-import {
-  BathroomIcon,
-  BedroomIcon,
-  CarIcon,
-  LivingRoomIcon,
-  PoolIcon,
-} from "@/assets/svgComp/PropertyIcon";
+
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ThreeDotsVertical } from "@/assets/svgComp/General";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Amenity,
   PropertyType,
 } from "@/hooks/api/queries/projects/property/getProperty";
+import ReusableDialog from "@/components/general/ReuseableDialog";
+import DeletePropertyModal from "./DeletePropertyModal";
+import { useState } from "react";
 
-const PropertyCard = ({ propertyItem }: { propertyItem: PropertyType }) => {
+const PropertyCard = ({
+  propertyItem,
+  onEdit,
+}: {
+  propertyItem: PropertyType;
+  onEdit: (property: PropertyType) => void;
+}) => {
   const { id } = useParams<{ id: string }>();
 
   const navigate = useNavigate();
   console.log(propertyItem, "propertyItem");
+
+  const [deleteProperty, setDeleteProperty] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState<string | null>(null);
+
+  const handleDelete = (id: string) => {
+    setSelectedProperty(id);
+    setDeleteProperty(true);
+  };
+
   return (
-    <section
-      // to={`/admin/project/${id}/properties/${propertyItem?._id}`}
-      onClick={() => {
-        navigate(`/admin/project/${id}/properties/${propertyItem?._id}`);
-      }}
-      className="relative group"
-    >
-      <div className="absolute top-2 right-2 group-hover:flex gap-2">
-        <Popover>
-          <PopoverTrigger asChild>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className=" bg-white rounded-full shadow-md"
-            >
-              <ThreeDotsVertical />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent
-            onClick={(e) => e.stopPropagation()}
-            className="w-[100px] rounded-[4px]"
-          >
-            <div onClick={(e) => e.stopPropagation()}>
-              <p className="cursor-pointer">Edit</p>
-              <p
-                // onClick={() => handleDelete(project?._id)}
-                className="cursor-pointer"
+    <>
+      <section
+        // to={`/admin/project/${id}/properties/${propertyItem?._id}`}
+        onClick={() => {
+          navigate(`/admin/project/${id}/properties/${propertyItem?._id}`);
+        }}
+        className="relative group"
+      >
+        <div className="absolute z-10 top-2 right-2 group-hover:flex gap-2">
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                className=" bg-white rounded-full shadow-md"
               >
-                Delete
-              </p>
-            </div>
-          </PopoverContent>
-        </Popover>
-      </div>
-      <div className="">
-        <img
-          src={propertyItem?.photos[0]}
-          alt="Project"
-          className="w-full h-auto"
-        />
-      </div>
-      <section>
-        <h3 className="font-bold text-sm my-2">{propertyItem?.name}</h3>
-        <div className="flex flex-wrap gap-2 items-center">
-          {propertyItem?.amenities?.map((amenity: Amenity) => {
-            return (
-              <PropertyFeature
-                amenity={amenity}
-                title={amenity.amenityId?.name}
-              />
-            );
-          })}
+                <ThreeDotsVertical />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent
+              onClick={(e) => e.stopPropagation()}
+              className="w-[100px] rounded-[4px]"
+            >
+              <div onClick={(e) => e.stopPropagation()}>
+                <p
+                  onClick={() => onEdit(propertyItem)}
+                  className="cursor-pointer"
+                >
+                  Edit
+                </p>
+                <p
+                  onClick={() => handleDelete(propertyItem?._id)}
+                  className="cursor-pointer"
+                >
+                  Delete
+                </p>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
+        <div className="w-full h-[190px] relative ">
+          <img
+            src={propertyItem?.photos[0]}
+            alt="property"
+            className="absolute w-full h-full inset-0 object-cover rounded-[16px]"
+          />
+        </div>
+        <section>
+          <h3 className="font-bold text-sm my-2">{propertyItem?.name}</h3>
+          <div className="flex flex-wrap gap-2 items-center">
+            {propertyItem?.amenities?.map((amenity: Amenity) => {
+              return (
+                <PropertyFeature
+                  amenity={amenity}
+                  title={amenity.amenityId?.name}
+                />
+              );
+            })}
+          </div>
+        </section>
       </section>
-    </section>
+      {
+        <ReusableDialog
+          title={"Delete Property"}
+          open={deleteProperty}
+          onOpenChange={setDeleteProperty}
+          className="max-w-xl"
+        >
+          <DeletePropertyModal
+            setDeleteProperty={setDeleteProperty}
+            selectedProperty={selectedProperty || ""}
+          />
+        </ReusableDialog>
+      }
+    </>
   );
 };
 

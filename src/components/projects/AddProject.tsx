@@ -18,7 +18,7 @@ import { ProjectType, QUERY_KEY_PROJECT } from "@/hooks/api/queries/projects/get
 import useUpdateProject from "@/hooks/api/mutation/project/useUpdateProject";
 import { useQueryClient } from "@tanstack/react-query";
 
-type clientTypeProps = {
+type projectTypeProps = {
   handleModalClose: () => void;
   defaultValues?: ProjectType;
   isEditMode?: boolean;
@@ -28,7 +28,7 @@ const AddProject = ({
   handleModalClose,
   defaultValues,
   isEditMode,
-}: clientTypeProps) => {
+}: projectTypeProps) => {
   const [projectName, setProjectName] = useState(defaultValues?.name || "");
   const [projectDescription, setProjectDescription] = useState(
     defaultValues?.description || ""
@@ -58,6 +58,8 @@ const AddProject = ({
     lat: number;
     lng: number;
   } | null>(null);
+
+  console.log(coordinates, "coordinates");
 
   const { mutate: createProject, isPending: isCreating } = useCreateProject();
 

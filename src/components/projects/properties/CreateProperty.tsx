@@ -8,37 +8,47 @@ import useMultipleFileUpload from "@/hooks/api/mutation/imageUploads/useMultiple
 import { toast } from "sonner";
 import useCreateProperty from "@/hooks/api/mutation/project/property/useCreateProperty";
 import { useQueryClient } from "@tanstack/react-query";
-import { QUERY_KEY_PROPERTY } from "@/hooks/api/queries/projects/property/getProperty";
+import {
+  amenityData,
+  PropertyType,
+  QUERY_KEY_PROPERTY,
+} from "@/hooks/api/queries/projects/property/getProperty";
 import { useParams } from "react-router-dom";
+import useUpdateProperty from "@/hooks/api/mutation/project/property/useUpdateProperty";
 
 interface Amenity {
-  amenityId: string;
+  amenityId: string | amenityData;
   quantity: number;
 }
 
 type PropertyTypeProps = {
   handleModalClose: () => void;
-  // defaultValues?: UnitType;
-  // isEditMode?: boolean;
+  defaultValues?: PropertyType;
+  isEditMode?: boolean;
 };
 interface PropertyFormData {
   name: string;
-  amount: string;
+  amount: number | string;
   description: string;
   dwellingType: "Single" | "Multi_Story";
 }
 
-const CreateProperty = ({ handleModalClose }: PropertyTypeProps) => {
-
-  const {id} = useParams<{id: string}>();
+const CreateProperty = ({
+  handleModalClose,
+  defaultValues,
+  isEditMode,
+}: PropertyTypeProps) => {
+  const { id } = useParams<{ id: string }>();
   const [formData, setFormData] = useState<PropertyFormData>({
-    name: "",
-    description: "",
-    amount: "",
-    dwellingType: "Single",
+    name: defaultValues?.name || "",
+    description: defaultValues?.description || "",
+    amount: defaultValues?.amount || "",
+    dwellingType: defaultValues?.dwellingType || "Single",
   });
 
-  const [Amenities, setAmenities] = useState<Amenity[]>([]);
+  const [Amenities, setAmenities] = useState<Amenity[]>(
+    defaultValues?.amenities || []
+  );
 
   const addAmenity = () => {
     setAmenities([
@@ -107,6 +117,7 @@ const CreateProperty = ({ handleModalClose }: PropertyTypeProps) => {
 
   const queryClient = useQueryClient();
   const { mutate: createProperty, isPending: isCreating } = useCreateProperty();
+  const { mutate: updateProperty, isPending: isUpdating } = useUpdateProperty();
 
   const handleSubmit = () => {
     const payload = {
@@ -116,19 +127,38 @@ const CreateProperty = ({ handleModalClose }: PropertyTypeProps) => {
       amenities: Amenities,
     };
 
-    createProperty(payload, {
-      onSuccess: (response: any) => {
-        toast.success(response?.data?.message || "property added successfully");
-        queryClient.invalidateQueries({ queryKey: [QUERY_KEY_PROPERTY] });
-        handleModalClose();
-      },
-      onError: (error: any) => {
-        toast.error(
-          error?.response?.data?.message || "Error creating property"
-        );
-      },
-    });
-
+    if (isEditMode && defaultValues?._id) {
+      updateProperty(
+        { ...payload, id: defaultValues._id },
+        {
+          onSuccess: (response: any) => {
+            toast.success(response?.data?.message || "edited successfully");
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEY_PROPERTY] });
+            handleModalClose();
+          },
+          onError: (error: any) => {
+            toast.error(
+              error?.response?.data?.message || "Error updating client"
+            );
+          },
+        }
+      );
+    } else {
+      createProperty(payload, {
+        onSuccess: (response: any) => {
+          toast.success(
+            response?.data?.message || "property added successfully"
+          );
+          queryClient.invalidateQueries({ queryKey: [QUERY_KEY_PROPERTY] });
+          handleModalClose();
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message || "Error creating property"
+          );
+        },
+      });
+    }
   };
 
   return (
@@ -138,23 +168,31 @@ const CreateProperty = ({ handleModalClose }: PropertyTypeProps) => {
           <p className="text-sm font-semibold text-grey">
             Upload Property Photo
           </p>
+          {isEditMode &&
+            defaultValues?.photos &&
+            Array.isArray(defaultValues.photos) && (
+              <div className="mb-2">
+                <p className="text-xs mb-1">Current images:</p>
+                <div className="flex gap-2">
+                  {defaultValues.photos.map((photo, index) => (
+                    <img
+                      key={index}
+                      src={photo}
+                      alt={`Current property icon ${index + 1}`}
+                      className="h-16 w-16 object-contain border rounded"
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           <MultipleFileUpload
+            defaultFiles={
+              defaultValues?.photos?.map((url) => new File([], url)) || []
+            }
             name="propertyPhotos"
             onFileChange={handleFileChange}
           />
         </div>
-        {/* {uploadedFiles.length > 0 && (
-          <div className="mt-4">
-            <h3 className="text-md font-medium">Uploaded Files:</h3>
-            <ul className="list-disc pl-4">
-              {uploadedFiles.map((file, index) => (
-                <li key={index} className="text-sm">
-                  {file.name}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )} */}
       </aside>
       <InputField
         type="text"
@@ -228,7 +266,16 @@ const CreateProperty = ({ handleModalClose }: PropertyTypeProps) => {
 
       <ButtonComp
         className="flex justify-self-end w-fit"
-        text={isCreating ? "creating..." : "Create Property"}
+        text={
+          isEditMode
+            ? isUpdating
+              ? "Updating..."
+              : "Update"
+            : isCreating
+            ? "Creating..."
+            : "Create Property"
+        }
+        // text={isCreating ? "creating..." : "Create Property"}
         onClick={handleSubmit}
       />
     </div>

@@ -6,7 +6,9 @@ import Container from "@/components/layout/Container";
 import CreateProperty from "@/components/projects/properties/CreateProperty";
 import PropertyCard from "@/components/projects/properties/PropertyCard";
 import TopHeader from "@/components/ui/TopHeader";
-import useGetProperty from "@/hooks/api/queries/projects/property/getProperty";
+import useGetProperty, {
+  PropertyType,
+} from "@/hooks/api/queries/projects/property/getProperty";
 import { PageTypes } from "@/utils";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -41,6 +43,8 @@ const StatData: StatCardProps[] = [
 const Properties = () => {
   const [createProperty, setCreateProperty] = useState(false);
 
+  const [editProperty, setEditProperty] = useState<PropertyType | null>(null);
+
   const { id } = useParams<{ id: string }>();
 
   const { data: property, isPending } = useGetProperty(id ?? "");
@@ -49,6 +53,11 @@ const Properties = () => {
 
   const handleModalClose = () => {
     setCreateProperty(false);
+  };
+
+  const handleEdit = (property: PropertyType) => {
+    setEditProperty(property);
+    setCreateProperty(true);
   };
 
   return (
@@ -77,7 +86,10 @@ const Properties = () => {
             className="my-5"
             title="Property List"
             text="Add Property"
-            onClick={() => setCreateProperty(true)}
+            onClick={() => {
+              setEditProperty(null);
+              setCreateProperty(true);
+            }}
             showIcon
           />
           <SearchInputComp pageKey={PageTypes?.PROJECTS} />
@@ -87,7 +99,7 @@ const Properties = () => {
               <div>Loading...</div>
             ) : propertyData?.length !== 0 ? (
               propertyData?.map((propertyItem) => (
-                <PropertyCard propertyItem={propertyItem} />
+                <PropertyCard onEdit={handleEdit} propertyItem={propertyItem} />
               ))
             ) : (
               <div>No projects found</div>
@@ -99,13 +111,17 @@ const Properties = () => {
 
           {
             <ReusableDialog
-              title="Create New Property"
+              title={editProperty ? "Edit Property" : "Create new Property"}
               open={createProperty}
               onOpenChange={setCreateProperty}
               className="sm:max-w-[60vw]"
             >
               <div>
-                <CreateProperty handleModalClose={handleModalClose} />
+                <CreateProperty
+                  defaultValues={editProperty || undefined}
+                  isEditMode={!!editProperty}
+                  handleModalClose={handleModalClose}
+                />
               </div>
             </ReusableDialog>
           }

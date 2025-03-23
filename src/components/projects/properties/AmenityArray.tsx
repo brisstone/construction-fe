@@ -1,13 +1,14 @@
 import { RemoveIcon } from "@/assets/svgComp/PropertyIcon";
 import ReusableSelect from "@/components/general/ReuseableSelect";
 import InputField from "@/components/input/InputField";
+import { amenityData } from "@/hooks/api/queries/projects/property/getProperty";
 import useGetAmenity from "@/hooks/api/queries/settings/amenity/getAmenity";
 import { useAuthStore } from "@/store/authStore";
 
 interface amenitiesProps {
   index: number;
   amenities: {
-    amenityId: string;
+    amenityId: string | amenityData;
     quantity: number;
   };
   onUpdate: (index: number, updatedMaterial: any) => void;
@@ -53,7 +54,14 @@ const AmenityArray = ({
               //   { label: "bathroom", value: "bathroom" },
               //   { label: "coal", value: "coal" },
               // ]}
-              defaultValue={amenities.amenityId}
+              defaultValue={(amenities.amenityId as amenityData)._id}
+              // defaultValue={
+              //   typeof amenities.amenityId === "object" &&
+              //   amenities.amenityId !== null
+              //     ? amenities.amenityId.name
+              //     : amenities.amenityId
+              // }
+              // defaultValue={amenities.amenityId.name}
               onValueChange={(value) =>
                 onUpdate(index, { ...amenities, amenityId: value })
               }

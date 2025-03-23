@@ -13,13 +13,13 @@ export interface PropertyType {
   description: string;
   companyId: CompanyID;
   projectId: string;
-  amount: number;
+  amount: number | string;
   photos: string[];
   status: string;
   kycVerified: string;
   agentType: string;
   paymentFrequency: string;
-  dwellingType: string;
+  dwellingType: "Single" | "Multi_Story";
   modeOfPayment: string;
   amenities: Amenity[];
   createdAt: Date;
