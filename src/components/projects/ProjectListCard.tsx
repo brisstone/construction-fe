@@ -89,7 +89,16 @@ const ProjectListCard = ({
           </Popover>
         </div>
         <div className="md:w-1/3">
-          <img src={ProjectHouse1} alt="Project" className="w-full h-auto" />
+          <img
+            src={project?.photos[0] || ProjectHouse1}
+            alt="Project"
+            className="w-full h-auto"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.onerror = null;
+              target.src = ProjectHouse1;
+            }}
+          />
         </div>
         <div className="md:w-2/3 grid grid-cols-2 gap-x-6 mt-3 md:mt-0">
           <div className="flex flex-col gap-2">
