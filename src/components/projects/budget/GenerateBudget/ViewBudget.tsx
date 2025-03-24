@@ -17,9 +17,14 @@ const ViewBudget = () => {
   };
   const { id } = useParams<{ id: string }>();
   const { data: budget, isPending } = usegetBudget(id ?? "");
-  const { data: workStageData } = useGetWorkStage(id ?? "");
+  const { data: workStageData } = useGetWorkStage(
+    id ?? "",
+    activeTab === "sub" ? "sub_structure" : "super_structure"
+  );
   console.log(budget, "budget");
   console.log(workStageData, "workStageData");
+
+  const workStageDataLoad = workStageData?.data;
 
   if (isPending) {
     return <div className="text-center">Loading...</div>;
@@ -78,10 +83,10 @@ const ViewBudget = () => {
               />
             </div>
             <TabsContent value="sub">
-              <SubComp />
+              <SubComp workStageDataLoad={workStageDataLoad ?? []} />
             </TabsContent>
             <TabsContent value="super">
-              <SubComp />
+              <SubComp workStageDataLoad={workStageDataLoad ?? []}/>
             </TabsContent>
           </div>
         </Tabs>

@@ -5,22 +5,27 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { WorkStageType } from "@/hooks/api/queries/projects/budget/workStage/getWorkStage";
 import { useNavigate } from "react-router-dom";
-export type TaskItem = {
-  id: number;
-  workStage: string;
-  amount: number;
-};
+// export type TaskItem = {
+//   id: number;
+//   workStage: string;
+//   amount: number;
+// };
 
-const sampleData: TaskItem[] = [
-  {
-    id: 1,
-    workStage: "DPC",
-    amount: 350000,
-  },
-];
+// const sampleData: TaskItem[] = [
+//   {
+//     id: 1,
+//     workStage: "DPC",
+//     amount: 350000,
+//   },
+// ];
 
-const SubSructureTable = () => {
+const SubSructureTable = ({
+  workStageDataLoad,
+}: {
+  workStageDataLoad: WorkStageType[];
+}) => {
   const headers = [
     { content: <>S/N</> },
     { content: <>Work Stage</> },
@@ -29,10 +34,14 @@ const SubSructureTable = () => {
   ];
 
   const navigate = useNavigate();
-  const renderRow = (task: TaskItem, index: number) => {
+  const renderRow = (workItem: WorkStageType, index: number) => {
     const handleRowClick = () => {
-      navigate(`/admin/project/123/budget/workStage`);
+      navigate(`/admin/project/${workItem?._id}/budget/workStage`);
     };
+
+    if (workStageDataLoad?.length === 0) {
+      return <div>No data</div>;
+    }
 
     return (
       <tr
@@ -40,9 +49,9 @@ const SubSructureTable = () => {
         key={index}
         className="text-gray-700 text-sm h-[50px] border-b cursor-pointer"
       >
-        <td className="py-2 px-4">{task.id}</td>
-        <td className="py-2 px-4">{task.workStage}</td>
-        <td className="py-2 px-4">{task.amount.toLocaleString()}</td>
+        <td className="py-2 px-4">{workItem._id}</td>
+        <td className="py-2 px-4">{workItem.name}</td>
+        <td className="py-2 px-4">{"undecided"}</td>
 
         <td className="py-1 px-4">
           <Popover>
@@ -65,7 +74,7 @@ const SubSructureTable = () => {
     <div>
       <GenericTable
         headers={headers}
-        data={sampleData}
+        data={workStageDataLoad}
         renderRow={renderRow}
         className=""
       />

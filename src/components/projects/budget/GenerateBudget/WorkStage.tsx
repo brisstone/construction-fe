@@ -9,9 +9,16 @@ import ReusableDialog from "@/components/general/ReuseableDialog";
 import { useState } from "react";
 import AddNewMaterial from "../../material/AddNewMaterial";
 import AddNewLabour from "../../material/AddNewLabour";
+import useGetWorkStageById from "@/hooks/api/queries/projects/budget/workStage/useGetWorkStageById";
+import { useParams } from "react-router-dom";
 const WorkStage = () => {
+  const { id } = useParams<{ id: string }>();
   const [newMaterial, setNewMaterial] = useState(false);
   const [newLabour, setNewLabour] = useState(false);
+
+  const { data: workStageSingle } = useGetWorkStageById(id ?? "");
+
+  console.log(workStageSingle, "workStageSingle");
 
   return (
     <div>
