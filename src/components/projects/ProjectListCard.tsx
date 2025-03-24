@@ -2,7 +2,7 @@ import ProjectHouse1 from "@/assets/images/ProjectHouse1.png";
 import { ThreeDotsVertical } from "@/assets/svgComp/General";
 import { ProjectType } from "@/hooks/api/queries/projects/getProject";
 import { format } from "date-fns";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Popover,
   PopoverContent,

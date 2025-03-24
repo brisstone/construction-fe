@@ -53,6 +53,7 @@ const Properties = () => {
 
   const handleModalClose = () => {
     setCreateProperty(false);
+     setEditProperty(null);
   };
 
   const handleEdit = (property: PropertyType) => {

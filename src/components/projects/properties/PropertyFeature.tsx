@@ -9,7 +9,7 @@ const PropertyFeature = ({
 }: {
   // icon?: React.ReactNode;
   title: string;
-  amenity: Amenity;
+  amenity?: Amenity;
 }) => {
   return (
     <div className="flex gap-1 items-center mb-2">

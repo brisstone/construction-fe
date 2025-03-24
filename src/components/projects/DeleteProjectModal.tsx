@@ -3,7 +3,6 @@ import { Button } from "../ui/button";
 import ButtonComp from "../general/ButtonComp";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import useDeleteClient from "@/hooks/api/mutation/clients/useDeleteClient";
 import { QUERY_KEY_PROJECT } from "@/hooks/api/queries/projects/getProject";
 import useDeleteProject from "@/hooks/api/mutation/project/useDeleteProject";
 

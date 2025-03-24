@@ -1,13 +1,7 @@
 import RouteChain from "@/components/general/RouteChain";
 import Container from "@/components/layout/Container";
 import PropertyFeature from "@/components/projects/properties/PropertyFeature";
-import {
-  BathroomIcon,
-  BedroomIcon,
-  CarIcon,
-  LivingRoomIcon,
-  PoolIcon,
-} from "@/assets/svgComp/PropertyIcon";
+
 import { Button } from "@/components/ui/button";
 import clientBook from "@/assets/images/clientBook.png";
 import WebAvatar from "@/assets/images/WebAvatar.png";
@@ -22,6 +16,7 @@ import gall3 from "@/assets/images/ProjectHouse1.png";
 import PaymentDetailModal from "@/components/clientDetail/PaymentDetailModal";
 import AddClient from "../clientDetail/AddClient";
 import CreateProperty from "@/components/projects/properties/CreateProperty";
+import { PropertyType } from "@/hooks/api/queries/projects/property/getProperty";
 
 const PropertyDetail = () => {
   const client: boolean = true;
@@ -30,7 +25,18 @@ const PropertyDetail = () => {
   const [paymentDetail, setPaymentDetail] = useState(false);
   const [addClient, setAddClient] = useState(false);
 
-  const [editProperty, setEditProperty] = useState(false);
+  const [editProp, setEditProp] = useState(false);
+  const [editProperty, setEditProperty] = useState<PropertyType | null>(null);
+
+  const handleModalClose = () => {
+    setEditProperty(null);
+    setEditProp(true);
+  };
+
+  // const handleEdit = (property: PropertyType) => {
+  //   setEditProperty(property);
+  //   setEditProp(true);
+  // };
 
   return (
     <div>
@@ -58,7 +64,10 @@ const PropertyDetail = () => {
           <div className="md:w-[54%] ">
             <aside className="flex justify-between items-center my-4">
               <h1 className="text-xl font-bold">Mabushi Project Phase 1/A05</h1>
-              <Button onClick={() => setEditProperty(true)} className="bg-white border rounded-[8px] text-black">
+              <Button
+                // onClick={() => handleEdit()}
+                className="bg-white border rounded-[8px] text-black"
+              >
                 Edit Detail
               </Button>
             </aside>
@@ -69,14 +78,11 @@ const PropertyDetail = () => {
               </h3>
               <h2 className="font-semibold my-2">Amenities</h2>
               <div className="flex flex-wrap gap-x-8 items-center">
-                <PropertyFeature icon={<BedroomIcon />} title="4 Bedroom" />
-                <PropertyFeature icon={<PoolIcon />} title="2 S/Pool" />
-                <PropertyFeature icon={<BathroomIcon />} title="2 Bathrooms" />
-                <PropertyFeature icon={<CarIcon />} title="3 Car Parking" />
-                <PropertyFeature
-                  icon={<LivingRoomIcon />}
-                  title="2 Living Room"
-                />
+                <PropertyFeature title="4 Bedroom" />
+                <PropertyFeature title="2 S/Pool" />
+                <PropertyFeature title="2 Bathrooms" />
+                <PropertyFeature title="3 Car Parking" />
+                <PropertyFeature title="2 Living Room" />
               </div>
               <h2 className="font-semibold my-2">Dwelling Type</h2>
               <p className="text-darkGrey text-sm ">Single</p>
@@ -131,7 +137,7 @@ const PropertyDetail = () => {
           className="sm:max-w-[60vw]"
         >
           <div>
-            <AddClient handleModalClose={()=>{}} />
+            <AddClient handleModalClose={() => {}} />
           </div>
         </ReusableDialog>
       }
@@ -162,12 +168,17 @@ const PropertyDetail = () => {
       {
         <ReusableDialog
           title="Edit New Property"
-          open={editProperty}
-          onOpenChange={setEditProperty}
+          // title={editProperty ? "Edit Property" : "Create new Property"}
+          open={editProp}
+          onOpenChange={setEditProp}
           className="sm:max-w-[60vw]"
         >
           <div>
-            <CreateProperty />
+            <CreateProperty
+              defaultValues={editProperty || undefined}
+              isEditMode={!!editProperty}
+              handleModalClose={handleModalClose}
+            />
           </div>
         </ReusableDialog>
       }

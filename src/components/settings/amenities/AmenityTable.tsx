@@ -9,25 +9,7 @@ import {
 import { AmenityType } from "@/hooks/api/queries/settings/amenity/getAmenity";
 import DeleteAmenityModal from "./DeleteAmenityModal";
 import { useState } from "react";
-export type TaskItem = {
-  id: number;
-  amenitiesName: string;
-};
 
-const sampleData: TaskItem[] = [
-  {
-    id: 1,
-    amenitiesName: "Prime Location	",
-  },
-  {
-    id: 2,
-    amenitiesName: "Mini-Mart	",
-  },
-  {
-    id: 3,
-    amenitiesName: "Lounge",
-  },
-];
 
 type AmenityTableProps = {
   amenityData: AmenityType[];
