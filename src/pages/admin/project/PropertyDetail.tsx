@@ -86,7 +86,7 @@ const PropertyDetail = () => {
               </div>
               <h2 className="font-semibold my-2">Dwelling Type</h2>
               <p className="text-darkGrey text-sm ">Single</p>
-            </section> 
+            </section>  
           </div>
 
           {/* {client section} */}
