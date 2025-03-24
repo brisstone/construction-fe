@@ -15,19 +15,19 @@ type MatData = {
   id: string;
 };
 
-const UpdateMaterial = ( data: MatData): Promise<ResponseType> => {
+const UpdateLabor = ( data: MatData): Promise<ResponseType> => {
   const { id, ...restData } = data;
-  return axiosInstance.put(`/materials/${id}`, restData, {
+  return axiosInstance.put(`/labor/${id}`, restData, {
     headers: {
       "Content-Type": "application/json",
     },
   });
 };
 
-const useUpdateMaterial = () => {
+const useUpdateLabor = () => {
   return useMutation<ResponseType, AxiosError<ErrorType>, MatData>({
-    mutationFn: (data: MatData) => UpdateMaterial(data),
+    mutationFn: (data: MatData) => UpdateLabor(data),
   });
 };
 
-export default useUpdateMaterial;
+export default useUpdateLabor;

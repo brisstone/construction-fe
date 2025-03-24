@@ -29,6 +29,7 @@ import AddStock from "./pages/admin/storage/inventory/AddStock";
 import { useAuthStore } from "./store/authStore";
 import { useEffect } from "react";
 import { AdminProtectedRoute, SuperAdminProtectedRoute } from "./utils/ProtectedRoute";
+import LaborComp from "./pages/admin/settings/LaborComp";
 
 function App() {
 
@@ -76,6 +77,7 @@ function App() {
             <Route path="settings/materials" element={<MaterialComp />} />
             <Route path="settings/amenities" element={<Amenities />} />
             <Route path="settings/units" element={<Units />} />
+            <Route path="settings/labor" element={<LaborComp />} />
           </Route>
         </Route>
 

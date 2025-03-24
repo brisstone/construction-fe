@@ -12,6 +12,7 @@ const Setting = () => {
     { title: "Materials", image: materialIcon, link: "/admin/settings/materials" },
     { title: "Amenities", image: houseicon, link: "/admin/settings/amenities" },
     { title: "Units", image: tasksIcon, link: "/admin/settings/units" },
+    { title: "Labor", image: tasksIcon, link: "/admin/settings/labor" },
       ];
   return (
     <Container><section className="w-10/12 mx-auto my-10 grid grid-cols-2 gap-y-12 md:grid-cols-4">

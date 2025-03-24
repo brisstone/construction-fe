@@ -7,6 +7,7 @@ import AddNewWorkModal from "./AddNewWorkModal";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import usegetBudget from "@/hooks/api/queries/projects/budget/getBudget";
+import useGetWorkStage from "@/hooks/api/queries/projects/budget/workStage/getWorkStage";
 const ViewBudget = () => {
   const [newWork, setNewWork] = useState(false);
 
@@ -16,7 +17,9 @@ const ViewBudget = () => {
   };
   const { id } = useParams<{ id: string }>();
   const { data: budget, isPending } = usegetBudget(id ?? "");
+  const { data: workStageData } = useGetWorkStage(id ?? "");
   console.log(budget, "budget");
+  console.log(workStageData, "workStageData");
 
   if (isPending) {
     return <div className="text-center">Loading...</div>;

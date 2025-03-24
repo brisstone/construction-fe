@@ -3,6 +3,7 @@ import ReusableSelect from "@/components/general/ReuseableSelect";
 import SearchableSelect from "@/components/general/SearchableSelect";
 import InputField from "@/components/input/InputField";
 import useGetMaterial from "@/hooks/api/queries/settings/material/getMaterial";
+import useGetUnit from "@/hooks/api/queries/settings/unit/getUnit";
 import { useAuthStore } from "@/store/authStore";
 
 interface MaterialProps {
@@ -74,7 +75,11 @@ const MaterialArray = ({
     currentUser?.companyId || ""
   );
 
-  if (isPending) {
+  const { data: unit, isPending: unitPend } = useGetUnit(
+    currentUser?.companyId || ""
+  );
+
+  if (isPending || unitPend) {
     return <p className="text-center my-3">Loading...</p>;
   }
 
@@ -138,11 +143,15 @@ const MaterialArray = ({
           <ReusableSelect
             className="mt-3"
             placeholder="Material Unit"
-            options={[
-              { label: "Length", value: "Length" },
-              { label: "metre", value: "metre" },
-              { label: "centi", value: "centi" },
-            ]}
+            options={unit?.data?.map((item) => ({
+              label: item.name,
+              value: item._id,
+            }))}
+            // options={[
+            //   { label: "Length", value: "Length" },
+            //   { label: "metre", value: "metre" },
+            //   { label: "centi", value: "centi" },
+            // ]}
             defaultValue={material.unitId}
             onValueChange={(value) =>
               onUpdate(index, { ...material, unitId: value })

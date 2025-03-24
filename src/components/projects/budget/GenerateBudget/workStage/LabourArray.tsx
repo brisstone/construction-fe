@@ -2,6 +2,9 @@ import ButtonComp from "@/components/general/ButtonComp";
 import ReusableSelect from "@/components/general/ReuseableSelect";
 import SearchableSelect from "@/components/general/SearchableSelect";
 import InputField from "@/components/input/InputField";
+import useGetLabor from "@/hooks/api/queries/settings/labor/getLabor";
+import useGetUnit from "@/hooks/api/queries/settings/unit/getUnit";
+import { useAuthStore } from "@/store/authStore";
 
 interface LabourProps {
   index: number;
@@ -19,6 +22,19 @@ const LabourArray = ({ index, labour, onUpdate, onRemove }: LabourProps) => {
   const handleChange = (field: string, value: string | number) => {
     onUpdate(index, { ...labour, [field]: value });
   };
+
+  const { currentUser } = useAuthStore();
+
+  const { data: Labor, isPending } = useGetLabor(currentUser?.companyId || "");
+  
+
+   const { data: unit, isPending: unitPend } = useGetUnit(currentUser?.companyId || "");
+
+
+  if (isPending || unitPend) {
+    return <p className="text-center my-3">Loading...</p>;
+  }
+
   return (
     <div>
       <section className="flex gap-4 my-5">
@@ -27,10 +43,12 @@ const LabourArray = ({ index, labour, onUpdate, onRemove }: LabourProps) => {
           <SearchableSelect
             className="my-3"
             placeholder="Labour Activity"
-            options={[
-              { label: "irons in columns", value: "irons" },
-              { label: "spring in bars", value: "spring" },
-            ]}
+            options={
+              Labor?.data?.map((item) => ({
+                label: item.name,
+                value: item._id,
+              })) || []
+            }
             defaultValue={labour.laborId}
             onValueChange={(value) => handleChange("laborId", value || "")}
           />
@@ -61,12 +79,18 @@ const LabourArray = ({ index, labour, onUpdate, onRemove }: LabourProps) => {
             placeholder="Unit"
             defaultValue={labour.unitId}
             onValueChange={(value) => handleChange("unitId", value)}
-            options={[
-              { label: "Kg", value: "Kg" },
-              { label: "Length", value: "Length" },
-              { label: "metre", value: "metre" },
-              { label: "centi", value: "centi" },
-            ]}
+            options={
+              unit?.data?.map((item) => ({
+                label: item.name,
+                value: item._id,
+              })) || []
+            }
+            // options={[
+            //   { label: "Kg", value: "Kg" },
+            //   { label: "Length", value: "Length" },
+            //   { label: "metre", value: "metre" },
+            //   { label: "centi", value: "centi" },
+            // ]}
           />
         </div>
         <InputField
