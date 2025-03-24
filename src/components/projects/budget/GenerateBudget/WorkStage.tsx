@@ -11,10 +11,17 @@ import AddNewMaterial from "../../material/AddNewMaterial";
 import AddNewLabour from "../../material/AddNewLabour";
 import useGetWorkStageById from "@/hooks/api/queries/projects/budget/workStage/useGetWorkStageById";
 import { useParams } from "react-router-dom";
+import { ProjectLaborType } from "@/hooks/api/queries/projects/budget/workStage/getWorkStage";
 const WorkStage = () => {
   const { id } = useParams<{ id: string }>();
   const [newMaterial, setNewMaterial] = useState(false);
   const [newLabour, setNewLabour] = useState(false);
+  const [editLabour, setEditLabour] = useState<ProjectLaborType | null>(null);
+
+  const handleLaborEdit = (item: ProjectLaborType) => {
+    setEditLabour(item);
+    setNewLabour(true);
+  };
 
   const { data: workStageSingle } = useGetWorkStageById(id ?? "");
 
@@ -30,7 +37,7 @@ const WorkStage = () => {
       <Container className=" my-5">
         <aside className="sm:flex items-center justify-between">
           <p className="font-medium sm:text-lg text-sm text-textShade">
-            Work Stage: Ground Floor
+            Work Stage: {workStageSingle?.name}
           </p>
           {/* <ButtonComp text="" className="w-fit mt-1 sm:mt-0" /> */}
         </aside>
@@ -38,7 +45,7 @@ const WorkStage = () => {
           <div className="grid grid-cols-3 gap-4">
             <div>
               <h3 className="font-medium">Work Stage Title</h3>
-              <p className="text-textShade text-sm">Ground Floor</p>
+              <p className="text-textShade text-sm">{workStageSingle?.name}</p>
             </div>
             <div>
               <h3 className="font-medium">Activities</h3>
@@ -46,7 +53,7 @@ const WorkStage = () => {
             </div>
             <div>
               <h3 className="font-medium">Total Cost (#)</h3>
-              <p className="text-textShade text-sm">2,656,000.00</p>
+              <p className="text-textShade text-sm">2,656,000.00 </p>
             </div>
           </div>
         </section>
@@ -74,7 +81,9 @@ const WorkStage = () => {
                 </div>
               </div>
               <div>
-                <MaterialTable />
+                <MaterialTable
+                  workStageMaterial={workStageSingle?.projectMaterials ?? []}
+                />
               </div>
             </TabsContent>
             <TabsContent value="labour">
@@ -82,14 +91,20 @@ const WorkStage = () => {
                 <div className="sm:flex items-center justify-between my-3">
                   <p className="font-medium text-lg text-textShade">Labour</p>
                   <ButtonComp
-                    onClick={() => setNewLabour(true)}
+                    onClick={() => {
+                      setEditLabour(null);
+                      setNewLabour(true);
+                    }}
                     text="Add Labour"
                     className="w-fit mt-1 sm:mt-0"
                   />
                 </div>
               </div>
               <div>
-                <LabourTable />
+                <LabourTable
+                  onEdit={handleLaborEdit}
+                  workStageLabor={workStageSingle?.projectLabors ?? []}
+                />
               </div>
             </TabsContent>
             <TabsContent value="activities">
@@ -122,13 +137,22 @@ const WorkStage = () => {
         }
         {
           <ReusableDialog
-            title="Add New Labour"
+            title={editLabour ? "Edit Labor" : "Add New Labour"}
             open={newLabour}
             onOpenChange={setNewLabour}
             className="sm:max-w-[40vw]"
           >
             <div>
-              <AddNewLabour />
+              <AddNewLabour
+                defaultValues={editLabour || undefined}
+                isEditMode={!!editLabour}
+                projectId={workStageSingle?.projectLabors[0]?.projectId ?? ""}
+                budgetId={workStageSingle?.projectLabors[0]?.budgetId ?? ""}
+                handleModalClose={() => {
+                  setEditLabour(null);
+                  setNewLabour(false);
+                }}
+              />
             </div>
           </ReusableDialog>
         }
