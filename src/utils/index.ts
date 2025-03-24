@@ -77,3 +77,34 @@ export const activeStatusFormatted = Object.values(activeStatus).map((type) => (
   value: type,
   label: type.replace(/_/g, ' ').charAt(0).toUpperCase() + type.replace(/_/g, ' ').slice(1),
 }));
+
+
+
+export const materialTypes = [
+    "Cement",
+    "Sand",
+    "Gravel",
+    "Blocks",
+    "Bricks",
+    "Steel Rods",
+    "Structural Steel",
+    "Aluminum",
+    "Timber",
+    "Plywood",
+    "MDF Boards",
+    "Tiles",
+    "Paint",
+    "Plaster",
+    "Corrugated Sheets",
+    "Roof Tiles",
+    "Waterproof Membrane",
+    "Wires",
+    "Conduits",
+    "Switches & Sockets",
+    "PVC Pipes",
+    "Fittings",
+    "Water Tanks",
+    "Glass",
+    "Adhesives",
+    "Insulation",
+  ];

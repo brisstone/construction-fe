@@ -11,16 +11,26 @@ import AddNewMaterial from "../../material/AddNewMaterial";
 import AddNewLabour from "../../material/AddNewLabour";
 import useGetWorkStageById from "@/hooks/api/queries/projects/budget/workStage/useGetWorkStageById";
 import { useParams } from "react-router-dom";
-import { ProjectLaborType } from "@/hooks/api/queries/projects/budget/workStage/getWorkStage";
+import {
+  ProjectLaborType,
+  ProjectMaterialType,
+} from "@/hooks/api/queries/projects/budget/workStage/getWorkStage";
 const WorkStage = () => {
   const { id } = useParams<{ id: string }>();
   const [newMaterial, setNewMaterial] = useState(false);
   const [newLabour, setNewLabour] = useState(false);
   const [editLabour, setEditLabour] = useState<ProjectLaborType | null>(null);
+  const [editMaterial, setEditMaterial] = useState<ProjectMaterialType | null>(
+    null
+  );
 
   const handleLaborEdit = (item: ProjectLaborType) => {
     setEditLabour(item);
     setNewLabour(true);
+  };
+  const handleMaterialEdit = (item: ProjectMaterialType) => {
+    setEditMaterial(item);
+    setNewMaterial(true);
   };
 
   const { data: workStageSingle } = useGetWorkStageById(id ?? "");
@@ -74,7 +84,10 @@ const WorkStage = () => {
                 <div className="sm:flex items-center justify-between my-3">
                   <p className="font-medium text-lg text-textShade">Material</p>
                   <ButtonComp
-                    onClick={() => setNewMaterial(true)}
+                    onClick={() => {
+                      setEditMaterial(null);
+                      setNewMaterial(true);
+                    }}
                     text="Add Material"
                     className="w-fit mt-1 sm:mt-0"
                   />
@@ -82,6 +95,7 @@ const WorkStage = () => {
               </div>
               <div>
                 <MaterialTable
+                  onEdit={handleMaterialEdit}
                   workStageMaterial={workStageSingle?.projectMaterials ?? []}
                 />
               </div>
@@ -125,13 +139,24 @@ const WorkStage = () => {
         </main>
         {
           <ReusableDialog
-            title="Add New Material"
+            title={editMaterial ? "Edit Material" : "Add New Material"}
             open={newMaterial}
             onOpenChange={setNewMaterial}
             className="sm:max-w-[40vw]"
           >
             <div>
-              <AddNewMaterial />
+              <AddNewMaterial
+                defaultValues={editMaterial || undefined}
+                isEditMode={!!editMaterial}
+                projectId={
+                  workStageSingle?.projectMaterials[0]?.projectId ?? ""
+                }
+                budgetId={workStageSingle?.projectMaterials[0]?.budgetId ?? ""}
+                handleModalClose={() => {
+                  setEditMaterial(null);
+                  setNewMaterial(false);
+                }}
+              />
             </div>
           </ReusableDialog>
         }
