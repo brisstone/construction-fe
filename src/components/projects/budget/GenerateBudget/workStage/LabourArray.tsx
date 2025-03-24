@@ -1,13 +1,14 @@
 import ButtonComp from "@/components/general/ButtonComp";
 import ReusableSelect from "@/components/general/ReuseableSelect";
+import SearchableSelect from "@/components/general/SearchableSelect";
 import InputField from "@/components/input/InputField";
 
 interface LabourProps {
   index: number;
   labour: {
-    activity: string;
+    laborId: string;
     quantity: number;
-    unit: string;
+    unitId: string;
     rate: number;
   };
   onUpdate: (index: number, updatedLabour: any) => void;
@@ -23,7 +24,17 @@ const LabourArray = ({ index, labour, onUpdate, onRemove }: LabourProps) => {
       <section className="flex gap-4 my-5">
         <div>
           <p className="text-sm font-semibold text-grey">Labour Activity</p>
-          <ReusableSelect
+          <SearchableSelect
+            className="my-3"
+            placeholder="Labour Activity"
+            options={[
+              { label: "irons in columns", value: "irons" },
+              { label: "spring in bars", value: "spring" },
+            ]}
+            defaultValue={labour.laborId}
+            onValueChange={(value) => handleChange("laborId", value || "")}
+          />
+          {/* <ReusableSelect
             className="my-4"
             placeholder="Labour Activity"
             options={[
@@ -32,7 +43,7 @@ const LabourArray = ({ index, labour, onUpdate, onRemove }: LabourProps) => {
             ]}
             defaultValue={labour.activity}
             onValueChange={(value) => handleChange("activity", value)}
-          />
+          /> */}
         </div>
         <InputField
           type="number"
@@ -48,8 +59,8 @@ const LabourArray = ({ index, labour, onUpdate, onRemove }: LabourProps) => {
           <ReusableSelect
             className="my-4"
             placeholder="Unit"
-            defaultValue={labour.unit}
-            onValueChange={(value) => handleChange("unit", value)}
+            defaultValue={labour.unitId}
+            onValueChange={(value) => handleChange("unitId", value)}
             options={[
               { label: "Kg", value: "Kg" },
               { label: "Length", value: "Length" },

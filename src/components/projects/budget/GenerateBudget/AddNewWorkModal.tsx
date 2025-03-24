@@ -6,32 +6,50 @@ import { Checkbox } from "@/components/ui/checkbox";
 import MaterialArray from "./workStage/MaterialArray";
 import ButtonComp from "@/components/general/ButtonComp";
 import LabourArray from "./workStage/LabourArray";
+import useCreateWorkStage from "@/hooks/api/mutation/project/budget/workStage/useCreateWorkStage";
+import { useParams } from "react-router-dom";
+import { toast } from "sonner";
 
 interface Material {
-  material: string;
+  materialId: string;
   materialType: string;
   quantity: number;
-  materialUnit: string;
-  marketPrice: number;
-} 
-
-interface Labour {
-  activity: string;
-  quantity: number;
-  unit: string;
+  unitId: string;
   rate: number;
 }
 
-const AddNewWorkModal = () => {
+interface Labour {
+  laborId: string;
+  quantity: number;
+  unitId: string;
+  rate: number;
+}
+
+interface AddNewWorkModalProps {
+  handleModalClose: () => void;
+  budgetId: string;
+  workStageType: string;
+}
+
+const AddNewWorkModal = ({
+  handleModalClose,
+  budgetId,
+  workStageType,
+}: AddNewWorkModalProps) => {
   const [isMaterialChecked, setIsMaterialChecked] = useState(false);
   const [isLabourChecked, setIsLabourChecked] = useState(false);
   const [materials, setMaterials] = useState<Material[]>([]);
   const [labours, setLabours] = useState<Labour[]>([]);
+  const [workTitle, setWorkTitle] = useState("");
+  const [description, setDescription] = useState("");
+
+  const { id } = useParams<{ id: string }>();
 
   console.log(materials, "materials");
+  console.log(labours, "labours");
 
   const totalAmount = materials.reduce(
-    (sum, material) => sum + material.quantity * material.marketPrice,
+    (sum, material) => sum + material.quantity * material.rate,
     0
   );
 
@@ -39,11 +57,11 @@ const AddNewWorkModal = () => {
     setMaterials([
       ...materials,
       {
-        material: "",
+        materialId: "",
         materialType: "",
         quantity: 0,
-        materialUnit: "",
-        marketPrice: 0,
+        unitId: "",
+        rate: 0,
       },
     ]);
   };
@@ -61,7 +79,7 @@ const AddNewWorkModal = () => {
   //   lavour calc below
 
   const addLabour = () => {
-    setLabours([...labours, { activity: "", quantity: 0, unit: "", rate: 0 }]);
+    setLabours([...labours, { laborId: "", quantity: 0, unitId: "", rate: 0 }]);
   };
 
   const updateLabour = (index: number, updatedLabour: Labour) => {
@@ -81,6 +99,34 @@ const AddNewWorkModal = () => {
     0
   );
 
+  const { mutate: addWorkStage, isPending } = useCreateWorkStage();
+
+  const handleSubmit = () => {
+    const payload = {
+      name: workTitle,
+      description,
+      projectId: id,
+      budgetId,
+      stageType: workStageType === "sub" ? "sub_structure" : "super_structure",
+      materials,
+      labors: labours,
+    };
+
+    addWorkStage(payload, {
+      onSuccess: (response: any) => {
+        toast.success(
+          response?.data?.message || "workStage added successfully"
+        );
+        handleModalClose();
+      },
+      onError: (error: any) => {
+        toast.error(
+          error?.response?.data?.message || "Error creating workStage"
+        );
+      },
+    });
+  };
+
   return (
     <div>
       <InputField
@@ -88,12 +134,16 @@ const AddNewWorkModal = () => {
         label="Work Stage Title"
         name="workTitle"
         placeholder="Type the work title"
+        value={workTitle}
+        onChange={(e) => setWorkTitle(e.target.value)}
       />
       <TextAreaField
         label="Work Stage Description"
         name="description"
         rows={2}
         placeholder="Type in description"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
       />
 
       <div className="flex justify-between w-[25%] mx-auto gap-7">
@@ -179,7 +229,10 @@ const AddNewWorkModal = () => {
               {(totalLabourCost + totalAmount).toLocaleString()}
             </p>
           </div>
-          <ButtonComp text="Create" />
+          <ButtonComp
+            onClick={handleSubmit}
+            text={isPending ? "creating.." : "Create"}
+          />
         </section>
       )}
     </div>

@@ -5,8 +5,25 @@ import SubComp from "./SubStructure/SubComp";
 import ReusableDialog from "@/components/general/ReuseableDialog";
 import AddNewWorkModal from "./AddNewWorkModal";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
+import usegetBudget from "@/hooks/api/queries/projects/budget/getBudget";
 const ViewBudget = () => {
   const [newWork, setNewWork] = useState(false);
+
+  const [activeTab, setActiveTab] = useState("sub");
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+  };
+  const { id } = useParams<{ id: string }>();
+  const { data: budget, isPending } = usegetBudget(id ?? "");
+  console.log(budget, "budget");
+
+  if (isPending) {
+    return <div className="text-center">Loading...</div>;
+  }
+  const handleModalClose = () => {
+    setNewWork(false);
+  };
 
   return (
     <div>
@@ -20,7 +37,7 @@ const ViewBudget = () => {
         <div className="grid grid-cols-3 gap-4">
           <div>
             <h3 className="font-medium">Budget Title</h3>
-            <p className="text-textShade text-sm">Budget 2 (Substructure)</p>
+            <p className="text-textShade text-sm">{budget?.name}</p>
           </div>
           <div>
             <h3 className="font-medium">No of Units</h3>
@@ -33,15 +50,11 @@ const ViewBudget = () => {
         </div>
         <div className="my-3">
           <h3 className="font-medium">Budget Description</h3>
-          <p className="w-1/2 text-xs text-textShade">
-            Lorem ipsum is a placeholder text commonly used to demonstrate the
-            visual form of a document or a typeface without relying on
-            meaningful content.
-          </p>
+          <p className="w-1/2 text-xs text-textShade">{budget?.description}</p>
         </div>
       </section>
       <main>
-        <Tabs defaultValue="sub">
+        <Tabs defaultValue="sub" onValueChange={handleTabChange}>
           <aside className="md:flex items-center justify-between">
             <div className="w-full overflow-x-auto scrollbar-hidden">
               <TabsList className="rounded-[8px] bg-fadedGrey">
@@ -56,7 +69,7 @@ const ViewBudget = () => {
                 Work Stage List
               </p>
               <ButtonComp
-              onClick={() => setNewWork(true)}
+                onClick={() => setNewWork(true)}
                 text="Add Work Stage"
                 className="w-fit mt-1 sm:mt-0"
               />
@@ -71,13 +84,20 @@ const ViewBudget = () => {
         </Tabs>
         {
           <ReusableDialog
-            title="Add New Work Stage"
+            title={`Add New Work Stage - ${
+              activeTab === "sub" ? "Substructure" : "Superstructure"
+            }`}
+            // title="Add New Work Stage"
             open={newWork}
             onOpenChange={setNewWork}
             className="sm:max-w-[80vw]"
           >
             <div>
-              <AddNewWorkModal />
+              <AddNewWorkModal
+                handleModalClose={handleModalClose}
+                budgetId={budget?._id ?? ""}
+                workStageType={activeTab}
+              />
             </div>
           </ReusableDialog>
         }

@@ -1,15 +1,18 @@
 import ButtonComp from "@/components/general/ButtonComp";
 import ReusableSelect from "@/components/general/ReuseableSelect";
+import SearchableSelect from "@/components/general/SearchableSelect";
 import InputField from "@/components/input/InputField";
+import useGetMaterial from "@/hooks/api/queries/settings/material/getMaterial";
+import { useAuthStore } from "@/store/authStore";
 
 interface MaterialProps {
   index: number;
   material: {
-    material: string;
+    materialId: string;
     materialType: string;
     quantity: number;
-    materialUnit: string;
-    marketPrice: number;
+    unitId: string;
+    rate: number;
   };
   onUpdate: (index: number, updatedMaterial: any) => void;
   onRemove: (index: number) => void;
@@ -24,6 +27,57 @@ const MaterialArray = ({
   const handleChange = (field: string, value: string | number) => {
     onUpdate(index, { ...material, [field]: value });
   };
+
+  const materialTypes = [
+    "Cement",
+    "Sand",
+    "Gravel",
+    "Blocks",
+    "Bricks",
+    "Steel Rods",
+    "Structural Steel",
+    "Aluminum",
+    "Timber",
+    "Plywood",
+    "MDF Boards",
+    "Tiles",
+    "Paint",
+    "Plaster",
+    "Corrugated Sheets",
+    "Roof Tiles",
+    "Waterproof Membrane",
+    "Wires",
+    "Conduits",
+    "Switches & Sockets",
+    "PVC Pipes",
+    "Fittings",
+    "Water Tanks",
+    "Glass",
+    "Adhesives",
+    "Insulation",
+  ];
+
+  // const materialTypeOptions =
+  //   locationData?.data.map((item) => ({
+  //     value: item?._id,
+  //     label: item?.name,
+  //   })) || [];
+
+  const materialTypeOptions = materialTypes.map((material) => ({
+    value: material.toLowerCase().replace(/\s+/g, "-"),
+    label: material,
+  }));
+
+  const { currentUser } = useAuthStore();
+
+  const { data: materialData, isPending } = useGetMaterial(
+    currentUser?.companyId || ""
+  );
+
+  if (isPending) {
+    return <p className="text-center my-3">Loading...</p>;
+  }
+
   return (
     <div>
       <section className="flex gap-4 my-5">
@@ -32,30 +86,44 @@ const MaterialArray = ({
           <ReusableSelect
             className="mt-3"
             placeholder="Material"
-            options={[
-              { label: "irons", value: "irons" },
-              { label: "spring", value: "spring" },
-            ]}
-            defaultValue={material.material}
+            options={materialData?.data?.map((item) => ({
+              label: item.name,
+              value: item._id,
+            }))}
+            // options={[
+            //   { label: "irons", value: "irons" },
+            //   { label: "spring", value: "spring" },
+            // ]}
+            defaultValue={material.materialId}
             onValueChange={(value) =>
-              onUpdate(index, { ...material, material: value })
+              onUpdate(index, { ...material, materialId: value })
             }
           />
         </div>
         <div>
           <p className="text-sm font-semibold text-grey">Material Type</p>
-          <ReusableSelect
-            className="mt-3"
+          <SearchableSelect
+            className="my-3 "
             placeholder="Material Type"
-            options={[
-              { label: "Y20MM", value: "Y20MM" },
-              { label: "111mm", value: "111mm" },
-            ]}
+            options={materialTypeOptions}
             defaultValue={material.materialType}
             onValueChange={(value) =>
               onUpdate(index, { ...material, materialType: value })
             }
           />
+          {/* <ReusableSelect
+            className="mt-3"
+            placeholder="Material Type"
+            // options={[
+            //   { label: "Y20MM", value: "Y20MM" },
+            //   { label: "111mm", value: "111mm" },
+            // ]}
+            options={materialTypeOptions}
+            defaultValue={material.materialType}
+            onValueChange={(value) =>
+              onUpdate(index, { ...material, materialType: value })
+            }
+          /> */}
         </div>
         <InputField
           type="number"
@@ -75,9 +143,9 @@ const MaterialArray = ({
               { label: "metre", value: "metre" },
               { label: "centi", value: "centi" },
             ]}
-            defaultValue={material.materialUnit}
+            defaultValue={material.unitId}
             onValueChange={(value) =>
-              onUpdate(index, { ...material, materialUnit: value })
+              onUpdate(index, { ...material, unitId: value })
             }
           />
         </div>
@@ -86,14 +154,14 @@ const MaterialArray = ({
           label="Market Price"
           name="price"
           placeholder="price"
-          value={material.marketPrice}
-          onChange={(e) => handleChange("marketPrice", Number(e.target.value))}
+          value={material.rate}
+          onChange={(e) => handleChange("rate", Number(e.target.value))}
         />
       </section>
       <aside className="flex border justify-between p-4 rounded-[4px]">
         <h3 className="font-bold">Amount (₦):</h3>
         <p className="ml-3">
-          {(material.quantity * material.marketPrice).toLocaleString()}
+          {(material.quantity * material.rate).toLocaleString()}
         </p>
       </aside>
       <ButtonComp
