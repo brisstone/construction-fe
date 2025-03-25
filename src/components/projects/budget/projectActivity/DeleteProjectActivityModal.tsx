@@ -3,35 +3,36 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import ButtonComp from "@/components/general/ButtonComp";
-import { QUERY_KEY_WORKSTAGEBYID } from "@/hooks/api/queries/projects/budget/workStage/useGetWorkStageById";
-import useDeleteProjectLabor from "@/hooks/api/mutation/project/budget/workStage/projectLabor/useDeleteProjectLabor";
+import useDeleteProjectActivity from "@/hooks/api/mutation/project/budget/workStage/projectActivity/useDeleteProjectActivity";
+import { QUERY_KEY_PROJACTIVITY } from "@/hooks/api/queries/projects/budget/workStage/projectActivity/getProjectActivity";
 
-const DeleteProjectLaborModal = ({
-  setDeleteProjectLabor,
-  selectedProjectLabor,
+const DeleteProjectActivityModal = ({
+  setDeleteProjectActivity,
+  selectedProjectActivity,
 }: {
-  setDeleteProjectLabor: (value: boolean) => void;
-  selectedProjectLabor: string;
+  setDeleteProjectActivity: (value: boolean) => void;
+  selectedProjectActivity: string;
 }) => {
-  const { mutate: DeleteProjectLabor, isPending } = useDeleteProjectLabor();
+  const { mutate: DeleteProjectActivity, isPending } =
+    useDeleteProjectActivity();
 
   const queryClient = useQueryClient();
 
   const onSubmit = () => {
-    DeleteProjectLabor(
-      { id: selectedProjectLabor },
+    DeleteProjectActivity(
+      { id: selectedProjectActivity },
       {
         onSuccess: (response: any) => {
           console.log(response, "res");
-          toast.success(response?.data?.message || "Deleted  Project Labor");
+          toast.success(response?.data?.message || "Deleted  Project Activity");
           queryClient.invalidateQueries({
-            queryKey: [QUERY_KEY_WORKSTAGEBYID],
+            queryKey: [QUERY_KEY_PROJACTIVITY],
           });
-          setDeleteProjectLabor(false);
+          setDeleteProjectActivity(false);
         },
         onError: (error: any) => {
           toast.error(
-            error?.response?.data?.message || "Error deleting  Project Labor"
+            error?.response?.data?.message || "Error deleting  Project Activity"
           );
         },
       }
@@ -42,18 +43,18 @@ const DeleteProjectLaborModal = ({
     <div className="">
       <AlertCircle className="text-red-700 mx-auto " />
       <p className="text-grey text-sm text-center my-2">
-        Delete Project Labor Permanently!
+        Delete Project Activity Permanently!
       </p>
       <div className="flex gap-3 justify-between w-1/2 mx-auto items-center mt-4">
         <Button
-          onClick={() => setDeleteProjectLabor(false)}
+          onClick={() => setDeleteProjectActivity(false)}
           className="bg-fadedWhite border border-borderColor rounded-[8px] hover:text-white text-black sm:w-[40%]"
         >
           Cancel
         </Button>
         <ButtonComp
           onClick={onSubmit}
-          text={isPending ? "Deleting..." : "Delete  Project Labor"}
+          text={isPending ? "Deleting..." : "Delete  Project Activity"}
           className="bg-red-700 w-fit"
         />
       </div>
@@ -61,4 +62,4 @@ const DeleteProjectLaborModal = ({
   );
 };
 
-export default DeleteProjectLaborModal;
+export default DeleteProjectActivityModal;

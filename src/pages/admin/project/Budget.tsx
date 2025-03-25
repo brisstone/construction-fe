@@ -6,18 +6,18 @@ import BillComp from "@/components/projects/budget/Bill/BillComp";
 import WorkTable from "@/components/projects/budget/workPlan/WorkTable";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ViewBudget from "@/components/projects/budget/GenerateBudget/ViewBudget";
 import ReusableDialog from "@/components/general/ReuseableDialog";
 import InputField from "@/components/input/InputField";
 import useCreateBudget from "@/hooks/api/mutation/project/budget/useCreateBudget";
 import { toast } from "sonner";
 import { useParams } from "react-router-dom";
 import useGetSingleProject from "@/hooks/api/queries/projects/getSingleProject";
+import { useNavigate } from "react-router-dom";
 
 const Budget = () => {
   const { id } = useParams<{ id: string }>();
 
-  const [showGenerated, setShowGenerated] = useState(false);
+  // const [showGenerated, setShowGenerated] = useState(false);
   const [addBudget, setAddBudget] = useState(false);
   const [budgetData, setBudgetData] = useState({
     name: "",
@@ -26,9 +26,14 @@ const Budget = () => {
 
   const { data: project } = useGetSingleProject(id ?? "");
 
+  const navigate = useNavigate();
+
   const handleGenerateClick = () => {
-    project?.budgetId ? setShowGenerated(true) : setAddBudget(true);
-    // setShowGenerated(true);
+    if (project?.budgetId) {
+      navigate(`/admin/project/${id}/budget-view`);
+    } else {
+      setAddBudget(true);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,9 +78,9 @@ const Budget = () => {
       />
 
       <Container className="my-5">
-        {showGenerated ? (
+        {/* {showGenerated ? (
           <ViewBudget />
-        ) : (
+        ) : ( */}
           <Tabs defaultValue="bill">
             <aside className="md:flex items-center justify-between">
               <div className="w-full overflow-x-auto scrollbar-hidden">
@@ -106,7 +111,7 @@ const Budget = () => {
               </div>
             </TabsContent>
           </Tabs>
-        )}
+        {/* )} */}
       </Container>
       {
         <ReusableDialog
