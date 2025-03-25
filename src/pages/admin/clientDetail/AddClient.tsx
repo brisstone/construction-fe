@@ -26,7 +26,8 @@ const AddClient = ({
   defaultValues,
   isEditMode,
 }: clientTypeProps) => {
-  const [clientName, setClientName] = useState(defaultValues?.firstName || "");
+  const [firstName, setFirstName] = useState(defaultValues?.firstName || "");
+  const [lastName, setLastName] = useState(defaultValues?.lastName || "");
   const [clientAddress, setClientAddress] = useState(
     defaultValues?.geometry.address || ""
   );
@@ -83,8 +84,8 @@ const AddClient = ({
 
   const onSubmit = () => {
     const data = {
-      firstName: clientName,
-      lastName: clientName,
+      firstName,
+      lastName,
       phoneNumber,
       email: clientEmail,
       type: clientType,
@@ -132,14 +133,25 @@ const AddClient = ({
   return (
     <div>
       <UploadImg name="clientIcon" onFileChange={handleFileChange} />
-      <InputField
-        type="text"
-        label="Client Name"
-        name="ClientName"
-        value={clientName}
-        onChange={(e) => setClientName(e.target.value)}
-        placeholder="Add Client Name"
-      />
+      <div className="grid sm:grid-cols-2 grid-cols-1 gap-5 ">
+        <InputField
+          type="text"
+          label="first Name"
+          name="FirstName"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+          placeholder="Add First Name"
+        />
+        <InputField
+          type="text"
+          label="last Name"
+          name="LastName"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+          placeholder="Add Last Name"
+        />
+      </div>
+
       <div className="mb-4">
         <p className="text-sm font-semibold text-grey mb-2">Client Address</p>
         <div>

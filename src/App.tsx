@@ -54,7 +54,7 @@ function App() {
             <Route path="project/:id/budget-view" element={<ViewBudget />} />
             <Route path="project/:id/properties" element={<Properties />} />
             <Route
-              path="project/:id/properties/:id"
+              path="project/:id/properties/:id2"
               element={<PropertyDetail />}
             />
             <Route path="project/:id/documents" element={<DocumentPage />} />

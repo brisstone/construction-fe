@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import axiosInstance from "@/hooks/axiosInstace";
 import { CompanyID } from "../getProject";
+import { ClientType } from "../../clients/getClients";
 
 export interface ResponseType {
   data: PropertyType[];
@@ -18,6 +19,7 @@ export interface PropertyType {
   status: string;
   kycVerified: string;
   agentType: string;
+  clientId?: ClientType;
   paymentFrequency: string;
   dwellingType: "Single" | "Multi_Story";
   modeOfPayment: string;

@@ -1,15 +1,20 @@
 import WebAvatar from "@/assets/images/WebAvatar.png";
 import samplepassport from "@/assets/images/samplepassport.png";
+import { ClientType } from "@/hooks/api/queries/clients/getClients";
+import { format } from "date-fns";
 
-const ClientDetailModal = () => {
+const ClientDetailModal = ({ clientInfo }: { clientInfo: ClientType }) => {
   const clientDetails = [
-    { title: "Name", content: "Engr. Joseph Labar" },
-    { title: "Email ", content: "jlabar@gmail.com" },
-    { title: "Address", content: "2 Julius Berger Estate" },
-    { title: "Phone No", content: "08031234567" },
-    { title: "Client Type", content: "Individual" },
-    { title: "Occupation", content: "Engineer" },
-    { title: "Birth Date", content: "14/04/1982" },
+    { title: "Name", content: `${clientInfo?.firstName} ${clientInfo?.lastName}` },
+    { title: "Email", content: clientInfo?.email || "N/A" },
+    { title: "Address", content: clientInfo?.geometry?.address || "N/A" },
+    { title: "Phone No", content: clientInfo?.phoneNumber || "N/A" },
+    { title: "Client Type", content: clientInfo?.type || "N/A" },
+    { title: "Occupation", content: clientInfo?.occupation || "N/A" },
+    { 
+      title: "Birth Date", 
+      content: clientInfo?.dob ? format(new Date(clientInfo.dob), "do 'of' MMM, yyyy") : "N/A" 
+    },
   ];
 
   return (

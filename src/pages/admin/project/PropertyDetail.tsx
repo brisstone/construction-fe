@@ -16,14 +16,27 @@ import gall3 from "@/assets/images/ProjectHouse1.png";
 import PaymentDetailModal from "@/components/clientDetail/PaymentDetailModal";
 import AddClient from "../clientDetail/AddClient";
 import CreateProperty from "@/components/projects/properties/CreateProperty";
-import { PropertyType } from "@/hooks/api/queries/projects/property/getProperty";
+import {
+  Amenity,
+  PropertyType,
+} from "@/hooks/api/queries/projects/property/getProperty";
+import useGetSingleProperty from "@/hooks/api/queries/projects/property/getSingleProperty";
+import { useParams } from "react-router-dom";
+import AddPropertyClient from "@/components/projects/properties/AddPropertyClient";
+import { ClientType } from "@/hooks/api/queries/clients/getClients";
 
 const PropertyDetail = () => {
-  const client: boolean = true;
+  // const client: boolean = true;
+
+  const { id2 } = useParams<{ id2: string }>();
 
   const [clientDetail, setClientDetail] = useState(false);
   const [paymentDetail, setPaymentDetail] = useState(false);
   const [addClient, setAddClient] = useState(false);
+
+  const { data: propertySingle, isPending } = useGetSingleProperty(id2 ?? "");
+
+  console.log(propertySingle, "propertySingle");
 
   const [editProp, setEditProp] = useState(false);
   const [editProperty, setEditProperty] = useState<PropertyType | null>(null);
@@ -33,11 +46,14 @@ const PropertyDetail = () => {
     setEditProp(true);
   };
 
-  // const handleEdit = (property: PropertyType) => {
-  //   setEditProperty(property);
-  //   setEditProp(true);
-  // };
+  const handleEdit = (property: PropertyType) => {
+    setEditProperty(property);
+    setEditProp(true);
+  };
 
+  if (isPending) {
+    return <div className="text-center my-5">Loading...</div>;
+  }
   return (
     <div>
       <RouteChain
@@ -51,7 +67,8 @@ const PropertyDetail = () => {
             id={` 1`}
             allImageSets={[
               {
-                images: [gall1, gall2, gall3, gall1, gall2],
+                images: propertySingle?.photos ?? [],
+                // images: [gall1, gall2, gall3, gall1, gall2],
               },
             ]}
             isNotStarLot={false}
@@ -63,9 +80,9 @@ const PropertyDetail = () => {
         <section className="md:flex justify-between my-5">
           <div className="md:w-[54%] ">
             <aside className="flex justify-between items-center my-4">
-              <h1 className="text-xl font-bold">Mabushi Project Phase 1/A05</h1>
+              <h1 className="text-xl font-bold">{propertySingle?.name}</h1>
               <Button
-                // onClick={() => handleEdit()}
+                onClick={() => propertySingle && handleEdit(propertySingle)}
                 className="bg-white border rounded-[8px] text-black"
               >
                 Edit Detail
@@ -74,32 +91,44 @@ const PropertyDetail = () => {
             <section>
               <h2 className="font-semibold my-2">Property Description</h2>
               <h3 className="text-darkGrey text-sm my-2">
-                5 Bedroom Stand-alone Duplex with BQ (House A01)
+                {propertySingle?.description}
               </h3>
               <h2 className="font-semibold my-2">Amenities</h2>
               <div className="flex flex-wrap gap-x-8 items-center">
-                <PropertyFeature title="4 Bedroom" />
+                {propertySingle?.amenities?.map((amenity: Amenity) => {
+                  return (
+                    <PropertyFeature
+                      amenity={amenity}
+                      title={amenity.amenityId?.name}
+                    />
+                  );
+                })}
+                {/* <PropertyFeature title="4 Bedroom" />
                 <PropertyFeature title="2 S/Pool" />
                 <PropertyFeature title="2 Bathrooms" />
                 <PropertyFeature title="3 Car Parking" />
-                <PropertyFeature title="2 Living Room" />
+                <PropertyFeature title="2 Living Room" /> */}
               </div>
               <h2 className="font-semibold my-2">Dwelling Type</h2>
-              <p className="text-darkGrey text-sm ">Single</p>
-            </section>  
+              <p className="text-darkGrey text-sm ">
+                {propertySingle?.dwellingType}
+              </p>
+            </section>
           </div>
 
           {/* {client section} */}
           <div className="md:w-[44%] mt-4 md:mt-0 bg-[#F7F8FA] rounded-[8px] p-3">
             <h3 className="font-semibold"> Client Details</h3>
-            {client ? (
+            {propertySingle?.clientId ? (
               <section>
                 <div className="flex items-center gap-6 my-5">
                   <img src={WebAvatar} alt="WebAvatar" />
                   <aside>
-                    <h5 className="font-semibold">Engr. Joseph Labar</h5>
+                    <h5 className="font-semibold">
+                      {propertySingle?.clientId?.firstName}
+                    </h5>
                     <p className="font-semibold text-darkGrey">
-                      jlabar@gmail.com
+                      {propertySingle?.clientId?.email}
                     </p>
                   </aside>
                 </div>
@@ -137,7 +166,12 @@ const PropertyDetail = () => {
           className="sm:max-w-[60vw]"
         >
           <div>
-            <AddClient handleModalClose={() => {}} />
+            <AddPropertyClient
+              propertySingleId={propertySingle?._id ?? ""}
+              handleModalClose={() => {
+                setAddClient(false);
+              }}
+            />
           </div>
         </ReusableDialog>
       }
@@ -149,7 +183,7 @@ const PropertyDetail = () => {
           className="sm:max-w-[60vw]"
         >
           <div>
-            <ClientDetailModal />
+            <ClientDetailModal clientInfo={propertySingle?.clientId as ClientType} />
           </div>
         </ReusableDialog>
       }

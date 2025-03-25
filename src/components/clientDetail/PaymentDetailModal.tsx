@@ -5,9 +5,17 @@ import Pagination from "../general/Pagination";
 import ReusableDialog from "../general/ReuseableDialog";
 import AddPayment from "./AddPayment";
 import { useState } from "react";
+import useGetPaymentProperty from "@/hooks/api/queries/projects/property/getPaymentProperty";
+import { useParams } from "react-router-dom";
 
 const PaymentDetailModal = () => {
   const [addPay, setAddPay] = useState(false);
+
+  const { id, id2 } = useParams();
+
+  const { data } = useGetPaymentProperty(id ?? "", id2 ?? "");
+
+  console.log(data, "da");
 
   return (
     <div>
