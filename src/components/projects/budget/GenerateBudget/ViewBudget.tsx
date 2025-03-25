@@ -4,10 +4,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SubComp from "./SubStructure/SubComp";
 import ReusableDialog from "@/components/general/ReuseableDialog";
 import AddNewWorkModal from "./AddNewWorkModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import usegetBudget from "@/hooks/api/queries/projects/budget/getBudget";
 import useGetWorkStage from "@/hooks/api/queries/projects/budget/workStage/getWorkStage";
+import { useIdStore } from "@/store/IdStore";
 const ViewBudget = () => {
   const [newWork, setNewWork] = useState(false);
 
@@ -16,6 +17,8 @@ const ViewBudget = () => {
     setActiveTab(value);
   };
   const { id } = useParams<{ id: string }>();
+
+  const { setBudgetId, setProjectId } = useIdStore();
   const { data: budget, isPending } = usegetBudget(id ?? "");
   const { data: workStageData } = useGetWorkStage(
     id ?? "",
@@ -26,12 +29,18 @@ const ViewBudget = () => {
 
   const workStageDataLoad = workStageData?.data;
 
-  if (isPending) {
-    return <div className="text-center">Loading...</div>;
-  }
   const handleModalClose = () => {
     setNewWork(false);
   };
+
+  useEffect(() => {
+    setProjectId(id ?? "");
+    setBudgetId(budget?._id ?? "");
+  }, [id, budget]);
+
+  if (isPending) {
+    return <div className="text-center">Loading...</div>;
+  }
 
   return (
     <div>
@@ -86,7 +95,7 @@ const ViewBudget = () => {
               <SubComp workStageDataLoad={workStageDataLoad ?? []} />
             </TabsContent>
             <TabsContent value="super">
-              <SubComp workStageDataLoad={workStageDataLoad ?? []}/>
+              <SubComp workStageDataLoad={workStageDataLoad ?? []} />
             </TabsContent>
           </div>
         </Tabs>

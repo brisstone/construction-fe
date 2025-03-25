@@ -15,14 +15,20 @@ import {
   ProjectLaborType,
   ProjectMaterialType,
 } from "@/hooks/api/queries/projects/budget/workStage/getWorkStage";
+import AddNewProjectActivity from "../projectActivity/AddNewProjectActivity";
+import useGetProjectActivity from "@/hooks/api/queries/projects/budget/workStage/projectActivity/getProjectActivity";
 const WorkStage = () => {
   const { id } = useParams<{ id: string }>();
   const [newMaterial, setNewMaterial] = useState(false);
   const [newLabour, setNewLabour] = useState(false);
+  const [newActivity, setNewActivity] = useState(false);
   const [editLabour, setEditLabour] = useState<ProjectLaborType | null>(null);
   const [editMaterial, setEditMaterial] = useState<ProjectMaterialType | null>(
     null
   );
+  // const [editMaterial, setEditMaterial] = useState<ProjectA | null>(
+  //   null
+  // );
 
   const handleLaborEdit = (item: ProjectLaborType) => {
     setEditLabour(item);
@@ -34,6 +40,9 @@ const WorkStage = () => {
   };
 
   const { data: workStageSingle } = useGetWorkStageById(id ?? "");
+  const { data: projectActivityData } = useGetProjectActivity(id ?? "");
+  console.log(projectActivityData, "projectActivityData");
+  
 
   console.log(workStageSingle, "workStageSingle");
 
@@ -128,6 +137,10 @@ const WorkStage = () => {
                     Activities
                   </p>
                   <ButtonComp
+                    onClick={() => {
+                      setNewActivity(true);
+                      // setEditLabour(null);
+                    }}
                     text="Add Activities"
                     className="w-fit mt-1 sm:mt-0"
                   />
@@ -137,6 +150,24 @@ const WorkStage = () => {
             </TabsContent>
           </Tabs>
         </main>
+        {
+          <ReusableDialog
+            title={"Add New Activity"}
+            open={newActivity}
+            onOpenChange={setNewActivity}
+            className="sm:max-w-[40vw]"
+          >
+            <div>
+              <AddNewProjectActivity
+                defaultValues={undefined}
+                isEditMode={false}
+                handleModalClose={() => {
+                  setNewActivity(false);
+                }}
+              />
+            </div>
+          </ReusableDialog>
+        }
         {
           <ReusableDialog
             title={editMaterial ? "Edit Material" : "Add New Material"}
