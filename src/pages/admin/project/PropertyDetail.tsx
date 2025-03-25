@@ -89,7 +89,7 @@ const PropertyDetail = () => {
             </section>  
           </div>
 
-          {/* {client section} */}
+          {/* {client section} */} 
           <div className="md:w-[44%] mt-4 md:mt-0 bg-[#F7F8FA] rounded-[8px] p-3">
             <h3 className="font-semibold"> Client Details</h3>
             {client ? (
