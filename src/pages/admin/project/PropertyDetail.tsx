@@ -10,11 +10,11 @@ import ReusableDialog from "@/components/general/ReuseableDialog";
 import { useState } from "react";
 import ClientDetailModal from "@/components/clientDetail/ClientDetailModal";
 import PropertyGallery from "@/components/projects/properties/PropertyGallery";
-import gall1 from "@/assets/images/gallery/gall1.png";
-import gall2 from "@/assets/images/gallery/gall2.png";
-import gall3 from "@/assets/images/ProjectHouse1.png";
+// import gall1 from "@/assets/images/gallery/gall1.png";
+// import gall2 from "@/assets/images/gallery/gall2.png";
+// import gall3 from "@/assets/images/ProjectHouse1.png";
 import PaymentDetailModal from "@/components/clientDetail/PaymentDetailModal";
-import AddClient from "../clientDetail/AddClient";
+// import AddClient from "../clientDetail/AddClient";
 import CreateProperty from "@/components/projects/properties/CreateProperty";
 import {
   Amenity,
@@ -116,7 +116,7 @@ const PropertyDetail = () => {
             </section>
           </div>
 
-          {/* {client section} */}
+          {/* {client section} */} 
           <div className="md:w-[44%] mt-4 md:mt-0 bg-[#F7F8FA] rounded-[8px] p-3">
             <h3 className="font-semibold"> Client Details</h3>
             {propertySingle?.clientId ? (
