@@ -8,6 +8,8 @@ import ButtonComp from "@/components/general/ButtonComp";
 import ReusableDialog from "@/components/general/ReuseableDialog";
 import AddPayment from "@/components/clientDetail/AddPayment";
 import { useState } from "react";
+import PaymentTable from "@/components/clientDetail/PaymentTable";
+import useGetPaymentProject from "@/hooks/api/queries/projects/paymentSchedule/getPaymentProject";
 
 const PaymentScheduleDetail = () => {
   const { id } = useParams();
@@ -17,6 +19,12 @@ const PaymentScheduleDetail = () => {
     useGetSinglePaymentSchedule(id ?? "");
 
   const singlePaymentScheduleLoad = singlePaymentSchedule;
+
+  const { data: paymentData, isPending: payProjPend } = useGetPaymentProject(
+    singlePaymentSchedule?.projectId ?? ""
+  );
+
+  const paymentDataLoad = paymentData?.data;
 
   const clientDetails = [
     {
@@ -51,7 +59,7 @@ const PaymentScheduleDetail = () => {
     { title: "Payment Type:", content: singlePaymentScheduleLoad?.paymentType },
   ];
 
-  if (isPending) {
+  if (isPending || payProjPend) {
     return <div className="text-center my-5">Loading...</div>;
   }
 
@@ -100,6 +108,9 @@ const PaymentScheduleDetail = () => {
               the payment, supplieror materials supplied.
             </p>
           </aside>
+        </section>
+        <section className="border-y">
+          <PaymentTable paymentDataLoad={paymentDataLoad ?? []} />
         </section>
       </Container>
 
