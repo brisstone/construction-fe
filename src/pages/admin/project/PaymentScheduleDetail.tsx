@@ -1,21 +1,53 @@
 import RouteChain from "@/components/general/RouteChain";
 import Container from "@/components/layout/Container";
 import samplepassport from "@/assets/images/samplepassport.png";
+import useGetSinglePaymentSchedule from "@/hooks/api/queries/projects/paymentSchedule/getSinglePaymentSchedule";
+import { useParams } from "react-router-dom";
+import { format } from "date-fns";
 
 const PaymentScheduleDetail = () => {
+  const { id } = useParams();
+  const { data: singlePaymentSchedule, isPending } =
+    useGetSinglePaymentSchedule(id ?? "");
+
+  const singlePaymentScheduleLoad = singlePaymentSchedule;
+
   const clientDetails = [
-    { title: "Contractor/Vendor:", content: "Dangote Cement." },
-    { title: "Generated Date", content: "01/11/2022" },
-    { title: "Amount of Payment Due:", content: "₦ 1,800,000.00" },
-    { title: "Amount Paid:", content: "₦ 1,800,000.00" },
-    { title: "Due Date For Payment:", content: "30/10/22" },
-    { title: "Actual Payment Date:", content: "01/11/2022" },
-    { title: "Type of Payment Schedule:", content: "Completion" },
-    { title: "Payment Method:", content: "Transfer" },
-    { title: "Expense Type:", content: "Dangote Cement." },
-    { title: "Balance:", content: "₦ 0.00" },
-    { title: "Payment Status:", content: "Complete" },
+    {
+      title: "Contractor/Vendor:",
+      content: singlePaymentScheduleLoad?.contractorId?.firstName,
+    },
+    {
+      title: "Generated Date",
+      content: singlePaymentScheduleLoad?.updatedAt
+        ? format(new Date(singlePaymentScheduleLoad.updatedAt), "MMM, dd, yyyy")
+        : "",
+    },
+    { title: "Amount of Payment Due:", content: "not updated" },
+    { title: "Amount Paid:", content: singlePaymentScheduleLoad?.amount },
+    {
+      title: "Due Date For Payment:",
+      content: "not updated",
+    },
+    {
+      title: "Actual Payment Date:",
+      content: singlePaymentScheduleLoad?.datePaid
+        ? format(new Date(singlePaymentScheduleLoad.datePaid), "MMM, dd, yyyy")
+        : "",
+    },
+    { title: "Type of Payment Schedule:", content: "not updated" },
+    {
+      title: "Payment Method:",
+      content: singlePaymentScheduleLoad?.paymentMethod,
+    },
+    { title: "Expense Type:", content: singlePaymentScheduleLoad?.expenseType },
+    { title: "Balance:", content: "not updated" },
+    { title: "Payment Type:", content: singlePaymentScheduleLoad?.paymentType },
   ];
+
+  if (isPending) {
+    return <div className="text-center my-5">Loading...</div>;
+  }
 
   return (
     <div>
@@ -46,7 +78,7 @@ const PaymentScheduleDetail = () => {
         <section className="">
           <div>
             <h3 className="font-bold text-lg mb-3">Receipt of Payment</h3>
-            <img src={samplepassport} alt="samplepassport" />
+            <img src={singlePaymentScheduleLoad?.paymentProof} alt="samplepassport" />
           </div>
           <aside className="border my-5 flex items-center gap-5 p-5 rounded-[14px]">
             <h3 className="text-lg font-semibold">Notes:</h3>

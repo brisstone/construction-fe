@@ -109,7 +109,7 @@ const PaymentTable = ({
 
   const renderRow = (item: PaymentScheduleType, index: number) => {
     const handleRowClick = () => {
-      navigate(`/admin/project/${"123"}/payment-schedule-detail`);
+      navigate(`/admin/project/${item?._id}/payment-schedule-detail`);
     };
 
     return (
