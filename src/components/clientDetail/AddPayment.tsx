@@ -11,9 +11,11 @@ import { QUERY_KEY_PAYMENTPROPERTY } from "@/hooks/api/queries/projects/property
 
 type TypeProps = {
   handleModalClose: () => void;
-  projectId: string;
-  propertyId: string;
-  clientId: string;
+  projectId?: string;
+  propertyId?: string;
+  clientId?: string;
+  contractorId?: string;
+  schedulePay?: boolean;
 };
 
 const AddPayment = ({
@@ -21,6 +23,8 @@ const AddPayment = ({
   projectId,
   propertyId,
   clientId,
+  contractorId,
+  schedulePay = false,
 }: TypeProps) => {
   const [paymentTitle, setPaymentTitle] = useState("");
   const [amountPaid, setAmountPaid] = useState(0);
@@ -53,24 +57,33 @@ const AddPayment = ({
     );
   };
 
-  // console.log(proofOfPayment, "dddddproof")
-
   const queryClient = useQueryClient();
   const { mutate: createPaymentProperty, isPending: isCreating } =
     useCreatePaymentProperty();
 
   const handleSave = () => {
-    const payload = {
-      name: paymentTitle,
-      projectId,
-      propertyId,
-      clientId,
-      amount: amountPaid,
-      datePaid: payDate?.toISOString(),
-      paymentType,
-      paymentFLow: "in_bound",
-      paymentProof: proofOfPayment,
-    };
+    const payload = schedulePay
+      ? {
+        name: paymentTitle,
+        projectId,
+        contractorId,
+        amount: amountPaid,
+        datePaid: payDate?.toISOString(),
+        paymentType,
+        paymentFLow: "out_bound",
+        paymentProof: proofOfPayment,
+      }
+      : {
+        name: paymentTitle,
+        projectId,
+        propertyId,
+        clientId,
+        amount: amountPaid,
+        datePaid: payDate?.toISOString(),
+        paymentType,
+        paymentFLow: "in_bound",
+        paymentProof: proofOfPayment,
+      };
 
     createPaymentProperty(payload, {
       onSuccess: (response: any) => {

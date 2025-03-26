@@ -5,9 +5,14 @@ import useGetSinglePaymentSchedule from "@/hooks/api/queries/projects/paymentSch
 import { useParams } from "react-router-dom";
 import { format } from "date-fns";
 import ButtonComp from "@/components/general/ButtonComp";
+import ReusableDialog from "@/components/general/ReuseableDialog";
+import AddPayment from "@/components/clientDetail/AddPayment";
+import { useState } from "react";
 
 const PaymentScheduleDetail = () => {
   const { id } = useParams();
+
+  const [addPay, setAddPay] = useState(false);
   const { data: singlePaymentSchedule, isPending } =
     useGetSinglePaymentSchedule(id ?? "");
 
@@ -58,7 +63,11 @@ const PaymentScheduleDetail = () => {
           <p className="font-medium sm:text-lg text-sm text-textShade">
             View Payment Schedule
           </p>
-          <ButtonComp text="Make Payment" className="w-fit mt-1 sm:mt-0" />
+          <ButtonComp
+            onClick={() => setAddPay(true)}
+            text="Make Payment"
+            className="w-fit mt-1 sm:mt-0"
+          />
         </aside>
         <section className="my-4 py-3 border-y">
           <div className="grid grid-cols-2 gap-3 my-5">
@@ -79,7 +88,10 @@ const PaymentScheduleDetail = () => {
         <section className="">
           <div>
             <h3 className="font-bold text-lg mb-3">Receipt of Payment</h3>
-            <img src={singlePaymentScheduleLoad?.paymentProof} alt="samplepassport" />
+            <img
+              src={singlePaymentScheduleLoad?.paymentProof}
+              alt="samplepassport"
+            />
           </div>
           <aside className="border my-5 flex items-center gap-5 p-5 rounded-[14px]">
             <h3 className="text-lg font-semibold">Notes:</h3>
@@ -90,6 +102,24 @@ const PaymentScheduleDetail = () => {
           </aside>
         </section>
       </Container>
+
+      {
+        <ReusableDialog
+          title="Add New Payment in Schedule "
+          open={addPay}
+          onOpenChange={setAddPay}
+          className="sm:max-w-[60vw]"
+        >
+          <div>
+            <AddPayment
+              handleModalClose={() => setAddPay(false)}
+              projectId={singlePaymentScheduleLoad?.projectId ?? ""}
+              contractorId={singlePaymentScheduleLoad?.contractorId?._id ?? ""}
+              schedulePay={true}
+            />
+          </div>
+        </ReusableDialog>
+      }
     </div>
   );
 };
