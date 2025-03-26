@@ -195,7 +195,7 @@ const PropertyDetail = () => {
           className="sm:max-w-[60vw]"
         >
           <div>
-            <PaymentDetailModal />
+            <PaymentDetailModal clientId={propertySingle?.clientId?._id ?? ""}/>
           </div>
         </ReusableDialog>
       }

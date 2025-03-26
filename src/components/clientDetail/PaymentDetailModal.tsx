@@ -8,15 +8,21 @@ import { useState } from "react";
 import useGetPaymentProperty from "@/hooks/api/queries/projects/property/getPaymentProperty";
 import { useParams } from "react-router-dom";
 
-const PaymentDetailModal = () => {
+const PaymentDetailModal = ({ clientId }: { clientId: string }) => {
   const [addPay, setAddPay] = useState(false);
 
   const { id, id2 } = useParams();
 
-  const { data } = useGetPaymentProperty(id ?? "", id2 ?? "");
+  const { data: paymentData, isPending } = useGetPaymentProperty(
+    id ?? "",
+    id2 ?? ""
+  );
 
-  console.log(data, "da");
+  const paymentDataLoad = paymentData?.data;
 
+  if (isPending) {
+    return <div className="text-center">loading....</div>;
+  }
   return (
     <div>
       <section className="bg-[#F7F8FA] p-6 rounded-[12px]">
@@ -55,7 +61,7 @@ const PaymentDetailModal = () => {
             className="w-fit"
           />
         </div>
-        <PaymentTable />
+        <PaymentTable paymentDataLoad={paymentDataLoad ?? []} />
         <Pagination />
       </main>
       {
@@ -66,7 +72,12 @@ const PaymentDetailModal = () => {
           className="sm:max-w-[60vw]"
         >
           <div>
-            <AddPayment />
+            <AddPayment
+              handleModalClose={() => setAddPay(false)}
+              projectId={id ?? ""}
+              propertyId={id2 ?? ""}
+              clientId={clientId}
+            />
           </div>
         </ReusableDialog>
       }
