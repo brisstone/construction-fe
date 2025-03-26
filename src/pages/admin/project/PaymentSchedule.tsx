@@ -6,13 +6,19 @@ import RouteChain from "@/components/general/RouteChain";
 import Container from "@/components/layout/Container";
 import NewPaymentModal from "@/components/projects/paymentSchedule/NewPaymentModal";
 import PaymentTable from "@/components/projects/paymentSchedule/PaymentTable";
+import useGetPaymentSchedule from "@/hooks/api/queries/projects/paymentSchedule/getPaymentSchedule";
 import { PageTypes } from "@/utils";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 const PaymentSchedule = () => {
   const pageKey = PageTypes.PROJECTS;
+  const { id } = useParams();
 
   const [openSchedule, setOpenSchedule] = useState(false);
+
+  const { data: paymentSchedule } = useGetPaymentSchedule(id ?? "");
+
   return (
     <div>
       <RouteChain
@@ -32,7 +38,7 @@ const PaymentSchedule = () => {
           />
         </aside>
         <FilterLayout pageKey={pageKey} />
-        <PaymentTable />
+        <PaymentTable paymentSchedule={paymentSchedule?.data ?? []} />
         <Pagination />
         {
           <ReusableDialog
@@ -42,7 +48,9 @@ const PaymentSchedule = () => {
             className="sm:max-w-[60vw]"
           >
             <div>
-              <NewPaymentModal />
+              <NewPaymentModal
+                handleModalClose={() => setOpenSchedule(false)}
+              />
             </div>
           </ReusableDialog>
         }

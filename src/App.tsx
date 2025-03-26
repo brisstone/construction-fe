@@ -32,6 +32,7 @@ import { AdminProtectedRoute, SuperAdminProtectedRoute } from "./utils/Protected
 import LaborComp from "./pages/admin/settings/LaborComp";
 import ViewBudget from "./components/projects/budget/GenerateBudget/ViewBudget";
 import ContractorDetail from "./pages/admin/contractor/ContractorDetail";
+import PaymentScheduleDetail from "./pages/admin/project/PaymentScheduleDetail";
 
 function App() {
 
@@ -66,6 +67,10 @@ function App() {
             <Route
               path="project/:id/payment-schedule"
               element={<PaymentSchedule />}
+            />
+            <Route
+              path="project/:id/payment-schedule-detail"
+              element={<PaymentScheduleDetail />}
             />
             <Route path="project/:id/tasks" element={<Task />} />
             <Route path="clients" element={<ClientDetail />} />

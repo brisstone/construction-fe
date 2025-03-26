@@ -3,22 +3,131 @@ import ReusableSelect from "@/components/general/ReuseableSelect";
 import UploadImg from "@/components/general/UploadImage";
 import InputField from "@/components/input/InputField";
 import TextAreaField from "@/components/input/TextAreaField";
+import useMultipleFileUpload from "@/hooks/api/mutation/imageUploads/useMultipleFileUpload";
+import useCreatePaymentSchedule from "@/hooks/api/mutation/project/paymentSchedules/useCreatePaymentSchedule";
+import useGetContractor from "@/hooks/api/queries/contractor/getContractor";
+import { QUERY_KEY_PAYMENTSCHEDULE } from "@/hooks/api/queries/projects/paymentSchedule/getPaymentSchedule";
+import { useAuthStore } from "@/store/authStore";
+import { paymentMethod, paymentType, scheduleType } from "@/utils";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { toast } from "sonner";
 
-const NewPaymentModal = () => {
-  const [, setSelectContractor] = useState("");
+interface FormData {
+  contractor: string;
+  description: string;
+  amountDue: number;
+  dateDue: Date | null;
+  paymentSchedule: string;
+  amountPaid: number;
+  actualDate: Date | null;
+  paymentMethod: string;
+  paymentPlan: string;
+  expenseType: string;
+  file: File | null;
+  note: string;
+}
+const NewPaymentModal = ({
+  handleModalClose,
+}: {
+  handleModalClose: () => void;
+}) => {
+  const { id } = useParams<{ id: string }>();
 
-  const [files, setFiles] = useState<any>({
-    companyLogo: null,
+  const { currentUser } = useAuthStore();
+  const [formData, setFormData] = useState<FormData>({
+    contractor: "",
+    description: "",
+    amountDue: 0,
+    dateDue: null,
+    paymentSchedule: "",
+    amountPaid: 0,
+    actualDate: null,
+    paymentMethod: "",
+    paymentPlan: "",
+    expenseType: "",
+    file: null,
+    note: "This is just a sample note that can be anything like comment/payments",
   });
 
-  console.log(files, "files");
+  const handleInputChange = (name: string, value: any) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const { data: contractor, isPending } = useGetContractor(
+    currentUser?.companyId ?? ""
+  );
+  const { mutate: uploadImage } = useMultipleFileUpload();
 
   const handleFileChange = (file: File | null, name: string) => {
-    console.log("File received:", file, "for", name);
+    console.log("Uploaded file for", name, ":", file);
+    setFormData((prev) => ({ ...prev, [name]: file }));
 
-    setFiles((prevFiles: any) => ({ ...prevFiles, [name]: file }));
+    // Upload new file
+    const formData = new FormData();
+    if (file) {
+      formData.append("files", file);
+    }
+    uploadImage(
+      { formData },
+      {
+        onSuccess: (response: any) => {
+          setFormData((prevFiles: any) => ({
+            ...prevFiles,
+            [name]: response?.data?.urls[0],
+          }));
+          toast.success("Image uploaded successfully");
+          // Handle the response, e.g., save the URL to state
+        },
+        onError: (error: any) => {
+          toast.error(error?.data?.message || "No Uploaded file");
+        },
+      }
+    );
   };
+
+  const queryClient = useQueryClient();
+  const { mutate: createPaymentSchedule, isPending: isCreating } =
+    useCreatePaymentSchedule();
+
+  const handleSave = () => {
+    const payload = {
+      projectId: id ?? "",
+      contractorId: formData?.contractor,
+      amount: formData.amountPaid,
+      datePaid: formData?.actualDate?.toISOString(),
+      paymentSchedule: formData?.paymentSchedule,
+      paymentMethod: formData?.paymentMethod,
+      paymentType: formData?.paymentPlan,
+      paymentFLow: "out_bound",
+      expenseType: formData?.expenseType,
+      paymentProof: formData?.file,
+    };
+
+    createPaymentSchedule(payload, {
+      onSuccess: (response: any) => {
+        toast.success(
+          response?.data?.message || "property payment added successfully"
+        );
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY_PAYMENTSCHEDULE],
+        });
+        handleModalClose();
+      },
+      onError: (error: any) => {
+        toast.error(
+          error?.response?.data?.message || "Error creating property payment"
+        );
+      },
+    });
+  };
+
+  if(isPending) {
+    return <div className="h-[70vh] text-center">
+      Loading...
+    </div>
+  }
 
   return (
     <div>
@@ -26,12 +135,16 @@ const NewPaymentModal = () => {
         <p className="text-sm font-semibold text-grey">Contractor/Vendor</p>
         <ReusableSelect
           className="my-4"
-          placeholder="Contactor/Vendor"
-          onValueChange={setSelectContractor}
-          options={[
-            { label: "Berger", value: "berger" },
-            { label: "Julius", value: "julius" },
-          ]}
+          placeholder="Contractor/Vendor"
+          onValueChange={(value) => handleInputChange("contractor", value)}
+          // options={contractor?.data?.map((item) => ({
+          //   label: item?.firstName,
+          //   value: item?._id,
+          // }))}
+          options={contractor?.data?.map((item) => ({
+            label: item.firstName,
+            value: item._id,
+          }))}
         />
       </div>
       <TextAreaField
@@ -39,6 +152,8 @@ const NewPaymentModal = () => {
         name="description"
         rows={2}
         placeholder="Type in description"
+        value={formData.description}
+        onChange={(e) => handleInputChange("description", e.target.value)}
       />
       <div className="grid sm:grid-cols-2 grid-cols-1 gap-5 ">
         <InputField
@@ -46,12 +161,22 @@ const NewPaymentModal = () => {
           label="Amount for Payment Due"
           name="amountDue"
           placeholder="amount"
+          value={formData.amountDue}
+          onChange={(e) =>
+            handleInputChange("amountDue", Number(e.target.value))
+          }
         />
         <InputField
           type="date"
           label="Due Date for Payment"
           name="dateDue"
           placeholder="Due date"
+          value={
+            formData.dateDue ? formData.dateDue.toISOString().split("T")[0] : ""
+          }
+          onChange={(e) =>
+            handleInputChange("dateDue", new Date(e.target.value))
+          }
         />
       </div>
       <div>
@@ -61,10 +186,25 @@ const NewPaymentModal = () => {
         <ReusableSelect
           className="my-4"
           placeholder="Type of Payment Schedule"
-          onValueChange={setSelectContractor}
+          onValueChange={(value) => handleInputChange("paymentSchedule", value)}
           options={[
-            { label: "Deposit", value: "Deposit" },
-            { label: "Completion", value: "Completion" },
+            { label: scheduleType.completion, value: scheduleType.completion },
+            { label: scheduleType.progress, value: scheduleType?.progress },
+            { label: scheduleType.time_based, value: scheduleType?.time_based },
+          ]}
+        />
+      </div>
+      <div>
+        <p className="text-sm font-semibold text-grey">
+          Type of Payment
+        </p>
+        <ReusableSelect
+          className="my-4"
+          placeholder="Type of Payment plan"
+          onValueChange={(value) => handleInputChange("paymentPlan", value)}
+          options={[
+            { label: paymentType.one_off, value: paymentType.one_off },
+            { label: paymentType.installment, value: paymentType?.installment },
           ]}
         />
       </div>
@@ -72,14 +212,26 @@ const NewPaymentModal = () => {
         <InputField
           type="number"
           label="Amount Paid"
-          name="amountpaid"
+          name="amountPaid"
           placeholder="amount"
+          value={formData.amountPaid}
+          onChange={(e) =>
+            handleInputChange("amountPaid", Number(e.target.value))
+          }
         />
         <InputField
           type="date"
-          label="Actual Payment  Date"
+          label="Actual Payment Date"
           name="actualDate"
           placeholder="Actual Date"
+          value={
+            formData.actualDate
+              ? formData.actualDate.toISOString().split("T")[0]
+              : ""
+          }
+          onChange={(e) =>
+            handleInputChange("actualDate", new Date(e.target.value))
+          }
         />
       </div>
       <div className="grid sm:grid-cols-2 grid-cols-1 gap-5 ">
@@ -88,10 +240,11 @@ const NewPaymentModal = () => {
           <ReusableSelect
             className="my-4"
             placeholder="Payment Method"
-            onValueChange={setSelectContractor}
+            onValueChange={(value) => handleInputChange("paymentMethod", value)}
             options={[
-              { label: "Transfer", value: "Transfer" },
-              { label: "Cash", value: "Cash" },
+              { label: paymentMethod.bank, value: paymentMethod.bank },
+              { label: paymentMethod.card, value: paymentMethod?.card },
+              { label: paymentMethod.transfer, value: paymentMethod?.transfer },
             ]}
           />
         </div>
@@ -100,26 +253,31 @@ const NewPaymentModal = () => {
           <ReusableSelect
             className="my-4"
             placeholder="Expense Type"
-            onValueChange={setSelectContractor}
+            onValueChange={(value) => handleInputChange("expenseType", value)}
             options={[
-              { label: "Bal Payment", value: "Bal Payment" },
-              { label: "Miscellanous", value: "Miscellanous" },
+              { label: "material", value: "material" },
+              { label: "labor", value: "labor" },
             ]}
           />
         </div>
       </div>
-      <UploadImg  accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document" name="file" onFileChange={handleFileChange} />
+      <UploadImg
+        accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        name="file"
+        onFileChange={(file) => handleFileChange(file, "file")}
+      />
       <TextAreaField
         label="Note"
         readOnly
         name="note"
         rows={2}
-        value={
-          "This isi just a sample not that can be anything liek comment/ payments"
-        }
+        value={formData.note}
       />
       <div className="flex gap-3 items-center justify-self-end mt-4">
-        <ButtonComp text="Save" />
+        <ButtonComp
+          text={isCreating ? "saving.." : "Save"}
+          onClick={handleSave}
+        />
       </div>
     </div>
   );

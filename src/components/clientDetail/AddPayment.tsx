@@ -71,7 +71,6 @@ const AddPayment = ({
       paymentFLow: "in_bound",
       paymentProof: proofOfPayment,
     };
-    console.log({ amountPaid, payDate, paymentType, proofOfPayment });
 
     createPaymentProperty(payload, {
       onSuccess: (response: any) => {

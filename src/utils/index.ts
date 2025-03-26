@@ -108,3 +108,18 @@ export const materialTypes = [
     "Adhesives",
     "Insulation",
   ];
+
+  export enum paymentType {
+  one_off = 'one_off',
+  installment = 'installment',
+}
+  export enum paymentMethod {
+  bank = 'bank',
+  card = 'card',
+  transfer = 'transfer',
+}
+  export enum scheduleType {
+  completion = 'completion',
+  progress = 'progress',
+  time_based = 'time_based',
+}
