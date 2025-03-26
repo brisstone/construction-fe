@@ -2,8 +2,12 @@ import ButtonComp from "@/components/general/ButtonComp";
 import InputField from "@/components/input/InputField";
 import TextAreaField from "@/components/input/TextAreaField";
 import useCreateProjectActivity from "@/hooks/api/mutation/project/budget/workStage/projectActivity/useCreateProjectActivity";
+import useUpdateProjectActivity from "@/hooks/api/mutation/project/budget/workStage/projectActivity/useUpdateProjectActivity";
+import {
+  ProjectActType,
+  QUERY_KEY_PROJACTIVITY,
+} from "@/hooks/api/queries/projects/budget/workStage/projectActivity/getProjectActivity";
 
-import { QUERY_KEY_WORKSTAGEBYID } from "@/hooks/api/queries/projects/budget/workStage/useGetWorkStageById";
 
 import { useIdStore } from "@/store/IdStore";
 import { useQueryClient } from "@tanstack/react-query";
@@ -13,7 +17,7 @@ import { toast } from "sonner";
 
 type TypeProps = {
   handleModalClose: () => void;
-  defaultValues?: any;
+  defaultValues?: ProjectActType;
   isEditMode?: boolean;
 };
 const AddNewProjectActivity = ({
@@ -24,17 +28,23 @@ const AddNewProjectActivity = ({
   const { id } = useParams<{ id: string }>();
 
   const { budgetId, projectId } = useIdStore();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState("");
+  const [title, setTitle] = useState(defaultValues?.name || "");
+  const [description, setDescription] = useState(
+    defaultValues?.description || ""
+  );
+  const [startDate, setStartDate] = useState<Date | null>(
+    defaultValues?.startDate ? new Date(defaultValues.startDate) : null
+  );
+  const [endDate, setEndDate] = useState<Date | null>(
+    defaultValues?.endDate ? new Date(defaultValues.endDate) : null
+  );
 
   const queryClient = useQueryClient();
   const { mutate: createProjectActivity, isPending: ActivityPending } =
     useCreateProjectActivity();
 
-  // const { mutate: updateProjectLabor, isPending: isUpdating } =
-  //   useUpdateProjectLabor();
+  const { mutate: updateProjectActivity, isPending: isUpdating } =
+    useUpdateProjectActivity();
 
   const handleSubmit = () => {
     const payload = {
@@ -44,45 +54,45 @@ const AddNewProjectActivity = ({
       name: title,
       description,
       startDate: startDate?.toISOString(),
-      endDate: new Date(endDate).toISOString(),
+      endDate: endDate?.toISOString(),
     };
 
-    // if (isEditMode && defaultValues?._id) {
-    //   updateProjectLabor(
-    //     { ...payload, id: defaultValues._id },
-    //     {
-    //       onSuccess: (response: any) => {
-    //         toast.success(response?.data?.message || "edited successfully");
-    //         queryClient.invalidateQueries({
-    //           queryKey: [QUERY_KEY_WORKSTAGEBYID],
-    //         });
-    //         handleModalClose();
-    //       },
-    //       onError: (error: any) => {
-    //         toast.error(
-    //           error?.response?.data?.message || "Error updating labor"
-    //         );
-    //       },
-    //     }
-    //   );
-    // } else {
-    createProjectActivity(payload, {
-      onSuccess: (response: any) => {
-        toast.success(
-          response?.data?.message || "project labor added successfully"
-        );
-        queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY_WORKSTAGEBYID],
-        });
-        handleModalClose();
-      },
-      onError: (error: any) => {
-        toast.error(
-          error?.response?.data?.message || "Error creating project labor "
-        );
-      },
-    });
-    // }
+    if (isEditMode && defaultValues?._id) {
+      updateProjectActivity(
+        { ...payload, id: defaultValues._id },
+        {
+          onSuccess: (response: any) => {
+            toast.success(response?.data?.message || "edited successfully");
+            queryClient.invalidateQueries({
+              queryKey: [QUERY_KEY_PROJACTIVITY],
+            });
+            handleModalClose();
+          },
+          onError: (error: any) => {
+            toast.error(
+              error?.response?.data?.message || "Error updating activity"
+            );
+          },
+        }
+      );
+    } else {
+      createProjectActivity(payload, {
+        onSuccess: (response: any) => {
+          toast.success(
+            response?.data?.message || "project activity added successfully"
+          );
+          queryClient.invalidateQueries({
+            queryKey: [QUERY_KEY_PROJACTIVITY],
+          });
+          handleModalClose();
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message || "Error creating project activity "
+          );
+        },
+      });
+    }
   };
 
   return (
@@ -115,23 +125,23 @@ const AddNewProjectActivity = ({
           type="date"
           label="End Date"
           name="endDate"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
+          value={endDate ? endDate.toISOString().split("T")[0] : ""}
+          onChange={(e) => setEndDate(new Date(e.target.value))}
         />
       </div>
       <div className="flex gap-3 items-center justify-center mt-4">
         <ButtonComp
           onClick={handleSubmit}
-          text={ActivityPending ? "saving.." : "Save"}
-          // text={
-          //   isEditMode
-          //     ? isUpdating
-          //       ? "Updating..."
-          //       : "Update"
-          //     : laborPending
-          //     ? "saving..."
-          //     : "Save"
-          // }
+          // text={ActivityPending ? "saving.." : "Save"}
+          text={
+            isEditMode
+              ? isUpdating
+                ? "Updating..."
+                : "Update"
+              : ActivityPending
+              ? "saving..."
+              : "Save"
+          }
         />
       </div>
     </section>

@@ -30,6 +30,11 @@ const sidebarItems: SidebarItem[] = [
     icon: <ProjectIcon />,
   },
   {
+    name: "Contractor",
+    link: "/admin/contractor",
+    icon: <StaffIcon />,
+  },
+  {
     name: "Users",
     link: "/admin/users",
     icon: <StaffIcon />,

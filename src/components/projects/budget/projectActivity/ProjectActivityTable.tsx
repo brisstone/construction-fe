@@ -6,44 +6,47 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ProjectLaborType } from "@/hooks/api/queries/projects/budget/workStage/getWorkStage";
 import { useState } from "react";
-import DeleteProjectLaborModal from "./DeleteProjectActivityModal";
+import { ProjectActType } from "@/hooks/api/queries/projects/budget/workStage/projectActivity/getProjectActivity";
+import { format } from "date-fns";
+import DeleteProjectActivityModal from "./DeleteProjectActivityModal";
 
-const LabourTable = ({
-  workStageLabor,
+const ProjectActivityTable = ({
+  projectActivityData,
   onEdit,
 }: {
-  workStageLabor: ProjectLaborType[];
-  onEdit: (item: ProjectLaborType) => void;
+  projectActivityData: ProjectActType[];
+  onEdit: (item: ProjectActType) => void;
 }) => {
   const headers = [
-    { content: <>Labour Activity</> },
-    { content: <>Unit</> },
-    { content: <>Quantity</> },
-    { content: <>Rate (₦)</> },
-    { content: <>Total Cost (₦)</> },
+    { content: <>Name</> },
+    { content: <>Start Date</> },
+    { content: <>End Date</> },
+    { content: <>Description</> },
     { content: <></> },
   ];
 
-  const [deleteProjectLabor, setDeleteProjectLabor] = useState(false);
-  const [selectedProjectLabor, setSelectedProjectLabor] = useState<
+  const [deleteProjectActivity, setDeleteProjectActivity] = useState(false);
+  const [selectedProjectActivity, setSelectedProjectActivity] = useState<
     string | null
   >(null);
 
   const handleDelete = (id: string) => {
-    setSelectedProjectLabor(id);
-    setDeleteProjectLabor(true);
+    setSelectedProjectActivity(id);
+    setDeleteProjectActivity(true);
   };
 
-  const renderRow = (labItem: ProjectLaborType, index: number) => {
+  const renderRow = (actItem: ProjectActType, index: number) => {
     return (
       <tr key={index} className="text-gray-700 text-sm h-[50px] border-b">
-        <td className="py-2 px-4">{labItem?.laborId?.name}</td>
-        <td className="py-2 px-4">{labItem?.unitId?.name}</td>
-        <td className="py-2 px-4">{labItem?.quantity}</td>
-        <td className="py-2 px-4">{labItem?.rate}</td>
-        <td className="py-2 px-4">{labItem.quantity * labItem?.rate}</td>
+        <td className="py-2 px-4">{actItem?.name}</td>
+        <td className="py-2 px-4">
+          {format(new Date(actItem?.startDate), "MMMM dd, yyyy")}
+        </td>
+        <td className="py-2 px-4">
+          {format(new Date(actItem?.endDate), "MMMM dd, yyyy")}
+        </td>
+        <td className="py-2 px-4">{actItem?.description}</td>
         <td className="py-1 px-4">
           <Popover>
             <PopoverTrigger>
@@ -51,11 +54,11 @@ const LabourTable = ({
             </PopoverTrigger>
             <PopoverContent className="w-[100px] rounded-[4px]">
               <div>
-                <p onClick={() => onEdit(labItem)} className="cursor-pointer">
+                <p onClick={() => onEdit(actItem)} className="cursor-pointer">
                   Edit
                 </p>
                 <p
-                  onClick={() => handleDelete(labItem?._id)}
+                  onClick={() => handleDelete(actItem?._id)}
                   className="cursor-pointer"
                 >
                   Delete
@@ -72,20 +75,20 @@ const LabourTable = ({
     <div>
       <GenericTable
         headers={headers}
-        data={workStageLabor}
+        data={projectActivityData}
         renderRow={renderRow}
         className=""
       />
       {
         <ReusableDialog
-          title={"Delete ProjectLabor"}
-          open={deleteProjectLabor}
-          onOpenChange={setDeleteProjectLabor}
+          title={"Delete ProjectActivity"}
+          open={deleteProjectActivity}
+          onOpenChange={setDeleteProjectActivity}
           className="max-w-xl"
         >
-          <DeleteProjectLaborModal
-            setDeleteProjectLabor={setDeleteProjectLabor}
-            selectedProjectLabor={selectedProjectLabor || ""}
+          <DeleteProjectActivityModal
+            setDeleteProjectActivity={setDeleteProjectActivity}
+            selectedProjectActivity={selectedProjectActivity || ""}
           />
         </ReusableDialog>
       }
@@ -93,4 +96,4 @@ const LabourTable = ({
   );
 };
 
-export default LabourTable;
+export default ProjectActivityTable;

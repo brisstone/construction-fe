@@ -68,7 +68,6 @@ const AddProject = ({
   const queryClient = useQueryClient();
 
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  console.log(uploadedFiles, "uploadedFiles");
 
   const { mutate: uploadImage } = useMultipleFileUpload();
 

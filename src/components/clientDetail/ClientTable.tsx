@@ -80,7 +80,7 @@ const ClientTable = ({ clientData, onEdit }: ClientTableProps) => {
   const renderRow = (client: ClientType, index: number) => {
     return (
       <tr key={index} className="text-gray-700 text-sm h-[50px] border-b">
-        <td className="py-2 px-4">{client?.firstName + client?.lastName}</td>
+        <td className="py-2 px-4">{`${client?.firstName ?? ''} ${client?.lastName ?? ''}`}</td>
         <td className="py-2 px-4">{client?.geometry?.address}</td>
         <td className="py-2 px-4">{client?.phoneNumber}</td>
         <td className="py-2 px-4">{client?.email}</td>

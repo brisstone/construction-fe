@@ -11,7 +11,7 @@ type ResponseType = {
 type ErrorType = { error: string; success: boolean };
 
 type PropData = {
-  name: string;
+  name?: string;
   id: string;
 };
 

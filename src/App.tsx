@@ -30,6 +30,8 @@ import { useAuthStore } from "./store/authStore";
 import { useEffect } from "react";
 import { AdminProtectedRoute, SuperAdminProtectedRoute } from "./utils/ProtectedRoute";
 import LaborComp from "./pages/admin/settings/LaborComp";
+import ViewBudget from "./components/projects/budget/GenerateBudget/ViewBudget";
+import ContractorDetail from "./pages/admin/contractor/ContractorDetail";
 
 function App() {
 
@@ -50,9 +52,10 @@ function App() {
             <Route path="project" element={<Project />} />
             <Route path="project/:id" element={<ProjectDetails />} />
             <Route path="project/:id/budget" element={<Budget />} />
+            <Route path="project/:id/budget-view" element={<ViewBudget />} />
             <Route path="project/:id/properties" element={<Properties />} />
             <Route
-              path="project/:id/properties/:id"
+              path="project/:id/properties/:id2"
               element={<PropertyDetail />}
             />
             <Route path="project/:id/documents" element={<DocumentPage />} />
@@ -66,6 +69,7 @@ function App() {
             />
             <Route path="project/:id/tasks" element={<Task />} />
             <Route path="clients" element={<ClientDetail />} />
+            <Route path="contractor" element={<ContractorDetail />} />
             <Route path="users" element={<UserPage />} />
             <Route path="procurement" element={<Procurement />} />
             <Route path="requistion-detail" element={<RequisitionDetail />} />

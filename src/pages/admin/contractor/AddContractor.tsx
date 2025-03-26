@@ -4,50 +4,44 @@ import GooglePlacesInput from "@/components/general/GooglePlacesInput";
 import ReusableSelect from "@/components/general/ReuseableSelect";
 import UploadImg from "@/components/general/UploadImage";
 import InputField from "@/components/input/InputField";
-import useCreateClients from "@/hooks/api/mutation/clients/useCreateClients";
-import useUpdateClient from "@/hooks/api/mutation/clients/useUpdateClient";
+import useCreateContractor from "@/hooks/api/mutation/contractor/useCreateContractor";
+import useUpdateContractor from "@/hooks/api/mutation/contractor/useUpdateContractor";
+
 import {
-  ClientType,
-  QUERY_KEY_CLIENTS,
-} from "@/hooks/api/queries/clients/getClients";
+  ContractorType,
+  QUERY_KEY_CONTRACTOR,
+} from "@/hooks/api/queries/contractor/getContractor";
 import { useQueryClient } from "@tanstack/react-query";
-import { format } from "date-fns";
 import { useState } from "react";
 import { toast } from "sonner";
 
-type clientTypeProps = {
+type ContractorTypeProps = {
   handleModalClose: () => void;
-  defaultValues?: ClientType;
+  defaultValues?: ContractorType;
   isEditMode?: boolean;
 };
 
-const AddClient = ({
+const AddContractor = ({
   handleModalClose,
   defaultValues,
   isEditMode,
-}: clientTypeProps) => {
+}: ContractorTypeProps) => {
   const [firstName, setFirstName] = useState(defaultValues?.firstName || "");
   const [lastName, setLastName] = useState(defaultValues?.lastName || "");
-  const [clientAddress, setClientAddress] = useState(
-    defaultValues?.geometry.address || ""
+  const [contractorAddress, setContractorAddress] = useState(
+    defaultValues?.address || ""
   );
   const [occupation, setOccupation] = useState(defaultValues?.occupation || "");
   const [phoneNumber, setPhoneNumber] = useState(
     defaultValues?.phoneNumber || ""
   );
-  const [dob, setDob] = useState<Date | null>(
-    defaultValues?.dob ? new Date(defaultValues.dob) : null
-  );
 
-  // const localDate = new Date();
-  const utcDateString = dob ? format(dob, "yyyy-MM-dd'T'HH:mm:ss'Z'") : "";
-
-  console.log(utcDateString);
-
-  const [clientType, setClientType] = useState<string>(
+  const [contractorType, setContractorType] = useState<string>(
     defaultValues?.type || ""
   );
-  const [clientEmail, setClientEmail] = useState(defaultValues?.email || "");
+  const [contractorEmail, setContractorEmail] = useState(
+    defaultValues?.email || ""
+  );
   const [coordinates, setCoordinates] = useState<{
     lat: number;
     lng: number;
@@ -59,6 +53,8 @@ const AddClient = ({
         }
       : null
   );
+
+  console.log(coordinates, "coordinates");
   const [files, setFiles] = useState<any>({
     amenityIcon: null,
   });
@@ -72,13 +68,15 @@ const AddClient = ({
   };
 
   const handleAddressSelect = (address: string, lat: number, lng: number) => {
-    setClientAddress(address);
+    setContractorAddress(address);
     setCoordinates({ lat, lng });
   };
 
-  const { mutate: createClient, isPending: isCreating } = useCreateClients();
+  const { mutate: createContractor, isPending: isCreating } =
+    useCreateContractor();
 
-  const { mutate: updateClient, isPending: isUpdating } = useUpdateClient();
+  const { mutate: updateContractor, isPending: isUpdating } =
+    useUpdateContractor();
 
   const queryClient = useQueryClient();
 
@@ -87,24 +85,19 @@ const AddClient = ({
       firstName,
       lastName,
       phoneNumber,
-      email: clientEmail,
-      type: clientType,
+      email: contractorEmail,
+      type: contractorType,
       occupation,
-      dob: dob?.toISOString(),
-      geometry: {
-        address: clientAddress,
-        lat: coordinates?.lat,
-        long: coordinates?.lng,
-      },
+      address: contractorAddress,
     };
 
     if (isEditMode && defaultValues?._id) {
-      updateClient(
+      updateContractor(
         { ...data, id: defaultValues._id },
         {
           onSuccess: (response: any) => {
             toast.success(response?.data?.message || "edited successfully");
-            queryClient.invalidateQueries({ queryKey: [QUERY_KEY_CLIENTS] });
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEY_CONTRACTOR] });
             handleModalClose();
           },
           onError: (error: any) => {
@@ -115,15 +108,17 @@ const AddClient = ({
         }
       );
     } else {
-      createClient(data, {
+      createContractor(data, {
         onSuccess: (response: any) => {
-          toast.success(response?.data?.message || "client added successfully");
-          queryClient.invalidateQueries({ queryKey: [QUERY_KEY_CLIENTS] });
+          toast.success(
+            response?.data?.message || "contractor added successfully"
+          );
+          queryClient.invalidateQueries({ queryKey: [QUERY_KEY_CONTRACTOR] });
           handleModalClose();
         },
         onError: (error: any) => {
           toast.error(
-            error?.response?.data?.message || "Error creating client"
+            error?.response?.data?.message || "Error creating contractor"
           );
         },
       });
@@ -153,7 +148,9 @@ const AddClient = ({
       </div>
 
       <div className="mb-4">
-        <p className="text-sm font-semibold text-grey mb-2">Client Address</p>
+        <p className="text-sm font-semibold text-grey mb-2">
+          Contractor Address
+        </p>
         <div>
           <GooglePlacesInput
             defaultValue={defaultValues?.geometry?.address}
@@ -176,32 +173,25 @@ const AddClient = ({
           type="email"
           label="Email Address"
           name="Email"
-          value={clientEmail}
-          onChange={(e) => setClientEmail(e.target.value)}
+          value={contractorEmail}
+          onChange={(e) => setContractorEmail(e.target.value)}
           placeholder="Add Email Address"
         />
       </div>
       <div>
-        <p className="text-sm font-semibold text-grey">Client Type</p>
+        <p className="text-sm font-semibold text-grey">Contractor Type</p>
         <ReusableSelect
-          defaultValue={clientType}
-          onValueChange={setClientType}
+          defaultValue={contractorType}
+          onValueChange={setContractorType}
           className="my-4"
-          placeholder="Client Type"
+          placeholder="Contractor Type"
           options={[
-            { label: "premium", value: "premium" },
-            { label: "classic", value: "classic" },
+            { label: "full-time", value: "full-time" },
+            { label: "part-time", value: "part-time" },
           ]}
         />
       </div>
       <div className="grid sm:grid-cols-2 grid-cols-1 gap-5 ">
-        <InputField
-          value={dob ? dob.toISOString().split("T")[0] : ""}
-          onChange={(e) => setDob(new Date(e.target.value))}
-          type="date"
-          label="Birth date"
-          name="Birth"
-        />
         <InputField
           type="text"
           label="Occupation"
@@ -211,7 +201,7 @@ const AddClient = ({
           placeholder="Add Occupation"
         />
       </div>
-      <InputField type="date" label="Date of Entry" name="dateOfEntry" />
+
       <div>
         <p className="text-sm font-semibold text-grey mb-2">Proof of Payment</p>
         <FileUpload onFileUpload={(file) => console.log(file)} />
@@ -235,4 +225,4 @@ const AddClient = ({
   );
 };
 
-export default AddClient;
+export default AddContractor;

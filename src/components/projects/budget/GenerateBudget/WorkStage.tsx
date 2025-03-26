@@ -16,7 +16,10 @@ import {
   ProjectMaterialType,
 } from "@/hooks/api/queries/projects/budget/workStage/getWorkStage";
 import AddNewProjectActivity from "../projectActivity/AddNewProjectActivity";
-import useGetProjectActivity from "@/hooks/api/queries/projects/budget/workStage/projectActivity/getProjectActivity";
+import useGetProjectActivity, {
+  ProjectActType,
+} from "@/hooks/api/queries/projects/budget/workStage/projectActivity/getProjectActivity";
+import ProjectActivityTable from "../projectActivity/ProjectActivityTable";
 const WorkStage = () => {
   const { id } = useParams<{ id: string }>();
   const [newMaterial, setNewMaterial] = useState(false);
@@ -26,9 +29,7 @@ const WorkStage = () => {
   const [editMaterial, setEditMaterial] = useState<ProjectMaterialType | null>(
     null
   );
-  // const [editMaterial, setEditMaterial] = useState<ProjectA | null>(
-  //   null
-  // );
+  const [editActivity, setEditActivity] = useState<ProjectActType | null>(null);
 
   const handleLaborEdit = (item: ProjectLaborType) => {
     setEditLabour(item);
@@ -38,13 +39,17 @@ const WorkStage = () => {
     setEditMaterial(item);
     setNewMaterial(true);
   };
+  const handleActivityEdit = (item: ProjectActType) => {
+    setEditActivity(item);
+    setNewActivity(true);
+  };
 
   const { data: workStageSingle } = useGetWorkStageById(id ?? "");
-  const { data: projectActivityData } = useGetProjectActivity(id ?? "");
-  console.log(projectActivityData, "projectActivityData");
-  
+  const { data: projectActivity } = useGetProjectActivity(id ?? "");
 
-  console.log(workStageSingle, "workStageSingle");
+  const projectActivityData = projectActivity?.data;
+
+  // console.log(workStageSingle, "workStageSingle");
 
   return (
     <div>
@@ -139,28 +144,31 @@ const WorkStage = () => {
                   <ButtonComp
                     onClick={() => {
                       setNewActivity(true);
-                      // setEditLabour(null);
+                      setEditActivity(null);
                     }}
                     text="Add Activities"
                     className="w-fit mt-1 sm:mt-0"
                   />
                 </div>
               </div>
-              <div>Activities</div>
+              <ProjectActivityTable
+                onEdit={handleActivityEdit}
+                projectActivityData={projectActivityData ?? []}
+              />
             </TabsContent>
           </Tabs>
         </main>
         {
           <ReusableDialog
-            title={"Add New Activity"}
+            title={editActivity ? "Edit Activity" : "Add New Activity"}
             open={newActivity}
             onOpenChange={setNewActivity}
             className="sm:max-w-[40vw]"
           >
             <div>
               <AddNewProjectActivity
-                defaultValues={undefined}
-                isEditMode={false}
+                defaultValues={editActivity || undefined}
+                isEditMode={!!editActivity}
                 handleModalClose={() => {
                   setNewActivity(false);
                 }}
