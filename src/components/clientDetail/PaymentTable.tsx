@@ -1,4 +1,4 @@
-import { DownloadProof } from "@/assets/svgComp/PropertyIcon";
+// import { DownloadProof } from "@/assets/svgComp/PropertyIcon";
 import GenericTable from "@/components/general/GenericTable";
 import { PaymentPropertyData } from "@/hooks/api/queries/projects/property/getPaymentProperty";
 import { format } from "date-fns";

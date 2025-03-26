@@ -13,8 +13,8 @@ const getInitialState = (): IdState => {
   return {
     budgetId,
     projectId,
-    setBudgetId: (id: string) => {},
-    setProjectId: (id: string) => {},
+    setBudgetId: (id: string) => {console.log(id)},
+    setProjectId: (id: string) => {console.log(id)},
   };
 };
 
