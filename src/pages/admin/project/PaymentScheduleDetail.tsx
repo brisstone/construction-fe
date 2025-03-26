@@ -4,6 +4,7 @@ import samplepassport from "@/assets/images/samplepassport.png";
 import useGetSinglePaymentSchedule from "@/hooks/api/queries/projects/paymentSchedule/getSinglePaymentSchedule";
 import { useParams } from "react-router-dom";
 import { format } from "date-fns";
+import ButtonComp from "@/components/general/ButtonComp";
 
 const PaymentScheduleDetail = () => {
   const { id } = useParams();
@@ -57,7 +58,7 @@ const PaymentScheduleDetail = () => {
           <p className="font-medium sm:text-lg text-sm text-textShade">
             View Payment Schedule
           </p>
-          {/* <ButtonComp text="" className="w-fit mt-1 sm:mt-0" /> */}
+          <ButtonComp text="Make Payment" className="w-fit mt-1 sm:mt-0" />
         </aside>
         <section className="my-4 py-3 border-y">
           <div className="grid grid-cols-2 gap-3 my-5">
