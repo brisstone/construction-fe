@@ -1,6 +1,5 @@
 import RouteChain from "@/components/general/RouteChain";
 import Container from "@/components/layout/Container";
-import samplepassport from "@/assets/images/samplepassport.png";
 import useGetSinglePaymentSchedule from "@/hooks/api/queries/projects/paymentSchedule/getSinglePaymentSchedule";
 import { useParams } from "react-router-dom";
 import { format } from "date-fns";
