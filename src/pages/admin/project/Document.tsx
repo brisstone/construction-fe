@@ -1,15 +1,28 @@
 import ButtonComp from "@/components/general/ButtonComp";
+import ReusableDialog from "@/components/general/ReuseableDialog";
 import RouteChain from "@/components/general/RouteChain";
 import Container from "@/components/layout/Container";
+import AddDocument from "@/components/projects/document/AddDocument";
 import DocTab from "@/components/projects/document/DocTab";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import useGetProjectDocument from "@/hooks/api/queries/dcocument/getProjectDocument";
+import useGetProjectDocument from "@/hooks/api/queries/document/getProjectDocument";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 const DocumentPage = () => {
   const { id } = useParams();
 
-  const { data: projDoc } = useGetProjectDocument(id ?? "");
+  const [addDoc, setAddDoc] = useState(false);
+
+  const { data: projDoc, isPending } = useGetProjectDocument(id ?? "");
+
+  const projDocData = projDoc?.data;
+
+  if (isPending) {
+    return (
+      <div className="text-center">Loading...</div>
+    );
+  }
 
   return (
     <div>
@@ -34,12 +47,13 @@ const DocumentPage = () => {
               <div className="sm:flex items-center justify-between my-3">
                 <p> </p>
                 <ButtonComp
+                  onClick={() => setAddDoc(true)}
                   text="Add Document"
                   className="w-fit mt-1 sm:mt-0"
                 />
               </div>
               <div>
-                <DocTab />
+                <DocTab projDocData={projDocData ?? []} />
               </div>
             </TabsContent>
             <TabsContent value="Photos">
@@ -48,6 +62,18 @@ const DocumentPage = () => {
           </div>
         </Tabs>
       </Container>
+      {
+        <ReusableDialog
+          title={"Add new Document"}
+          open={addDoc}
+          onOpenChange={setAddDoc}
+          className="sm:max-w-[60vw]"
+        >
+          <div>
+            <AddDocument handleModalClose={() => setAddDoc(false)} />
+          </div>
+        </ReusableDialog>
+      }
     </div>
   );
 };

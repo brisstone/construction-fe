@@ -15,9 +15,15 @@ const Employee = () => {
 
   const { currentUser } = useAuthStore();
 
-  const { data: CompanyUser } = useGetCompanyUser(currentUser?.companyId ?? "");
+  const { data: CompanyUser, isPending } = useGetCompanyUser(
+    currentUser?.companyId ?? ""
+  );
 
   const CompanyUserData = CompanyUser?.data;
+
+  if (isPending) {
+    return <div className="text-center">Loading...</div>;
+  }
 
   return (
     <Container>
