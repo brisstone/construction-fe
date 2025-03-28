@@ -4,7 +4,13 @@ import Container from "@/components/layout/Container";
 import DocTab from "@/components/projects/document/DocTab";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import useGetProjectDocument from "@/hooks/api/queries/dcocument/getProjectDocument";
+import { useParams } from "react-router-dom";
 const DocumentPage = () => {
+  const { id } = useParams();
+
+  const { data: projDoc } = useGetProjectDocument(id ?? "");
+
   return (
     <div>
       <RouteChain

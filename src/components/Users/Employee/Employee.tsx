@@ -7,9 +7,17 @@ import { PageTypes } from "@/utils";
 import { useState } from "react";
 import EmployeeTable from "./EmployeeTable";
 import AddEmployee from "./AddEmployee";
+import useGetCompanyUser from "@/hooks/api/queries/user/getCompanyUser";
+import { useAuthStore } from "@/store/authStore";
 
 const Employee = () => {
   const [addEmployee, setAddEmployee] = useState(false);
+
+  const { currentUser } = useAuthStore();
+
+  const { data: CompanyUser } = useGetCompanyUser(currentUser?.companyId ?? "");
+
+  const CompanyUserData = CompanyUser?.data;
 
   return (
     <Container>
@@ -20,7 +28,7 @@ const Employee = () => {
         onClick={() => setAddEmployee(true)}
       />
       <FilterLayout pageKey={PageTypes?.USERS} />
-      <EmployeeTable />
+      <EmployeeTable CompanyUserData={CompanyUserData ?? []} />
       <Pagination />
       {
         <ReusableDialog
@@ -30,7 +38,7 @@ const Employee = () => {
           className="sm:max-w-[60vw]"
         >
           <div>
-            <AddEmployee />
+            <AddEmployee handleModalClose={() => setAddEmployee(false)} />
           </div>
         </ReusableDialog>
       }
