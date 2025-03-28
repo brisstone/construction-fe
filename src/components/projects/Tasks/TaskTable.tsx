@@ -1,63 +1,60 @@
-import { ThreeDotsVertical } from "@/assets/svgComp/General";
 import GenericTable from "@/components/general/GenericTable";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-export type TaskItem = {
-  id: number;
-  taskTitle: string;
-  assignedTo: string;
-  startTime: string;
-  endTime: string;
-  status: "In Progress" | "Completed" | "Incomplete";
-};
+import { Button } from "@/components/ui/button";
 
-const sampleData: TaskItem[] = [
-  {
-    id: 1,
-    taskTitle: "Complete Block 3 Roofing",
-    assignedTo: "Abubakar Isah",
-    startTime: "12/01/2023",
-    endTime: "17/01/2022",
-    status: "In Progress",
-  },
-  {
-    id: 2,
-    taskTitle: "Complete Tiling of phase 2",
-    assignedTo: "Ochuko Joseph",
-    startTime: "11/01/2023",
-    endTime: "25/01/2022",
-    status: "In Progress",
-  },
-  {
-    id: 3,
-    taskTitle: "Move all cements to Mabushi",
-    assignedTo: "Emeka Chibuzor",
-    startTime: "11/01/2023",
-    endTime: "12/01/2022",
-    status: "Completed",
-  },
-  {
-    id: 4,
-    taskTitle: "Start Clearing for gate house",
-    assignedTo: "Ifeanyi Onyimwalu",
-    startTime: "09/01/2023",
-    endTime: "12/01/2022",
-    status: "Incomplete",
-  },
-  {
-    id: 5,
-    taskTitle: "Clear Area for borehole",
-    assignedTo: "Ifeanyi Onyimwalu",
-    startTime: "07/01/2023",
-    endTime: "08/01/2022",
-    status: "Completed",
-  },
-];
+import { TasksActType } from "@/hooks/api/queries/tasks/getTasksActivity";
+// export type TaskItem = {
+//   id: number;
+//   taskTitle: string;
+//   assignedTo: string;
+//   startTime: string;
+//   endTime: string;
+//   status: "In Progress" | "Completed" | "Incomplete";
+// };
 
-const TaskTable = () => {
+// const sampleData: TaskItem[] = [
+//   {
+//     id: 1,
+//     taskTitle: "Complete Block 3 Roofing",
+//     assignedTo: "Abubakar Isah",
+//     startTime: "12/01/2023",
+//     endTime: "17/01/2022",
+//     status: "In Progress",
+//   },
+//   {
+//     id: 2,
+//     taskTitle: "Complete Tiling of phase 2",
+//     assignedTo: "Ochuko Joseph",
+//     startTime: "11/01/2023",
+//     endTime: "25/01/2022",
+//     status: "In Progress",
+//   },
+//   {
+//     id: 3,
+//     taskTitle: "Move all cements to Mabushi",
+//     assignedTo: "Emeka Chibuzor",
+//     startTime: "11/01/2023",
+//     endTime: "12/01/2022",
+//     status: "Completed",
+//   },
+//   {
+//     id: 4,
+//     taskTitle: "Start Clearing for gate house",
+//     assignedTo: "Ifeanyi Onyimwalu",
+//     startTime: "09/01/2023",
+//     endTime: "12/01/2022",
+//     status: "Incomplete",
+//   },
+//   {
+//     id: 5,
+//     taskTitle: "Clear Area for borehole",
+//     assignedTo: "Ifeanyi Onyimwalu",
+//     startTime: "07/01/2023",
+//     endTime: "08/01/2022",
+//     status: "Completed",
+//   },
+// ];
+
+const TaskTable = ({ taskActivity }: { taskActivity: TasksActType[] }) => {
   const headers = [
     { content: <>Task Title</> },
     { content: <>Assigned To</> },
@@ -67,13 +64,17 @@ const TaskTable = () => {
     { content: <>Action</> },
   ];
 
-  const renderRow = (task: TaskItem, index: number) => {
+  if (taskActivity?.length === 0) {
+    return <div>No data available</div>;
+  }
+
+  const renderRow = (task: TasksActType, index: number) => {
     return (
       <tr key={index} className="text-gray-700 text-sm h-[50px] border-b">
-        <td className="py-2 px-4">{task.taskTitle}</td>
-        <td className="py-2 px-4">{task.assignedTo}</td>
-        <td className="py-2 px-4">{task.startTime}</td>
-        <td className="py-2 px-4">{task.endTime}</td>
+        <td className="py-2 px-4">{task?.name}</td>
+        <td className="py-2 px-4">{task?.assignedTo ?? "Nil"}</td>
+        <td className="py-2 px-4">{task?.startDate}</td>
+        <td className="py-2 px-4">{task?.endDate}</td>
         <td className="py-2 px-4 font-medium">
           <span
             className={`${
@@ -84,21 +85,11 @@ const TaskTable = () => {
                 : "text-orange-500"
             }`}
           >
-            {task.status}
+            {task?.status ?? "Nil"}
           </span>
         </td>
         <td className="py-1 px-4">
-          <Popover>
-            <PopoverTrigger>
-              <ThreeDotsVertical />
-            </PopoverTrigger>
-            <PopoverContent className="w-[100px] rounded-[4px]">
-              <div>
-                <p className="cursor-pointer">Edit</p>
-                <p className="cursor-pointer">Delete</p>
-              </div>
-            </PopoverContent>
-          </Popover>
+          <Button className="bg-deepBlue rounded-[4px]">Assign</Button>
         </td>
       </tr>
     );
@@ -108,7 +99,7 @@ const TaskTable = () => {
     <div>
       <GenericTable
         headers={headers}
-        data={sampleData}
+        data={taskActivity}
         renderRow={renderRow}
         className=""
       />

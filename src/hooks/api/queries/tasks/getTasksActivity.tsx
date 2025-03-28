@@ -25,6 +25,8 @@ export interface TasksActType {
   photos: any[];
   startDate: string;
   endDate: string;
+  assignedTo: string;
+  status: string;
   createdAt: string;
   updatedAt: string;
   __v: number;

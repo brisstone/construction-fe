@@ -18,9 +18,14 @@ const Task = () => {
   const [openTask, setOpenTask] = useState(false);
 
   
-  const { data: taskActivity } = useGetTasksActivity(id ?? "");
+  const { data: taskActivity, isPending } = useGetTasksActivity(id ?? "");
 
-  // const taskActivityData = taskActivity?.data;
+  const taskActivityData = taskActivity?.data;
+
+  
+  if (isPending) {
+    return <div className="text-center">Loading...</div>;
+  }
 
   return (
     <div>
@@ -41,7 +46,7 @@ const Task = () => {
           />
         </aside>
         <FilterLayout pageKey={pageKey} />
-        <TaskTable />
+        <TaskTable taskActivity={taskActivityData ?? []} />
         <Pagination />
         {
           <ReusableDialog
