@@ -1,58 +1,9 @@
+import { useState } from "react";
 import GenericTable from "@/components/general/GenericTable";
+import ReusableDialog from "@/components/general/ReuseableDialog";
 import { Button } from "@/components/ui/button";
-
 import { TasksActType } from "@/hooks/api/queries/tasks/getTasksActivity";
-// export type TaskItem = {
-//   id: number;
-//   taskTitle: string;
-//   assignedTo: string;
-//   startTime: string;
-//   endTime: string;
-//   status: "In Progress" | "Completed" | "Incomplete";
-// };
-
-// const sampleData: TaskItem[] = [
-//   {
-//     id: 1,
-//     taskTitle: "Complete Block 3 Roofing",
-//     assignedTo: "Abubakar Isah",
-//     startTime: "12/01/2023",
-//     endTime: "17/01/2022",
-//     status: "In Progress",
-//   },
-//   {
-//     id: 2,
-//     taskTitle: "Complete Tiling of phase 2",
-//     assignedTo: "Ochuko Joseph",
-//     startTime: "11/01/2023",
-//     endTime: "25/01/2022",
-//     status: "In Progress",
-//   },
-//   {
-//     id: 3,
-//     taskTitle: "Move all cements to Mabushi",
-//     assignedTo: "Emeka Chibuzor",
-//     startTime: "11/01/2023",
-//     endTime: "12/01/2022",
-//     status: "Completed",
-//   },
-//   {
-//     id: 4,
-//     taskTitle: "Start Clearing for gate house",
-//     assignedTo: "Ifeanyi Onyimwalu",
-//     startTime: "09/01/2023",
-//     endTime: "12/01/2022",
-//     status: "Incomplete",
-//   },
-//   {
-//     id: 5,
-//     taskTitle: "Clear Area for borehole",
-//     assignedTo: "Ifeanyi Onyimwalu",
-//     startTime: "07/01/2023",
-//     endTime: "08/01/2022",
-//     status: "Completed",
-//   },
-// ];
+import AssignTaskModal from "./AssignTaskModal";
 
 const TaskTable = ({ taskActivity }: { taskActivity: TasksActType[] }) => {
   const headers = [
@@ -63,6 +14,9 @@ const TaskTable = ({ taskActivity }: { taskActivity: TasksActType[] }) => {
     { content: <>Status </> },
     { content: <>Action</> },
   ];
+
+  const [openTask, setOpenTask] = useState(false);
+  const [selectedTaskId, setSelectedTaskId] = useState("");
 
   if (taskActivity?.length === 0) {
     return <div>No data available</div>;
@@ -89,7 +43,15 @@ const TaskTable = ({ taskActivity }: { taskActivity: TasksActType[] }) => {
           </span>
         </td>
         <td className="py-1 px-4">
-          <Button className="bg-deepBlue rounded-[4px]">Assign</Button>
+          <Button
+            onClick={() => {
+              setSelectedTaskId(task._id);
+              setOpenTask(true);
+            }}
+            className="bg-deepBlue rounded-[4px]"
+          >
+            Assign
+          </Button>
         </td>
       </tr>
     );
@@ -103,6 +65,21 @@ const TaskTable = ({ taskActivity }: { taskActivity: TasksActType[] }) => {
         renderRow={renderRow}
         className=""
       />
+      {
+        <ReusableDialog
+          title="Task Assignment"
+          open={openTask}
+          onOpenChange={setOpenTask}
+          className="sm:max-w-[60vw]"
+        >
+          <div>
+            <AssignTaskModal
+              defaultId={selectedTaskId}
+              handleModalClose={() => setOpenTask(false)}
+            />
+          </div>
+        </ReusableDialog>
+      }
     </div>
   );
 };

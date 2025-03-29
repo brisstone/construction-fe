@@ -1,39 +1,79 @@
 import ButtonComp from "@/components/general/ButtonComp";
 import ReusableSelect from "@/components/general/ReuseableSelect";
-import InputField from "@/components/input/InputField";
-import TextAreaField from "@/components/input/TextAreaField";
+import useUpdateProjectActivity from "@/hooks/api/mutation/project/budget/workStage/projectActivity/useUpdateProjectActivity";
+import { QUERY_KEY_TASKACTIVITY } from "@/hooks/api/queries/tasks/getTasksActivity";
+import useGetCompanyUser from "@/hooks/api/queries/user/getCompanyUser";
+import { useAuthStore } from "@/store/authStore";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { toast } from "sonner";
 
-const AssignTaskModal = () => {
-  const [, setSelectWorkPlan] = useState("");
+const AssignTaskModal = ({
+  defaultId,
+  handleModalClose,
+}: {
+  defaultId: string;
+  handleModalClose: () => void;
+}) => {
+  const { id } = useParams<{ id: string }>();
+  const [selectStatus, setSelectStatsus] = useState("");
+  const [assign, setAssign] = useState("");
+
+  const { currentUser } = useAuthStore();
+  const { data: CompanyUser, isPending } = useGetCompanyUser(
+    currentUser?.companyId ?? ""
+  );
+
+  const CompanyUserData = CompanyUser?.data;
+
+ 
+  const queryClient = useQueryClient();
+
+  const { mutate: updateTask, isPending: isUpdating } =
+    useUpdateProjectActivity();
+
+  const handleSubmit = () => {
+    const payload = {
+      status: selectStatus,
+      assigneeId: assign,
+      projectId: id,
+    };
+
+    updateTask(
+      { ...payload, id: defaultId },
+      {
+        onSuccess: (response: any) => {
+          toast.success(response?.data?.message || "updated");
+          queryClient.invalidateQueries({
+            queryKey: [QUERY_KEY_TASKACTIVITY],
+          });
+          handleModalClose();
+        },
+        onError: (error: any) => {
+          toast.error(error?.response?.data?.message || "Error updating task");
+        },
+      }
+    );
+  };
+
+   if (isPending) {
+     return <div className="h-[40vh] text-center">Loading...</div>;
+   }
+
 
   return (
     <div>
-      <InputField
-        type="text"
-        label="Task Title"
-        name="taskTitle"
-        placeholder="Type the task title"
-      />
-      <TextAreaField
-        label="Task Description"
-        name="description"
-        rows={2}
-        placeholder="Type in description"
-      />
-      <div className="grid sm:grid-cols-2 grid-cols-1 gap-5">
-        <InputField type="time" label="Start Time" name="startTime" />
-        <InputField type="time" label="End Time" name="endTime" />
-      </div>
       <div>
-        <p className="text-sm font-semibold text-grey">Select Work Plan Item</p>
+        <p className="text-sm font-semibold text-grey">Select Work Status</p>
         <ReusableSelect
           className="my-4"
-          placeholder="Select Work Plan Item"
-          onValueChange={setSelectWorkPlan}
+          placeholder="Select Work Statsus"
+          onValueChange={setSelectStatsus}
+          defaultValue={selectStatus}
           options={[
-            { label: "bending", value: "bending" },
-            { label: "fixing", value: "fixing" },
+            { label: "In Progress", value: "In Progress" },
+            { label: "Completed", value: "Completed" },
           ]}
         />
       </div>
@@ -42,15 +82,19 @@ const AssignTaskModal = () => {
         <ReusableSelect
           className="my-4"
           placeholder="Assign To"
-          onValueChange={setSelectWorkPlan}
-          options={[
-            { label: "John", value: "John" },
-            { label: "Godwin", value: "Godwin" },
-          ]}
+          onValueChange={setAssign}
+          defaultValue={assign}
+          options={CompanyUserData?.map((item) => ({
+            label: item?.firstName,
+            value: item?._id,
+          }))}
         />
       </div>
       <div className="flex gap-3 items-center justify-self-end mt-4">
-        <ButtonComp text="Assign Task" />
+        <ButtonComp
+          onClick={handleSubmit}
+          text={isUpdating ? "assigning..." : "Assign Task"}
+        />
       </div>
     </div>
   );

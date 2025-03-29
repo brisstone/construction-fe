@@ -10,7 +10,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryProviders>
       <BrowserRouter>
-        <Toaster position="top-center" />
+        <Toaster position="top-center" richColors />
         <App />
       </BrowserRouter>
     </QueryProviders>
