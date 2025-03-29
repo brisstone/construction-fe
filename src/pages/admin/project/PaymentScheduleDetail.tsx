@@ -8,7 +8,7 @@ import ReusableDialog from "@/components/general/ReuseableDialog";
 import AddPayment from "@/components/clientDetail/AddPayment";
 import { useState } from "react";
 import PaymentTable from "@/components/clientDetail/PaymentTable";
-import useGetPaymentProject from "@/hooks/api/queries/projects/paymentSchedule/getPaymentProject";
+import useGetSchedulePayments from "@/hooks/api/queries/projects/paymentSchedule/getPaymentProject";
 
 const PaymentScheduleDetail = () => {
   const { id } = useParams();
@@ -19,9 +19,10 @@ const PaymentScheduleDetail = () => {
 
   const singlePaymentScheduleLoad = singlePaymentSchedule;
 
-  const { data: paymentData, isPending: payProjPend } = useGetPaymentProject(
-    singlePaymentSchedule?.projectId ?? ""
+  const { data: paymentData, isPending: payProjPend } = useGetSchedulePayments(
+    id ?? ""
   );
+  
 
   const paymentDataLoad = paymentData?.data;
 
@@ -126,6 +127,7 @@ const PaymentScheduleDetail = () => {
               projectId={singlePaymentScheduleLoad?.projectId ?? ""}
               contractorId={singlePaymentScheduleLoad?.contractorId?._id ?? ""}
               schedulePay={true}
+              scheduleId={id}
             />
           </div>
         </ReusableDialog>

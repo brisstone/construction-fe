@@ -26,7 +26,7 @@ interface FormData {
   paymentPlan: string;
   expenseType: string;
   file: File | null;
-  note: string;
+  // note: string;
 }
 const NewPaymentModal = ({
   handleModalClose,
@@ -48,7 +48,7 @@ const NewPaymentModal = ({
     paymentPlan: "",
     expenseType: "",
     file: null,
-    note: "This is just a sample note that can be anything like comment/payments",
+    // note: "This is just a sample note that can be anything like comment/payments",
   });
 
   const handleInputChange = (name: string, value: any) => {
@@ -96,6 +96,7 @@ const NewPaymentModal = ({
       projectId: id ?? "",
       contractorId: formData?.contractor,
       amount: formData.amountPaid,
+      amountDue: formData.amountDue,
       datePaid: formData?.actualDate?.toISOString(),
       paymentSchedule: formData?.paymentSchedule,
       paymentMethod: formData?.paymentMethod,
@@ -103,6 +104,7 @@ const NewPaymentModal = ({
       paymentFLow: "out_bound",
       expenseType: formData?.expenseType,
       paymentProof: formData?.file,
+      dateDue: formData?.dateDue,
     };
 
     createPaymentSchedule(payload, {
@@ -266,13 +268,13 @@ const NewPaymentModal = ({
         name="file"
         onFileChange={(file) => handleFileChange(file, "file")}
       />
-      <TextAreaField
+      {/* <TextAreaField
         label="Note"
         readOnly
         name="note"
         rows={2}
         value={formData.note}
-      />
+      /> */}
       <div className="flex gap-3 items-center justify-self-end mt-4">
         <ButtonComp
           text={isCreating ? "saving.." : "Save"}

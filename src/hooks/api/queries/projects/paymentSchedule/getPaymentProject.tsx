@@ -110,12 +110,12 @@ export interface Amenity {
 
 export const QUERY_KEY_PAYMENTPROJECT = "getPaymentProject";
 
-const getPaymentProject = async (
-  projectId: string,
+const getSchedulePayments = async (
+  scheduleId: string,
   params: Record<string, any> = {}
 ): Promise<ResponseType> => {
   const response = await axiosInstance.get(
-    `/payments/project/${projectId}`,
+    `/payments/schedules/${scheduleId}`,
     {
       params,
     }
@@ -124,15 +124,15 @@ const getPaymentProject = async (
   return response.data;
 };
 
-const useGetPaymentProject = (
-  projectId: string,
+const useGetSchedulePayments = (
+  scheduleId: string,
   params?: Record<string, any>
 ) => {
   return useQuery<ResponseType>({
-    queryKey: [QUERY_KEY_PAYMENTPROJECT, params, projectId],
-    queryFn: () => getPaymentProject(projectId, params),
+    queryKey: [QUERY_KEY_PAYMENTPROJECT, params, scheduleId],
+    queryFn: () => getSchedulePayments(scheduleId, params),
     staleTime: 10,
   });
 };
 
-export default useGetPaymentProject;
+export default useGetSchedulePayments;

@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import useCreatePaymentProperty from "@/hooks/api/mutation/project/property/useCreatePaymentProperty";
 import { QUERY_KEY_PAYMENTPROPERTY } from "@/hooks/api/queries/projects/property/getPaymentProperty";
+import { QUERY_KEY_PAYMENTPROJECT } from "@/hooks/api/queries/projects/paymentSchedule/getPaymentProject";
 
 type TypeProps = {
   handleModalClose: () => void;
@@ -16,6 +17,7 @@ type TypeProps = {
   clientId?: string;
   contractorId?: string;
   schedulePay?: boolean;
+  scheduleId?: string;
 };
 
 const AddPayment = ({
@@ -25,6 +27,7 @@ const AddPayment = ({
   clientId,
   contractorId,
   schedulePay = false,
+  scheduleId
 }: TypeProps) => {
   const [paymentTitle, setPaymentTitle] = useState("");
   const [amountPaid, setAmountPaid] = useState(0);
@@ -72,6 +75,7 @@ const AddPayment = ({
         paymentType,
         paymentFLow: "out_bound",
         paymentProof: proofOfPayment,
+        paymentScheduleId: scheduleId
       }
       : {
         name: paymentTitle,
@@ -92,6 +96,9 @@ const AddPayment = ({
         );
         queryClient.invalidateQueries({
           queryKey: [QUERY_KEY_PAYMENTPROPERTY],
+        });
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY_PAYMENTPROJECT],
         });
         handleModalClose();
       },
