@@ -19,6 +19,11 @@ export interface PaymentSingleScheduleType {
   paymentProof: string;
   createdAt: string;
   updatedAt: string;
+  dateDue: string;
+  totalAmountPaid: number;
+  balanceRemaining: number;
+  paymentCompleted: boolean;
+  description: boolean;
   __v: 0;
 }
 

@@ -54,7 +54,7 @@ const AmenityArray = ({
               //   { label: "bathroom", value: "bathroom" },
               //   { label: "coal", value: "coal" },
               // ]}
-              defaultValue={(amenities.amenityId as amenityData)._id}
+              defaultValue={(amenities?.amenityId as amenityData)?._id}
               // defaultValue={
               //   typeof amenities.amenityId === "object" &&
               //   amenities.amenityId !== null
@@ -72,7 +72,7 @@ const AmenityArray = ({
             label="Total Quantity"
             name="qty"
             placeholder="qty"
-            value={amenities.quantity}
+            value={amenities?.quantity}
             onChange={(e) => handleChange("quantity", Number(e.target.value))}
           />
         </section>

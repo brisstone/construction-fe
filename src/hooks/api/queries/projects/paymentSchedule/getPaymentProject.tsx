@@ -19,6 +19,9 @@ export interface PaymentProjectData {
   paymentProof: string;
   createdAt: string;
   updatedAt: string;
+  totalAmountPaid: number;
+  balanceRemaining: number;
+  paymentMethod: string;
   __v: number;
 }
 

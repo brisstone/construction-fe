@@ -9,36 +9,10 @@ import TopHeader from "@/components/ui/TopHeader";
 import useGetProperty, {
   PropertyType,
 } from "@/hooks/api/queries/projects/property/getProperty";
-import { PageTypes } from "@/utils";
+import useGetPropertyMetrics from "@/hooks/api/queries/projects/property/getPropertyMetrics";
+import { formatNumberWithCommaDecimal, PageTypes } from "@/utils";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-
-const StatData: StatCardProps[] = [
-  {
-    label: "Total Properties",
-    value: "2",
-  },
-  {
-    label: "Property Sold",
-    value: "2",
-  },
-  {
-    label: "Available Property",
-    value: "2",
-  },
-  {
-    label: "Total Expected Amount (₦)",
-    value: "440m",
-  },
-  {
-    label: "Total Amount Paid (₦)",
-    value: "16m",
-  },
-  {
-    label: "Total Expected Balance (₦)",
-    value: "27m",
-  },
-];
 
 const Properties = () => {
   const [createProperty, setCreateProperty] = useState(false);
@@ -49,11 +23,46 @@ const Properties = () => {
 
   const { data: property, isPending } = useGetProperty(id ?? "");
 
+  const { data: propertyMetrics, isPending: isLoading } = useGetPropertyMetrics(
+    id ?? ""
+  );
+
+  console.log(isLoading, "isLoading");
+
+  const StatData: StatCardProps[] = [
+    {
+      label: "Total Properties",
+      value: `${propertyMetrics?.data?.totalProperties ?? 0}`,
+    },
+    {
+      label: "Property Sold",
+      value: `${propertyMetrics?.data?.soldProperties ?? 0}`,
+    },
+    {
+      label: "Available Property",
+      value: `${propertyMetrics?.data?.availableProperties ?? 0}`,
+    },
+    {
+      label: "Total Expected Amount (₦)",
+      value: `${formatNumberWithCommaDecimal(propertyMetrics?.data?.totalExpectedAmount ?? 0)}`,
+    },
+    {
+      label: "Total Amount Paid (₦)",
+      value: `${formatNumberWithCommaDecimal(propertyMetrics?.data?.totalAmountPaid ?? 0)}`,
+    },
+    {
+      label: "Total Expected Balance (₦)",
+      value: `${formatNumberWithCommaDecimal(
+        propertyMetrics?.data?.totalExpectedBalance ?? 0
+      )}`,
+    },
+  ];
+
   const propertyData = property?.data;
 
   const handleModalClose = () => {
     setCreateProperty(false);
-     setEditProperty(null);
+    setEditProperty(null);
   };
 
   const handleEdit = (property: PropertyType) => {

@@ -19,6 +19,7 @@ export interface PaymentScheduleType {
   paymentProof: string;
   createdAt: string;
   updatedAt: string;
+  paymentCompleted: boolean;
   __v: number;
 }
 

@@ -7,6 +7,7 @@ import AddPayment from "./AddPayment";
 import { useState } from "react";
 import useGetPaymentProperty from "@/hooks/api/queries/projects/property/getPaymentProperty";
 import { useParams } from "react-router-dom";
+import { formatNumberWithCommaDecimal } from "@/utils";
 
 const PaymentDetailModal = ({ clientId }: { clientId: string }) => {
   const [addPay, setAddPay] = useState(false);
@@ -17,6 +18,8 @@ const PaymentDetailModal = ({ clientId }: { clientId: string }) => {
     id ?? "",
     id2 ?? ""
   );
+
+  console.log(paymentData, "paymentData__paymentData");
 
   const paymentDataLoad = paymentData?.data;
 
@@ -29,7 +32,9 @@ const PaymentDetailModal = ({ clientId }: { clientId: string }) => {
         <aside className="flex justify-between items-center">
           <div className="w-1/2">
             <h3 className="font-semibold text-sm">Payment Amount:</h3>
-            <p className="text-xs text-darkGrey">₦ 55,000,000.00</p>
+            <p className="text-xs text-darkGrey">
+              {formatNumberWithCommaDecimal(paymentData?.property?.amount ?? 0)}
+            </p>
           </div>
           <div className="w-1/2">
             <h3 className="font-semibold text-sm ">Payment Due Date:</h3>
@@ -39,11 +44,16 @@ const PaymentDetailModal = ({ clientId }: { clientId: string }) => {
         <aside className="flex justify-between items-center mt-5">
           <div className="w-1/2">
             <h3 className="font-semibold text-sm">Total Paid: </h3>
-            <p className="text-xs text-darkGrey">₦ 20,000,000.00</p>
+            <p className="text-xs text-darkGrey">
+              {formatNumberWithCommaDecimal(paymentData?.totalAmountPaid)}
+            </p>
           </div>
           <div className="w-1/2">
             <h3 className="font-semibold text-sm ">Balance:</h3>
-            <p className="text-xs text-textRed"> ₦ 35,000,000.00 </p>
+            <p className="text-xs text-textRed">
+              {" "}
+              {formatNumberWithCommaDecimal(paymentData?.balanceRemaining)}{" "}
+            </p>
           </div>
         </aside>
       </section>
@@ -56,8 +66,16 @@ const PaymentDetailModal = ({ clientId }: { clientId: string }) => {
             className="w-fit bg-transparent border text-black hover:text-white"
           />
           <ButtonComp
-            onClick={() => setAddPay(true)}
-            text="Add Payment"
+            // onClick={() => setAddPay(true)}
+            onClick={() => {
+              if (paymentData?.property?.paymentCompleted) return;
+              setAddPay(true);
+            }}
+            text={
+              paymentData?.property?.paymentCompleted
+                ? "Payment completed"
+                : "Add Payment"
+            }
             className="w-fit"
           />
         </div>
@@ -77,6 +95,7 @@ const PaymentDetailModal = ({ clientId }: { clientId: string }) => {
               projectId={id ?? ""}
               propertyId={id2 ?? ""}
               clientId={clientId}
+              balance={paymentData?.balanceRemaining}
             />
           </div>
         </ReusableDialog>

@@ -3,6 +3,12 @@ import axiosInstance from "@/hooks/axiosInstace";
 
 export interface ResponseType {
   data: PaymentPropertyData[];
+  totalAmountPaid: number;
+  balanceRemaining: number;
+  property: {
+    amount: number;
+    paymentCompleted: boolean
+  }
 }
 
 export interface PaymentPropertyData {
@@ -19,6 +25,7 @@ export interface PaymentPropertyData {
   paymentProof: string;
   createdAt: string;
   updatedAt: string;
+  paymentMethod: string;
   __v: number;
 }
 

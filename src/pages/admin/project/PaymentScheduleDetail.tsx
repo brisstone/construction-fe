@@ -9,20 +9,20 @@ import AddPayment from "@/components/clientDetail/AddPayment";
 import { useState } from "react";
 import PaymentTable from "@/components/clientDetail/PaymentTable";
 import useGetSchedulePayments from "@/hooks/api/queries/projects/paymentSchedule/getPaymentProject";
+import { formatNumberWithCommaDecimal } from "@/utils";
 
 const PaymentScheduleDetail = () => {
   const { id } = useParams();
 
   const [addPay, setAddPay] = useState(false);
   const { data: singlePaymentSchedule, isPending } =
-    useGetSinglePaymentSchedule(id ?? "");
+    useGetSinglePaymentSchedule(id ?? "", {});
 
   const singlePaymentScheduleLoad = singlePaymentSchedule;
 
   const { data: paymentData, isPending: payProjPend } = useGetSchedulePayments(
     id ?? ""
   );
-  
 
   const paymentDataLoad = paymentData?.data;
 
@@ -37,11 +37,21 @@ const PaymentScheduleDetail = () => {
         ? format(new Date(singlePaymentScheduleLoad.updatedAt), "MMM, dd, yyyy")
         : "",
     },
-    { title: "Amount of Payment Due:", content: "not updated" },
-    { title: "Amount Paid:", content: singlePaymentScheduleLoad?.amount },
+    {
+      title: "Amount of Payment Due:",
+      content: formatNumberWithCommaDecimal(singlePaymentScheduleLoad?.amount),
+    },
+    {
+      title: "Amount Paid:",
+      content: formatNumberWithCommaDecimal(
+        singlePaymentScheduleLoad?.totalAmountPaid
+      ),
+    },
     {
       title: "Due Date For Payment:",
-      content: "not updated",
+      content: singlePaymentScheduleLoad?.dateDue
+        ? format(new Date(singlePaymentScheduleLoad.dateDue), "MMM, dd, yyyy")
+        : "",
     },
     {
       title: "Actual Payment Date:",
@@ -51,11 +61,16 @@ const PaymentScheduleDetail = () => {
     },
     { title: "Type of Payment Schedule:", content: "not updated" },
     {
-      title: "Payment Method:", 
+      title: "Payment Method:",
       content: singlePaymentScheduleLoad?.paymentMethod,
     },
     { title: "Expense Type:", content: singlePaymentScheduleLoad?.expenseType },
-    { title: "Balance:", content: "not updated" },
+    {
+      title: "Balance:",
+      content: formatNumberWithCommaDecimal(
+        singlePaymentScheduleLoad?.balanceRemaining
+      ),
+    },
     { title: "Payment Type:", content: singlePaymentScheduleLoad?.paymentType },
   ];
 
@@ -72,8 +87,15 @@ const PaymentScheduleDetail = () => {
             View Payment Schedule
           </p>
           <ButtonComp
-            onClick={() => setAddPay(true)}
-            text="Make Payment"
+            onClick={() => {
+              if (singlePaymentScheduleLoad?.paymentCompleted) return;
+              setAddPay(true);
+            }}
+            text={
+              singlePaymentScheduleLoad?.paymentCompleted
+                ? "Payment completed"
+                : "Make Payment"
+            }
             className="w-fit mt-1 sm:mt-0"
           />
         </aside>
@@ -87,26 +109,23 @@ const PaymentScheduleDetail = () => {
             ))}
           </div>
           <div className="my-3">
-            <h3 className="font-medium">Description of Work or Material:</h3>
+            {/* <h3 className="font-medium">Description of Work or Material:</h3>
             <p className="w-1/2 text-xs text-textShade">
               Supply of 200 Bags of Cement
-            </p>
+            </p> */}
           </div>
         </section>
         <section className="">
-          <div>
+          {/* <div>
             <h3 className="font-bold text-lg mb-3">Receipt of Payment</h3>
             <img
               src={singlePaymentScheduleLoad?.paymentProof}
               alt="samplepassport"
             />
-          </div>
+          </div> */}
           <aside className="border my-5 flex items-center gap-5 p-5 rounded-[14px]">
             <h3 className="text-lg font-semibold">Notes:</h3>
-            <p>
-              This is just a sample note that can be anything like comments on
-              the payment, supplieror materials supplied.
-            </p>
+            <p>{singlePaymentScheduleLoad?.description}</p>
           </aside>
         </section>
         <section className="border-y">
@@ -128,6 +147,8 @@ const PaymentScheduleDetail = () => {
               contractorId={singlePaymentScheduleLoad?.contractorId?._id ?? ""}
               schedulePay={true}
               scheduleId={id}
+              params={{}}
+              balance={singlePaymentScheduleLoad?.balanceRemaining}
             />
           </div>
         </ReusableDialog>

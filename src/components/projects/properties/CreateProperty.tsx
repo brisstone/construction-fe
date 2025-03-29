@@ -67,7 +67,7 @@ const CreateProperty = ({
   };
 
   const removeAmenity = (index: number) => {
-    setAmenities(Amenities.filter((_, i) => i !== index));
+    setAmenities(Amenities?.filter((_, i) => i !== index));
   };
 
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -247,7 +247,7 @@ const CreateProperty = ({
       </div>
       <section className="py-4 border-y my-4">
         <p className="text-xl font-semibold text-grey mb-2">Amenities</p>
-        {Amenities.map((amenities, index) => (
+        {Amenities?.map((amenities, index) => (
           <AmenityArray
             key={index}
             index={index}

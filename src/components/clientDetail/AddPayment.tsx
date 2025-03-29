@@ -9,6 +9,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import useCreatePaymentProperty from "@/hooks/api/mutation/project/property/useCreatePaymentProperty";
 import { QUERY_KEY_PAYMENTPROPERTY } from "@/hooks/api/queries/projects/property/getPaymentProperty";
 import { QUERY_KEY_PAYMENTPROJECT } from "@/hooks/api/queries/projects/paymentSchedule/getPaymentProject";
+import { QUERY_KEY_SINGLEPAYMENTSCHEDULE } from "@/hooks/api/queries/projects/paymentSchedule/getSinglePaymentSchedule";
 
 type TypeProps = {
   handleModalClose: () => void;
@@ -18,6 +19,8 @@ type TypeProps = {
   contractorId?: string;
   schedulePay?: boolean;
   scheduleId?: string;
+  params?: Record<string, any>;
+  balance?: number;
 };
 
 const AddPayment = ({
@@ -27,12 +30,14 @@ const AddPayment = ({
   clientId,
   contractorId,
   schedulePay = false,
-  scheduleId
+  scheduleId,
+  params,
+  balance
 }: TypeProps) => {
   const [paymentTitle, setPaymentTitle] = useState("");
-  const [amountPaid, setAmountPaid] = useState(0);
+  const [amountPaid, setAmountPaid] = useState(balance);
   const [payDate, setPayDate] = useState<Date | null>(null);
-  const [paymentType, setPaymentType] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
   const [proofOfPayment, setProofOfPayment] = useState<File | null>(null);
 
   const { mutate: uploadImage } = useMultipleFileUpload();
@@ -72,7 +77,7 @@ const AddPayment = ({
         contractorId,
         amount: amountPaid,
         datePaid: payDate?.toISOString(),
-        paymentType,
+        paymentMethod,
         paymentFLow: "out_bound",
         paymentProof: proofOfPayment,
         paymentScheduleId: scheduleId
@@ -84,7 +89,7 @@ const AddPayment = ({
         clientId,
         amount: amountPaid,
         datePaid: payDate?.toISOString(),
-        paymentType,
+        paymentMethod,
         paymentFLow: "in_bound",
         paymentProof: proofOfPayment,
       };
@@ -100,6 +105,13 @@ const AddPayment = ({
         queryClient.invalidateQueries({
           queryKey: [QUERY_KEY_PAYMENTPROJECT],
         });
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY_PAYMENTPROJECT, params, scheduleId],
+        });
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY_SINGLEPAYMENTSCHEDULE, params, scheduleId],
+        });
+        
         handleModalClose();
       },
       onError: (error: any) => {
@@ -139,13 +151,15 @@ const AddPayment = ({
         <p className="text-sm font-semibold text-grey">Type of Payment</p>
         <ReusableSelect
           className="my-4"
-          placeholder="Type of Payment"
+          placeholder="Payment Method"
           options={[
-            { label: "one_off", value: "one_off" },
-            { label: "installment", value: "installment" },
+            { label: "bank", value: "bank" },
+            { label: "card", value: "card" },
+            { label: "transfer", value: "transfer" },
+
           ]}
-          defaultValue={paymentType}
-          onValueChange={setPaymentType}
+          defaultValue={paymentMethod}
+          onValueChange={setPaymentMethod}
         />
       </div>
       <div>

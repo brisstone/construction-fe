@@ -36,7 +36,7 @@ const PaymentTable = ({ paymentDataLoad }: TableProp) => {
   const headers = [
     { content: <>Amount Paid</> },
     { content: <>Date of Payment</> },
-    { content: <>Type of Payment</> },
+    { content: <>Type of Method</> },
     { content: <>Proof</> },
   ];
 
@@ -50,7 +50,7 @@ const PaymentTable = ({ paymentDataLoad }: TableProp) => {
         <td className="py-2 px-4">
           {format(new Date(item.datePaid), "MMM d, yyyy")}
         </td>
-        <td className="py-2 px-4">{item.paymentType}</td>
+        <td className="py-2 px-4">{item.paymentMethod}</td>
         <td className="py-2 px-4 flex items-center gap-2 cursor-pointer">
           <img src={item.paymentProof} alt="proof" className="w-14 h-14" />
           {/* <a href={item.paymentProof} download></a>

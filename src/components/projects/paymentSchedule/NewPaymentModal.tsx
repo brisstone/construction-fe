@@ -95,8 +95,8 @@ const NewPaymentModal = ({
     const payload = {
       projectId: id ?? "",
       contractorId: formData?.contractor,
-      amount: formData.amountPaid,
-      amountDue: formData.amountDue,
+      amountPaid: formData.amountPaid,
+      amount: formData.amountDue,
       datePaid: formData?.actualDate?.toISOString(),
       paymentSchedule: formData?.paymentSchedule,
       paymentMethod: formData?.paymentMethod,
@@ -105,6 +105,7 @@ const NewPaymentModal = ({
       expenseType: formData?.expenseType,
       paymentProof: formData?.file,
       dateDue: formData?.dateDue,
+      description: formData.description,
     };
 
     createPaymentSchedule(payload, {
@@ -125,10 +126,8 @@ const NewPaymentModal = ({
     });
   };
 
-  if(isPending) {
-    return <div className="h-[70vh] text-center">
-      Loading...
-    </div>
+  if (isPending) {
+    return <div className="h-[70vh] text-center">Loading...</div>;
   }
 
   return (
@@ -197,9 +196,7 @@ const NewPaymentModal = ({
         />
       </div>
       <div>
-        <p className="text-sm font-semibold text-grey">
-          Type of Payment
-        </p>
+        <p className="text-sm font-semibold text-grey">Type of Payment</p>
         <ReusableSelect
           className="my-4"
           placeholder="Type of Payment plan"

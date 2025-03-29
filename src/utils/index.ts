@@ -123,3 +123,19 @@ export const materialTypes = [
   progress = 'progress',
   time_based = 'time_based',
 }
+
+
+export function formatNumberWithCommaDecimal(
+  value: any,
+  decimals: number = 2
+): string {
+  if (typeof value !== "number" || isNaN(value)) {
+    return "0";
+  }
+
+  // Format the number with commas and specified decimal places
+  return `₦${value.toLocaleString(undefined, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  })}`;
+}

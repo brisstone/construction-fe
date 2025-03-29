@@ -98,7 +98,7 @@ const PaymentTable = ({
     // { content: <>Due Date</> },
     { content: <>Amount Paid(₦)</> },
     { content: <>Actual Pay date</> },
-    // { content: <>Balance(₦)</> },
+    { content: <>Status</> },
   ];
 
   const navigate = useNavigate();
@@ -111,6 +111,8 @@ const PaymentTable = ({
     const handleRowClick = () => {
       navigate(`/admin/project/${item?._id}/payment-schedule-detail`);
     };
+
+    console.log(item, 'item__item')
 
     return (
       <tr
@@ -129,9 +131,9 @@ const PaymentTable = ({
             ? format(new Date(item.datePaid), "MMM dd, yyyy")
             : "N/A"}
         </td>
-        {/* <td className="py-1 px-4 text-red-600">
-          {item.balance.toLocaleString()}
-        </td> */}
+        <td className="py-1 px-4 ">
+          {item.paymentCompleted? <span className="text-[green]">Paid</span> : <span className="text-red-600">Pending</span>}
+        </td>
       </tr>
     );
   };
