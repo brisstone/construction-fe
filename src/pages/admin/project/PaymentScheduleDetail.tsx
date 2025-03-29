@@ -50,7 +50,7 @@ const PaymentScheduleDetail = () => {
     },
     { title: "Type of Payment Schedule:", content: "not updated" },
     {
-      title: "Payment Method:",
+      title: "Payment Method:", 
       content: singlePaymentScheduleLoad?.paymentMethod,
     },
     { title: "Expense Type:", content: singlePaymentScheduleLoad?.expenseType },
