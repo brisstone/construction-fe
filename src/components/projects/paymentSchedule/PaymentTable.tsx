@@ -1,5 +1,6 @@
 import GenericTable from "@/components/general/GenericTable";
 import { PaymentScheduleType } from "@/hooks/api/queries/projects/paymentSchedule/getPaymentSchedule";
+import { formatNumberWithCommaDecimal } from "@/utils";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 // export type DataItem = {
@@ -124,7 +125,7 @@ const PaymentTable = ({
         {/* <td className="py-1 px-4">{item?.amount.toLocaleString()}</td> */}
         {/* <td className="py-1 px-4">{item.dueDate}</td> */}
         <td className="py-1 px-4 text-green">
-          {item?.amount.toLocaleString()}
+          {formatNumberWithCommaDecimal(item?.amount)}
         </td>
         <td className="py-1 px-4">
           {item.datePaid

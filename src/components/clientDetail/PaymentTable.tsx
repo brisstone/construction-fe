@@ -1,6 +1,7 @@
 // import { DownloadProof } from "@/assets/svgComp/PropertyIcon";
 import GenericTable from "@/components/general/GenericTable";
 import { PaymentPropertyData } from "@/hooks/api/queries/projects/property/getPaymentProperty";
+import { formatNumberWithCommaDecimal } from "@/utils";
 import { format } from "date-fns";
 
 // export type payItem = {
@@ -46,7 +47,7 @@ const PaymentTable = ({ paymentDataLoad }: TableProp) => {
   const renderRow = (item: PaymentPropertyData, index: number) => {
     return (
       <tr key={index} className="text-gray-700 text-sm h-[50px] border-b">
-        <td className="py-2 px-4">{item.amount}</td>
+        <td className="py-2 px-4">{formatNumberWithCommaDecimal(item.amount)}</td>
         <td className="py-2 px-4">
           {format(new Date(item.datePaid), "MMM d, yyyy")}
         </td>
