@@ -11,6 +11,8 @@ import useGetWorkStage from "@/hooks/api/queries/projects/budget/workStage/getWo
 import { useIdStore } from "@/store/IdStore";
 import Container from "@/components/layout/Container";
 import RouteChain from "@/components/general/RouteChain";
+import usegetBudgetMetrics from "@/hooks/api/queries/projects/budget/getBudgetMetrics";
+import { formatNumberWithCommaDecimal } from "@/utils";
 const ViewBudget = () => {
   const [newWork, setNewWork] = useState(false);
 
@@ -22,6 +24,12 @@ const ViewBudget = () => {
 
   const { setBudgetId, setProjectId } = useIdStore();
   const { data: budget, isPending } = usegetBudget(id ?? "");
+  const { data: budgetMetrics, isPending: isloading } = usegetBudgetMetrics(
+    id ?? ""
+  );
+
+  console.log(isloading, "budgetMetrics__budgetMetrics");
+
   const { data: workStageData } = useGetWorkStage(
     id ?? "",
     activeTab === "sub" ? "sub_structure" : "super_structure"
@@ -64,11 +72,17 @@ const ViewBudget = () => {
             </div>
             <div>
               <h3 className="font-medium">No of Units</h3>
-              <p className="text-textShade text-sm">20</p>
+              <p className="text-textShade text-sm">
+                {budgetMetrics?.data?.totalUnits}
+              </p>
             </div>
             <div>
               <h3 className="font-medium">Budget Cost (#)</h3>
-              <p className="text-textShade text-sm">40,317,000.00</p>
+              <p className="text-textShade text-sm">
+                {formatNumberWithCommaDecimal(
+                  budgetMetrics?.data?.totalBudgetCost
+                )}{" "}
+              </p>
             </div>
           </div>
           <div className="my-3">
