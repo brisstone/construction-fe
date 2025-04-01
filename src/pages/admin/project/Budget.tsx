@@ -99,7 +99,7 @@ const Budget = () => {
               </TabsList>
             </div>
             <ButtonComp
-              text="Generate Budget"
+              text= {project?.budgetId ? "View Budget" : "Generate Budget"}
               className="w-fit mt-3 md:mt-0"
               onClick={handleGenerateClick}
             />
