@@ -7,9 +7,24 @@ import { PageTypes } from "@/utils";
 import { useState } from "react";
 import AffiliateTable from "./AffiliateTable";
 import AddAffiliate from "./AddAffiliate";
+import { useAuthStore } from "@/store/authStore";
+import useGetCompanyUser from "@/hooks/api/queries/user/getCompanyUser";
 
 const Affiliate = () => {
   const [addAffiliate, setAddAffiliate] = useState(false);
+
+  const { currentUser } = useAuthStore();
+
+  const { data: CompanyUser, isPending } = useGetCompanyUser(
+    currentUser?.companyId ?? "",
+    { accountType: "affiliate" }
+  );
+
+  const CompanyUserData = CompanyUser?.data;
+
+  if (isPending) {
+    return <div className="text-center">Loading...</div>;
+  }
 
   return (
     <Container>
@@ -20,7 +35,7 @@ const Affiliate = () => {
         onClick={() => setAddAffiliate(true)}
       />
       <FilterLayout pageKey={PageTypes?.USERS} />
-      <AffiliateTable />
+      <AffiliateTable CompanyUserData={CompanyUserData ?? []} />
       <Pagination />
       {
         <ReusableDialog
@@ -30,7 +45,7 @@ const Affiliate = () => {
           className="sm:max-w-[60vw]"
         >
           <div>
-            <AddAffiliate />
+            <AddAffiliate handleModalClose={() => setAddAffiliate(false)} />
           </div>
         </ReusableDialog>
       }

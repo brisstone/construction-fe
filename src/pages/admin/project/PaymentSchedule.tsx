@@ -29,7 +29,7 @@ const PaymentSchedule = () => {
       <Container className="my-5">
         <aside className="sm:flex items-center justify-between">
           <p className="font-medium sm:text-lg text-sm text-textShade">
-            Mabushi project payment schedule
+            Project payment schedule
           </p>
           <ButtonComp
             onClick={() => setOpenSchedule(true)}

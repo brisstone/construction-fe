@@ -31,7 +31,7 @@ const Task = () => {
       <Container className="my-5">
         <aside className="sm:flex items-center justify-between">
           <p className="font-medium sm:text-lg text-sm text-textShade">
-            Mabushi Project Task Management
+             Project Task Management
           </p>
           {/* <ButtonComp
             onClick={() => setOpenTask(true)}

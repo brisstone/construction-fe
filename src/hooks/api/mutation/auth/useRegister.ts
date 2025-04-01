@@ -14,6 +14,8 @@ type RegData = {
   firstName: string;
   email?: string;
   address?: string;
+  gender?: string;
+  accountType?: string;
 };
 
 const RegisterUser = ( data: RegData): Promise<any> => {

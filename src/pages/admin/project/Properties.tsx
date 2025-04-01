@@ -85,7 +85,7 @@ const Properties = () => {
         </div>
 
         <div className="p-5 rounded-xl bg-white">
-          <p className="font-bold ">Properties Description</p>
+          <p className="font-bold ">Project Description</p>
           <h3 className="text-2SM  text-darkGrey my-2">
             5 Bedroom Stand-alone Duplex with BQ (House A05)
           </h3>
