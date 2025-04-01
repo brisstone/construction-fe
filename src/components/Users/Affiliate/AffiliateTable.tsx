@@ -10,6 +10,7 @@ const AffiliateTable = ({ CompanyUserData }: props) => {
     { content: <>Name</> },
     { content: <>Email</> },
     { content: <>Phone Number </> },
+    { content: <>Address </> },
   ];
 
   if (CompanyUserData?.length === 0) {
