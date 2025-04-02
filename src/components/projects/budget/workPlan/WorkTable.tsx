@@ -1,136 +1,141 @@
 import GenericTable from "@/components/general/GenericTable";
+import { WorkStageType } from "@/hooks/api/queries/projects/budget/workStage/getWorkStage";
 import React from "react";
-const sampleData = [
-  {
-    section: "",
-    tasks: [
-      {
-        id: 1,
-        activity: "Site Clearing",
-        duration: "2 days",
-        start: "21/01/2021",
-        finish: "22/01/2021",
-        status: "Completed",
-      },
-      {
-        id: 2,
-        activity: "Mobilisation to Site",
-        duration: "2 days",
-        start: "23/01/2021",
-        finish: "24/01/2021",
-        status: "Completed",
-      },
-      {
-        id: 3,
-        activity: "Rebar Bending and Fixing",
-        duration: "2 days",
-        start: "25/01/2021",
-        finish: "26/01/2021",
-        status: "In Progress",
-      },
-      {
-        id: 4,
-        activity: "Concrete Cover Production",
-        duration: "1 day",
-        start: "27/01/2021",
-        finish: "27/01/2021",
-        status: "Overdue",
-      },
-      {
-        id: 5,
-        activity: "Precast Lintel Production",
-        duration: "1 day",
-        start: "28/01/2021",
-        finish: "28/01/2021",
-        status: "Not Started",
-      },
-    ],
-  },
-  {
-    section: "SUBSTRUCTURE",
-    tasks: [
-      {
-        id: 7,
-        activity: "Survey point for building",
-        duration: "1 day",
-        start: "29/01/2021",
-        finish: "29/01/2021",
-        status: "Not Started",
-      },
-      {
-        id: 8,
-        activity: "Carpenter profile and marking",
-        duration: "1 day",
-        start: "30/01/2021",
-        finish: "30/01/2021",
-        status: "Not Started",
-      },
-      {
-        id: 9,
-        activity: "Excavation for strip footing (trench)",
-        duration: "2 days",
-        start: "31/01/2021",
-        finish: "1/02/2021",
-        status: "Not Started",
-      },
-      {
-        id: 10,
-        activity: "Excavation for pad footing",
-        duration: "1 day",
-        start: "2/02/2021",
-        finish: "2/02/2021",
-        status: "Not Started",
-      },
-      {
-        id: 11,
-        activity: "Setting of gauge for footings",
-        duration: "1 day",
-        start: "2/02/2021",
-        finish: "2/02/2021",
-        status: "Not Started",
-      },
-      {
-        id: 12,
-        activity: "Casting of blinding layer",
-        duration: "1 day",
-        start: "3/02/2021",
-        finish: "3/02/2021",
-        status: "Not Started",
-      },
-    ],
-  },
-  {
-    section: "FRAME STRUCTURE",
-    tasks: [
-      {
-        id: 14,
-        activity: "Ground floor kicker set out",
-        duration: "1 day",
-        start: "4/02/2021",
-        finish: "4/02/2021",
-        status: "Not Started",
-      },
-      {
-        id: 15,
-        activity: "Placement and fixing of Ground floor column rebar",
-        duration: "1 day",
-        start: "5/02/2021",
-        finish: "5/02/2021",
-        status: "Not Started",
-      },
-      {
-        id: 16,
-        activity: "Shuttering of ground floor column formwork",
-        duration: "2 days",
-        start: "6/02/2021",
-        finish: "7/02/2021",
-        status: "Not Started",
-      },
-    ],
-  },
-];
+// const sampleData = [
+//   {
+//     section: "",
+//     tasks: [
+//       {
+//         id: 1,
+//         activity: "Site Clearing",
+//         duration: "2 days",
+//         start: "21/01/2021",
+//         finish: "22/01/2021",
+//         status: "Completed",
+//       },
+//       {
+//         id: 2,
+//         activity: "Mobilisation to Site",
+//         duration: "2 days",
+//         start: "23/01/2021",
+//         finish: "24/01/2021",
+//         status: "Completed",
+//       },
+//       {
+//         id: 3,
+//         activity: "Rebar Bending and Fixing",
+//         duration: "2 days",
+//         start: "25/01/2021",
+//         finish: "26/01/2021",
+//         status: "In Progress",
+//       },
+//       {
+//         id: 4,
+//         activity: "Concrete Cover Production",
+//         duration: "1 day",
+//         start: "27/01/2021",
+//         finish: "27/01/2021",
+//         status: "Overdue",
+//       },
+//       {
+//         id: 5,
+//         activity: "Precast Lintel Production",
+//         duration: "1 day",
+//         start: "28/01/2021",
+//         finish: "28/01/2021",
+//         status: "Not Started",
+//       },
+//     ],
+//   },
+//   {
+//     section: "SUBSTRUCTURE",
+//     tasks: [
+//       {
+//         id: 7,
+//         activity: "Survey point for building",
+//         duration: "1 day",
+//         start: "29/01/2021",
+//         finish: "29/01/2021",
+//         status: "Not Started",
+//       },
+//       {
+//         id: 8,
+//         activity: "Carpenter profile and marking",
+//         duration: "1 day",
+//         start: "30/01/2021",
+//         finish: "30/01/2021",
+//         status: "Not Started",
+//       },
+//       {
+//         id: 9,
+//         activity: "Excavation for strip footing (trench)",
+//         duration: "2 days",
+//         start: "31/01/2021",
+//         finish: "1/02/2021",
+//         status: "Not Started",
+//       },
+//       {
+//         id: 10,
+//         activity: "Excavation for pad footing",
+//         duration: "1 day",
+//         start: "2/02/2021",
+//         finish: "2/02/2021",
+//         status: "Not Started",
+//       },
+//       {
+//         id: 11,
+//         activity: "Setting of gauge for footings",
+//         duration: "1 day",
+//         start: "2/02/2021",
+//         finish: "2/02/2021",
+//         status: "Not Started",
+//       },
+//       {
+//         id: 12,
+//         activity: "Casting of blinding layer",
+//         duration: "1 day",
+//         start: "3/02/2021",
+//         finish: "3/02/2021",
+//         status: "Not Started",
+//       },
+//     ],
+//   },
+//   {
+//     section: "FRAME STRUCTURE",
+//     tasks: [
+//       {
+//         id: 14,
+//         activity: "Ground floor kicker set out",
+//         duration: "1 day",
+//         start: "4/02/2021",
+//         finish: "4/02/2021",
+//         status: "Not Started",
+//       },
+//       {
+//         id: 15,
+//         activity: "Placement and fixing of Ground floor column rebar",
+//         duration: "1 day",
+//         start: "5/02/2021",
+//         finish: "5/02/2021",
+//         status: "Not Started",
+//       },
+//       {
+//         id: 16,
+//         activity: "Shuttering of ground floor column formwork",
+//         duration: "2 days",
+//         start: "6/02/2021",
+//         finish: "7/02/2021",
+//         status: "Not Started",
+//       },
+//     ],
+//   },
+// ];
 
-const WorkTable = () => {
+const WorkTable = ({
+  workStageDataAll,
+}: {
+  workStageDataAll: WorkStageType[];
+}) => {
   const headers = [
     { content: <>S/N</> },
     { content: <>Task/Activities</> },
@@ -140,7 +145,50 @@ const WorkTable = () => {
     { content: <>Status</> },
   ];
 
-  
+  const transformedData = workStageDataAll.map((workStage) => {
+    // Create activities from projectLabors, projectMaterials, and projectActivities
+    const allActivities = [
+      // Map project labors to table format
+      ...workStage.projectLabors.map((labor, idx) => ({
+        id: `${workStage._id}-labor-${idx}`,
+        activity: labor.laborId?.name || "Labor Activity",
+        duration: "N/A", // Assuming these fields aren't in your data
+        start: "N/A",
+        finish: "N/A",
+        status: "Not Started", // Default status
+        type: "labor",
+      })),
+
+      // Map project materials to table format
+      ...workStage.projectMaterials.map((material, idx) => ({
+        id: `${workStage._id}-material-${idx}`,
+        activity: material.materialId?.name || "Material Activity",
+        duration: "N/A",
+        start: "N/A",
+        finish: "N/A",
+        status: "Not Started",
+        type: "material",
+      })),
+
+      // Map project activities to table format (if they exist)
+      ...(workStage.projectActivities || []).map((activity, idx) => ({
+        id: `${workStage._id}-activity-${idx}`,
+        activity: activity.name || "Project Activity",
+        duration: "N/A",
+        start: "N/A",
+        finish: "N/A",
+        status: "Not Started",
+        type: "activity",
+      })),
+    ];
+
+    return {
+      section: workStage.stageType.toUpperCase().replace("_", " "),
+      name: workStage.name,
+      tasks: allActivities,
+    };
+  });
+
   const renderRow = (section: any, index: number) => {
     return (
       <React.Fragment key={index}>
@@ -150,13 +198,16 @@ const WorkTable = () => {
               colSpan={6}
               className="pl-16 text-grey font-bold h-[60px] px-4 py-2 uppercase"
             >
-              {section.section}
+              {section.section} - {section.name}
             </td>
           </tr>
         )}
-        {section.tasks.map((task: any) => (
-          <tr key={task.id} className="text-grey text-[13px] text-left text-sm h-[60px]  font-medium cursor-pointer">
-            <td className=" px-4 py-2">{task.id}</td>
+        {section.tasks.map((task: any, taskIdx: number) => (
+          <tr
+            key={task.id}
+            className="text-grey text-[13px] text-left text-sm h-[60px]  font-medium cursor-pointer"
+          >
+            <td className="px-4 py-2">{taskIdx + 1}</td>
             <td className=" px-4 py-2">{task.activity}</td>
             <td className=" px-4 py-2">{task.duration}</td>
             <td className=" px-4 py-2">{task.start}</td>
@@ -184,7 +235,7 @@ const WorkTable = () => {
     <div>
       <GenericTable
         headers={headers}
-        data={sampleData}
+        data={transformedData}
         renderRow={renderRow}
         className=""
       />

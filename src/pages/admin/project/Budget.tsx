@@ -106,7 +106,7 @@ const Budget = () => {
             />
           </aside>
           <TabsContent value="bill">
-            <BillComp />
+            <BillComp workStageDataAll={workStageDataAll?.data ?? []} />
           </TabsContent>
           <TabsContent value="work">
             <div className="my-5">
@@ -116,7 +116,7 @@ const Budget = () => {
                 </p>
               </div>
               <section>
-                <WorkTable />
+                <WorkTable workStageDataAll = {workStageDataAll?.data ?? []}/>
               </section>
             </div>
           </TabsContent>
