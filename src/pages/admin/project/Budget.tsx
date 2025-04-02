@@ -61,6 +61,7 @@ const Budget = () => {
             toast.success(
               response?.data?.message || "Budget added successfully"
             );
+            navigate(`/admin/project/${id}/budget-view`);
             setAddBudget(false);
           },
           onError: (error: any) => {
@@ -99,7 +100,7 @@ const Budget = () => {
               </TabsList>
             </div>
             <ButtonComp
-              text= {project?.budgetId ? "View Budget" : "Generate Budget"}
+              text={project?.budgetId ? "View Budget" : "Generate Budget"}
               className="w-fit mt-3 md:mt-0"
               onClick={handleGenerateClick}
             />

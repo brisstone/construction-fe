@@ -88,7 +88,7 @@ const getWorkStage = async (
   params: Record<string, any> = {}
 ): Promise<ResponseType> => {
   const response = await axiosInstance.get(
-    `/workstage/${projectId}/${stageType}`,
+    `/workstage/${projectId}/structure/${stageType}`,
     {
       params,
     }

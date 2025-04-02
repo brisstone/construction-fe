@@ -9,6 +9,8 @@ import LabourArray from "./workStage/LabourArray";
 import useCreateWorkStage from "@/hooks/api/mutation/project/budget/workStage/useCreateWorkStage";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEY_WORKSTAGE } from "@/hooks/api/queries/projects/budget/workStage/getWorkStage";
 
 interface Material {
   materialId: string;
@@ -99,6 +101,7 @@ const AddNewWorkModal = ({
     0
   );
 
+  const queryClient = useQueryClient();
   const { mutate: addWorkStage, isPending } = useCreateWorkStage();
 
   const handleSubmit = () => {
@@ -117,6 +120,7 @@ const AddNewWorkModal = ({
         toast.success(
           response?.data?.message || "workStage added successfully"
         );
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEY_WORKSTAGE] });
         handleModalClose();
       },
       onError: (error: any) => {
@@ -221,20 +225,20 @@ const AddNewWorkModal = ({
           </div>
         )}
       </section>
-      {labours.length > 0 && materials.length > 0 && (
-        <section className="flex justify-between items-center border-2 my-14 p-3 rounded-[4px]">
-          <div className="flex border justify-between p-4 rounded-[4px] mt-4">
-            <h3 className="font-bold">Material & Labour Total Cost (₦):</h3>
-            <p className="ml-3">
-              {(totalLabourCost + totalAmount).toLocaleString()}
-            </p>
-          </div>
-          <ButtonComp
-            onClick={handleSubmit}
-            text={isPending ? "creating.." : "Create"}
-          />
-        </section>
-      )}
+      {/* {labours.length > 0 && materials.length > 0 && ( */}
+      <section className="flex justify-between items-center border-2 my-14 p-3 rounded-[4px]">
+        <div className="flex border justify-between p-4 rounded-[4px] mt-4">
+          <h3 className="font-bold">Material & Labour Total Cost (₦):</h3>
+          <p className="ml-3">
+            {(totalLabourCost + totalAmount).toLocaleString()}
+          </p>
+        </div>
+        <ButtonComp
+          onClick={handleSubmit}
+          text={isPending ? "creating.." : "Create"}
+        />
+      </section>
+      {/* )} */}
     </div>
   );
 };

@@ -47,6 +47,8 @@ const WorkStage = () => {
   const { data: workStageSingle } = useGetWorkStageById(id ?? "");
   const { data: projectActivity } = useGetProjectActivity(id ?? "");
 
+  const workStageSingleData = workStageSingle?.data
+
   const projectActivityData = projectActivity?.data;
 
   // console.log(workStageSingle, "workStageSingle");
@@ -61,7 +63,7 @@ const WorkStage = () => {
       <Container className=" my-5">
         <aside className="sm:flex items-center justify-between">
           <p className="font-medium sm:text-lg text-sm text-textShade">
-            Work Stage: {workStageSingle?.name}
+            Work Stage: {workStageSingleData?.name}
           </p>
           {/* <ButtonComp text="" className="w-fit mt-1 sm:mt-0" /> */}
         </aside>
@@ -69,7 +71,9 @@ const WorkStage = () => {
           <div className="grid grid-cols-3 gap-4">
             <div>
               <h3 className="font-medium">Work Stage Title</h3>
-              <p className="text-textShade text-sm">{workStageSingle?.name}</p>
+              <p className="text-textShade text-sm">
+                {workStageSingleData?.name}
+              </p>
             </div>
             <div>
               <h3 className="font-medium">Activities</h3>
@@ -110,7 +114,9 @@ const WorkStage = () => {
               <div>
                 <MaterialTable
                   onEdit={handleMaterialEdit}
-                  workStageMaterial={workStageSingle?.projectMaterials ?? []}
+                  workStageMaterial={
+                    workStageSingleData?.projectMaterials ?? []
+                  }
                 />
               </div>
             </TabsContent>
@@ -131,7 +137,7 @@ const WorkStage = () => {
               <div>
                 <LabourTable
                   onEdit={handleLaborEdit}
-                  workStageLabor={workStageSingle?.projectLabors ?? []}
+                  workStageLabor={workStageSingleData?.projectLabors ?? []}
                 />
               </div>
             </TabsContent>
@@ -188,9 +194,11 @@ const WorkStage = () => {
                 defaultValues={editMaterial || undefined}
                 isEditMode={!!editMaterial}
                 projectId={
-                  workStageSingle?.projectMaterials[0]?.projectId ?? ""
+                  workStageSingleData?.projectMaterials?.[0]?.projectId ?? ""
                 }
-                budgetId={workStageSingle?.projectMaterials[0]?.budgetId ?? ""}
+                budgetId={
+                  workStageSingleData?.projectMaterials?.[0]?.budgetId ?? ""
+                }
                 handleModalClose={() => {
                   setEditMaterial(null);
                   setNewMaterial(false);
@@ -210,8 +218,8 @@ const WorkStage = () => {
               <AddNewLabour
                 defaultValues={editLabour || undefined}
                 isEditMode={!!editLabour}
-                projectId={workStageSingle?.projectLabors[0]?.projectId ?? ""}
-                budgetId={workStageSingle?.projectLabors[0]?.budgetId ?? ""}
+                projectId={workStageSingleData?.projectLabors?.[0]?.projectId ?? ""}
+                budgetId={workStageSingleData?.projectLabors?.[0]?.budgetId ?? ""}
                 handleModalClose={() => {
                   setEditLabour(null);
                   setNewLabour(false);
