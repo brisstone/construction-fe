@@ -1,5 +1,4 @@
 import ButtonComp from "@/components/general/ButtonComp";
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SubComp from "./SubStructure/SubComp";
 import ReusableDialog from "@/components/general/ReuseableDialog";
@@ -32,7 +31,7 @@ const ViewBudget = () => {
 
   const { data: workStageData } = useGetWorkStage(
     id ?? "",
-    activeTab === "sub" ? "sub_structure" : "super_structure"
+    activeTab === "sub" ? "sub_structure" : "super_structure" 
   );
 
   const workStageDataLoad = workStageData?.data;
