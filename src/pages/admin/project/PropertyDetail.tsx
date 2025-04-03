@@ -111,12 +111,14 @@ const PropertyDetail = () => {
               </div>
               <h2 className="font-semibold my-2">Dwelling Type</h2>
               <p className="text-darkGrey text-sm ">
-                {propertySingle?.dwellingType}
+                {propertySingle?.dwellingType
+                  ? propertySingle?.dwellingType?.split("_").join(" ")
+                  : ""}
               </p>
             </section>
           </div>
 
-          {/* {client section} */} 
+          {/* {client section} */}
           <div className="md:w-[44%] mt-4 md:mt-0 bg-[#F7F8FA] rounded-[8px] p-3">
             <h3 className="font-semibold"> Client Details</h3>
             {propertySingle?.clientId ? (
@@ -183,7 +185,9 @@ const PropertyDetail = () => {
           className="sm:max-w-[60vw]"
         >
           <div>
-            <ClientDetailModal clientInfo={propertySingle?.clientId as ClientType} />
+            <ClientDetailModal
+              clientInfo={propertySingle?.clientId as ClientType}
+            />
           </div>
         </ReusableDialog>
       }
@@ -195,7 +199,9 @@ const PropertyDetail = () => {
           className="sm:max-w-[60vw]"
         >
           <div>
-            <PaymentDetailModal clientId={propertySingle?.clientId?._id ?? ""}/>
+            <PaymentDetailModal
+              clientId={propertySingle?.clientId?._id ?? ""}
+            />
           </div>
         </ReusableDialog>
       }
