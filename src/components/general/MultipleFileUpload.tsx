@@ -8,7 +8,7 @@ type UploadProps = {
   logo?: string;
   resetImage?: boolean;
   accept?: string;
-  defaultFiles?: File[];
+  defaultFiles?: string[];
 };
 
 const MultipleFileUpload = ({
@@ -19,7 +19,8 @@ const MultipleFileUpload = ({
   resetImage,
   accept = "image/*",
 }: UploadProps) => {
-  const [files, setFiles] = useState<File[]>(defaultFiles || []);
+  const [files, setFiles] = useState<File[]>([]);
+  const [fileUrls, setFileUrls] = useState<string[]>(defaultFiles ?? []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newFiles = e.target.files ? Array.from(e.target.files) : [];
@@ -33,6 +34,11 @@ const MultipleFileUpload = ({
     const updatedFiles = files.filter((_, i) => i !== index);
     setFiles(updatedFiles);
     onFileChange(updatedFiles, name);
+  };
+  const handleRemoveUrl = (index: number) => {
+    const updatedUrls = fileUrls.filter((_, i) => i !== index);
+    setFileUrls(updatedUrls);
+    // We don't need to call onFileChange here as we're just tracking URLs
   };
 
   const handleClearAll = () => {
@@ -85,6 +91,26 @@ const MultipleFileUpload = ({
         {/* Display Files */}
         {files.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-2">
+            {fileUrls?.map((url, index) => (
+              <div key={`url-${index}`} className="flex items-center gap-2">
+                {accept.startsWith("image/") ? (
+                  <img
+                    src={url}
+                    alt="Preview"
+                    className="w-16 h-16 object-cover rounded border"
+                  />
+                ) : (
+                  <p className="text-sm">{url.split("/").pop()}</p>
+                )}
+                <button
+                  type="button"
+                  className="text-red-500"
+                  onClick={() => handleRemoveUrl(index)}
+                >
+                  <XCircleIcon size={18} />
+                </button>
+              </div>
+            ))}
             {files.map((file, index) => (
               <div key={index} className="flex items-center gap-2">
                 {accept.startsWith("image/") ? (

@@ -1,5 +1,5 @@
 import PropertyFeature from "./PropertyFeature";
-
+import ProjectHouse1 from "@/assets/images/ProjectHouse1.png";
 import {
   Popover,
   PopoverContent,
@@ -79,9 +79,14 @@ const PropertyCard = ({
         </div>
         <div className="w-full h-[190px] relative ">
           <img
-            src={propertyItem?.photos[0]}
+            src={propertyItem?.photos[0] || ProjectHouse1}
             alt="property"
             className="absolute w-full h-full inset-0 object-cover rounded-[16px]"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.onerror = null;
+              target.src = ProjectHouse1;
+            }}
           />
         </div>
         <section>

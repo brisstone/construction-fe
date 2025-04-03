@@ -1,11 +1,16 @@
 import ButtonComp from "@/components/general/ButtonComp";
 import ReusableSelect from "@/components/general/ReuseableSelect";
+import InputField from "@/components/input/InputField";
 import useUpdateProperty from "@/hooks/api/mutation/project/property/useUpdateProperty";
 import useGetClients, {
   ClientType,
 } from "@/hooks/api/queries/clients/getClients";
 import { QUERY_KEY_SINGLEPROPERTY } from "@/hooks/api/queries/projects/property/getSingleProperty";
+import useGetCompanyUser, {
+  CompanyUserType,
+} from "@/hooks/api/queries/user/getCompanyUser";
 import { useAuthStore } from "@/store/authStore";
+import { AgentTypeEnum, PaymentFrequency } from "@/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -18,10 +23,18 @@ const AddPropertyClient = ({
   propertySingleId: string;
 }) => {
   const [client, setClient] = useState("");
+  const [agentType, setAgentType] = useState("");
+  const [agent, setAgent] = useState("");
+  const [frequency, setFrequency] = useState("");
+  const [commision, setCommision] = useState<string | number>("");
 
   const { currentUser } = useAuthStore();
   const { data: clientData, isPending } = useGetClients(
     currentUser?.companyId || ""
+  );
+
+  const { data: CompanyUser, isPending: userpend } = useGetCompanyUser(
+    currentUser?.companyId ?? ""
   );
 
   const clientOptions =
@@ -30,12 +43,22 @@ const AddPropertyClient = ({
       value: client._id,
     })) || [];
 
+  const agentOptions =
+    CompanyUser?.data?.map((user: CompanyUserType) => ({
+      label: user.firstName,
+      value: user._id,
+    })) || [];
+
   const queryClient = useQueryClient();
   const { mutate: updateProperty, isPending: isUpdating } = useUpdateProperty();
 
   const handleSubmit = () => {
     const payload = {
       clientId: client,
+      agentType,
+      agentId: agent,
+      paymentFrequency: frequency,
+      agentCommission: commision,
     };
 
     updateProperty(
@@ -57,7 +80,7 @@ const AddPropertyClient = ({
     );
   };
 
-  if (isPending) {
+  if (isPending || userpend) {
     return (
       <div className="inset-0 bg-black bg-opacity-10 text-center flex justify-center">
         Loading...
@@ -76,6 +99,61 @@ const AddPropertyClient = ({
           placeholder="Property Client"
           options={clientOptions}
         />
+        <div className="grid sm:grid-cols-2 grid-cols-1 gap-5 ">
+          <ReusableSelect
+            defaultValue={agentType}
+            onValueChange={setAgentType}
+            className="my-4"
+            placeholder="Property Agent Type"
+            options={[
+              {
+                label: AgentTypeEnum.EMPLOYEE,
+                value: AgentTypeEnum.EMPLOYEE,
+              },
+              {
+                label: AgentTypeEnum.AFFILIATE,
+                value: AgentTypeEnum.AFFILIATE,
+              },
+            ]}
+          />
+          <ReusableSelect
+            defaultValue={agent}
+            onValueChange={setAgent}
+            className="my-4"
+            placeholder="Property Agent"
+            options={agentOptions}
+          />
+        </div>
+        <div className="grid sm:grid-cols-2 grid-cols-1 gap-5 ">
+          <ReusableSelect
+            defaultValue={frequency}
+            onValueChange={setFrequency}
+            className="my-4"
+            placeholder="frequency"
+            options={[
+              {
+                label: PaymentFrequency.MONTHLY,
+                value: PaymentFrequency.MONTHLY,
+              },
+              {
+                label: PaymentFrequency.ONE_OFF,
+                value: PaymentFrequency.ONE_OFF,
+              },
+              {
+                label: PaymentFrequency.QUARTERLY,
+                value: PaymentFrequency.QUARTERLY,
+              },
+            ]}
+          />
+          <InputField
+            type="number"
+            name="commission"
+            placeholder="Commission"
+            className="mt-2"
+            value={commision}
+            onChange={(e) => setCommision(Number(e.target.value))}
+          />
+        </div>
       </div>
       <ButtonComp
         className="flex justify-self-end w-fit"

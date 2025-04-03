@@ -43,7 +43,7 @@ const PropertyDetail = () => {
 
   const handleModalClose = () => {
     setEditProperty(null);
-    setEditProp(true);
+    setEditProp(false);
   };
 
   const handleEdit = (property: PropertyType) => {

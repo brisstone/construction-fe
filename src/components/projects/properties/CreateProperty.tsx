@@ -186,9 +186,7 @@ const CreateProperty = ({
               </div>
             )}
           <MultipleFileUpload
-            defaultFiles={
-              defaultValues?.photos?.map((url) => new File([], url)) || []
-            }
+            defaultFiles={defaultValues?.photos || []}
             name="propertyPhotos"
             onFileChange={handleFileChange}
           />
