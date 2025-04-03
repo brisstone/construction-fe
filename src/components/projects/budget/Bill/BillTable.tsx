@@ -3,6 +3,7 @@ import ReusableDialog from "@/components/general/ReuseableDialog";
 import { useMemo, useState } from "react";
 import SubBillTable from "./SubBillTable";
 import { WorkStageType } from "@/hooks/api/queries/projects/budget/workStage/getWorkStage";
+import { formatNumberWithCommaDecimal } from "@/utils";
 
 type GroupedStage = {
   stageType: string;
@@ -21,7 +22,7 @@ const BillTable = ({
   const headers = [
     { content: <>Item</> },
     { content: <>Stage Type</> },
-    { content: <>Amount (#)</> },
+    { content: <>Amount (₦)</> },
   ];
 
   const [selectedRow, setSelectedRow] = useState<GroupedStage | null>(null);
@@ -81,7 +82,9 @@ const BillTable = ({
       <td className="py-1 px-4 capitalize">
         {item.stageType?.replace("_", " ")}
       </td>
-      <td className="py-1 px-4">{item.displayAmount.toLocaleString()}</td>
+      <td className="py-1 px-4">
+        {formatNumberWithCommaDecimal(item.displayAmount)}
+      </td>
     </tr>
   );
 
@@ -102,7 +105,9 @@ const BillTable = ({
       <div className="p-4 grid grid-cols-3 border-borderColor border">
         <p className="font-semibold">Summary Total</p>
         <p></p>
-        <p className="font-semibold -ml-4">{totalValue.toLocaleString()}</p>
+        <p className="font-semibold -ml-4">
+          {formatNumberWithCommaDecimal(totalValue)}
+        </p>
       </div>
 
       <ReusableDialog
