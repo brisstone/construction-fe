@@ -15,6 +15,7 @@ import {
 } from "@/hooks/api/queries/projects/property/getProperty";
 import { useParams } from "react-router-dom";
 import useUpdateProperty from "@/hooks/api/mutation/project/property/useUpdateProperty";
+import { QUERY_KEY_SINGLEPROPERTY } from "@/hooks/api/queries/projects/property/getSingleProperty";
 
 interface Amenity {
   amenityId: string | amenityData;
@@ -123,7 +124,7 @@ const CreateProperty = ({
     const payload = {
       ...formData,
       projectId: id,
-      photos: uploadedFiles,
+      photos: [...(defaultValues?.photos || []), ...uploadedFiles],
       amenities: Amenities,
     };
 
@@ -133,7 +134,9 @@ const CreateProperty = ({
         {
           onSuccess: (response: any) => {
             toast.success(response?.data?.message || "edited successfully");
-            queryClient.invalidateQueries({ queryKey: [QUERY_KEY_PROPERTY] });
+            queryClient.invalidateQueries({
+              queryKey: [QUERY_KEY_SINGLEPROPERTY],
+            });
             handleModalClose();
           },
           onError: (error: any) => {
