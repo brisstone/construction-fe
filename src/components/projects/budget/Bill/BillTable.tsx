@@ -1,35 +1,17 @@
 import GenericTable from "@/components/general/GenericTable";
 import ReusableDialog from "@/components/general/ReuseableDialog";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import SubBillTable from "./SubBillTable";
 import { WorkStageType } from "@/hooks/api/queries/projects/budget/workStage/getWorkStage";
-export type DataItem = {
-  _id: string;
-  item?: string;
-  description?: string;
-  amount?: number;
-};
 
-const sampleData: DataItem[] = [
-  {
-    _id: "1",
-    item: "A",
-    description: "Substructure",
-    amount: 1000000,
-  },
-  {
-    _id: "2",
-    item: "B",
-    description: "Upper Floor",
-    amount: 1000000,
-  },
-  {
-    _id: "3",
-    item: "C",
-    description: "Frame",
-    amount: 1000000,
-  },
-];
+type GroupedStage = {
+  stageType: string;
+  displayItem: string;
+  displayAmount: number;
+  labors: any[];
+  materials: any[];
+  activities: any[];
+};
 
 const BillTable = ({
   workStageDataAll,
@@ -38,91 +20,110 @@ const BillTable = ({
 }) => {
   const headers = [
     { content: <>Item</> },
-    { content: <>Description</> },
-    { content: <>Amount(#)</> },
+    { content: <>Stage Type</> },
+    { content: <>Amount (#)</> },
   ];
 
-  const [selectedRow, setSelectedRow] = useState<WorkStageType | null>(null);
+  const [selectedRow, setSelectedRow] = useState<GroupedStage | null>(null);
 
-  const tableData = workStageDataAll.map((workStage, index) => {
-    // Calculate total amount for this workstage
-    const laborTotal = workStage.projectLabors.reduce(
-      (sum, labor) => sum + labor.quantity * labor.rate,
-      0
-    );
+  const groupedData = useMemo(() => {
+    const groupedMap = new Map<string, GroupedStage>();
 
-    const materialTotal = workStage.projectMaterials.reduce(
-      (sum, material) => sum + material.quantity * material.rate,
-      0
-    );
+    workStageDataAll.forEach((stage) => {
+      const key = stage.stageType || "unknown";
 
-    const activityTotal = workStage.projectActivities.reduce(
-      (sum, activity) => sum + (activity.quantity || 0) * (activity.rate || 0),
-      0
-    );
+      const laborTotal = stage.projectLabors?.reduce(
+        (sum, l) => sum + (l.quantity ?? 0) * (l.rate ?? 0),
+        0
+      );
 
-    const totalAmount = laborTotal + materialTotal + activityTotal;
+      const materialTotal = stage.projectMaterials?.reduce(
+        (sum, m) => sum + (m.quantity ?? 0) * (m.rate ?? 0),
+        0
+      );
 
-    // Generate item identifier based on index (A, B, C, ...)
-    const itemIdentifier = String.fromCharCode(65 + index);
+      const activityTotal = stage.projectActivities?.reduce(
+        (sum, a) => sum + (a.quantity ?? 0) * (a.rate ?? 0),
+        0
+      );
 
-    return {
-      ...workStage,
-      displayItem: itemIdentifier,
-      displayAmount: totalAmount,
-    };
-  });
+      if (!groupedMap.has(key)) {
+        groupedMap.set(key, {
+          stageType: key,
+          displayItem: "",
+          displayAmount: 0,
+          labors: [],
+          materials: [],
+          activities: [],
+        });
+      }
 
+      const existing = groupedMap.get(key)!;
+      existing.displayAmount += laborTotal + materialTotal + activityTotal;
+      existing.labors.push(...stage.projectLabors);
+      existing.materials.push(...stage.projectMaterials);
+      existing.activities.push(...stage.projectActivities);
+    });
 
-   const renderRow = (
-     item: WorkStageType & { displayItem: string; displayAmount: number },
-     index: number
-   ) => {
-     return (
-       <tr
-         onClick={() => setSelectedRow(item)}
-         key={index}
-         className="w-full text-grey text-[13px] text-left text-sm h-[60px] font-medium cursor-pointer"
-       >
-         <td className="py-1 px-4">{item.displayItem}</td>
-         <td className="py-1 px-4">{item.stageType}</td>
-         <td className="py-1 px-4">{item.displayAmount.toLocaleString()}</td>
-       </tr>
-     );
-   };
+    return Array.from(groupedMap.values()).map((item, index) => ({
+      ...item,
+      displayItem: String.fromCharCode(65 + index),
+    }));
+  }, [workStageDataAll]);
 
-  // (undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+  const renderRow = (item: GroupedStage, index: number) => (
+    <tr
+      onClick={() => setSelectedRow(item)}
+      key={index}
+      className="w-full text-grey text-[13px] text-left text-sm h-[60px] font-medium cursor-pointer"
+    >
+      <td className="py-1 px-4">{item.displayItem}</td>
+      <td className="py-1 px-4 capitalize">
+        {item.stageType?.replace("_", " ")}
+      </td>
+      <td className="py-1 px-4">{item.displayAmount.toLocaleString()}</td>
+    </tr>
+  );
 
- const totalValue = tableData.reduce(
-   (acc, item) => acc + item.displayAmount,
-   0
- );
+  const totalValue = groupedData.reduce(
+    (acc, item) => acc + item.displayAmount,
+    0
+  );
+
+  console.log(groupedData, "groupedData___groupedData");
 
   return (
     <div>
       <GenericTable
         headers={headers}
-        data={tableData}
+        data={groupedData}
         renderRow={renderRow}
-        className=""
       />
-      <div className="p-4  grid grid-cols-3 border-borderColor border ">
+      <div className="p-4 grid grid-cols-3 border-borderColor border">
         <p className="font-semibold">Summary Total</p>
         <p></p>
-        <p className="font-semibold -ml-4">{totalValue?.toLocaleString()}</p>
+        <p className="font-semibold -ml-4">{totalValue.toLocaleString()}</p>
       </div>
-      {
-        <ReusableDialog
-          title={selectedRow?.description ?? "Header"}
-          open={selectedRow !== null}
-          onOpenChange={(open) => {
-            if (!open) setSelectedRow(null);
-          }}
-          className="sm:max-w-[70vw] !px-0"
-        >
-          {selectedRow && <SubBillTable selectedRow={selectedRow} />}
-        </ReusableDialog>
-      }
+
+      <ReusableDialog
+        title={selectedRow?.stageType ?? "Details"}
+        open={selectedRow !== null}
+        onOpenChange={(open) => {
+          if (!open) setSelectedRow(null);
+        }}
+        className="sm:max-w-[70vw] !px-0"
+      >
+        {selectedRow && (
+          <SubBillTable
+            selectedRow={{
+              ...selectedRow,
+              projectLabors: selectedRow.labors,
+              projectMaterials: selectedRow.materials,
+              projectActivities: selectedRow.activities,
+            }}
+          />
+        )}
+      </ReusableDialog>
     </div>
   );
 };
