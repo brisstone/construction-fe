@@ -1,4 +1,5 @@
 import GenericTable from "@/components/general/GenericTable";
+import { formatNumberWithCommaDecimal } from "@/utils";
 
 export type DataItem = {
   _id: string;
@@ -26,13 +27,13 @@ const SubBillTable = ({ selectedRow }: { selectedRow: any }) => {
     const tableData: DataItem[] = [];
 
     // Add main row
-    tableData.push({
-      _id: selectedRow._id || "main-row",
-      type: "main",
-      item: selectedRow.displayItem || "",
-      description: selectedRow.stageType?.replace("_", " ") || "",
-      amount: selectedRow.displayAmount || 0,
-    });
+    // tableData.push({
+    //   _id: selectedRow._id || "main-row",
+    //   type: "main",
+    //   item: selectedRow.displayItem || "",
+    //   description: selectedRow.stageType?.replace("_", " ") || "",
+    //   amount: selectedRow.displayAmount || 0,
+    // });
 
     // Add material rows
     if (selectedRow.materials && selectedRow.materials.length > 0) {
@@ -82,7 +83,7 @@ const SubBillTable = ({ selectedRow }: { selectedRow: any }) => {
         className={`w-full text-[13px] text-left text-sm h-[50px] font-medium cursor-pointer ${rowClass}`}
       >
         <td className="py-1 px-4">
-          {item.type === "main" ? item.item : `- ${item.item}`}
+          {item.type === "main" ? item.item : `${item.item}`}
         </td>
         <td className="py-1 px-4">{item.description}</td>
         <td className="py-1 px-4">
@@ -112,7 +113,9 @@ const SubBillTable = ({ selectedRow }: { selectedRow: any }) => {
         <p></p>
         <p></p>
         <p></p>
-        <p className="font-semibold">{totalValue.toLocaleString()}</p>
+        <p className="font-semibold">
+          {formatNumberWithCommaDecimal(totalValue)}
+        </p>
       </div>
       <div className="my-4">
         <h3 className="font-bold text-xs text-center">
