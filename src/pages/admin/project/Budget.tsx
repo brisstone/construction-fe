@@ -4,7 +4,6 @@ import RouteChain from "@/components/general/RouteChain";
 import Container from "@/components/layout/Container";
 import BillComp from "@/components/projects/budget/Bill/BillComp";
 import WorkTable from "@/components/projects/budget/workPlan/WorkTable";
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReusableDialog from "@/components/general/ReuseableDialog";
 import InputField from "@/components/input/InputField";
@@ -14,11 +13,11 @@ import { useParams } from "react-router-dom";
 import useGetSingleProject from "@/hooks/api/queries/projects/getSingleProject";
 import { useNavigate } from "react-router-dom";
 import useGetWorkStageAll from "@/hooks/api/queries/projects/budget/workStage/getWorkStageAll";
-import usegetProjectById from "@/hooks/api/queries/projects/getProjectById";
+import RoundLoader from "@/components/general/RoundLoader";
 
 const Budget = () => {
   const { id } = useParams<{ id: string }>();
-  const { data: projectT } = usegetProjectById(id ?? "");
+  // const { data: projectT } = usegetProjectById(id ?? "");
 
   // const [showGenerated, setShowGenerated] = useState(false);
   const [addBudget, setAddBudget] = useState(false);
@@ -78,9 +77,6 @@ const Budget = () => {
     }
   };
 
-  if (allworkPend) {
-    return <div>Loading...</div>;
-  }
   return (
     <div>
       <RouteChain
@@ -90,39 +86,40 @@ const Budget = () => {
       />
 
       <Container className="my-5">
-        {/* {showGenerated ? (
-          <ViewBudget />
-        ) : ( */}
-        <Tabs defaultValue="bill">
-          <aside className="md:flex items-center justify-between">
-            <div className="w-full overflow-x-auto scrollbar-hidden">
-              <TabsList className="rounded-[8px] bg-fadedGrey">
-                <TabsTrigger value="bill">Bill of Quantity</TabsTrigger>
-                <TabsTrigger value="work">Work Plan/Schedule</TabsTrigger>
-              </TabsList>
-            </div>
-            <ButtonComp
-              text={project?.budgetId ? "View Budget" : "Generate Budget"}
-              className="w-fit mt-3 md:mt-0"
-              onClick={handleGenerateClick}
-            />
-          </aside>
-          <TabsContent value="bill">
-            <BillComp workStageDataAll={workStageDataAll?.data ?? []} />
-          </TabsContent>
-          <TabsContent value="work">
-            <div className="my-5">
-              <div className="flex items-center justify-between">
-                <p className="font-medium text-lg text-textShade my-5">
-                  Work Plan Summary
-                </p>
+        {allworkPend ? (
+          <RoundLoader />
+        ) : (
+          <Tabs defaultValue="bill">
+            <aside className="md:flex items-center justify-between">
+              <div className="w-full overflow-x-auto scrollbar-hidden">
+                <TabsList className="rounded-[8px] bg-fadedGrey">
+                  <TabsTrigger value="bill">Bill of Quantity</TabsTrigger>
+                  <TabsTrigger value="work">Work Plan/Schedule</TabsTrigger>
+                </TabsList>
               </div>
-              <section>
-                <WorkTable workStageDataAll = {workStageDataAll?.data ?? []}/>
-              </section>
-            </div>
-          </TabsContent>
-        </Tabs>
+              <ButtonComp
+                text={project?.budgetId ? "View Budget" : "Generate Budget"}
+                className="w-fit mt-3 md:mt-0"
+                onClick={handleGenerateClick}
+              />
+            </aside>
+            <TabsContent value="bill">
+              <BillComp workStageDataAll={workStageDataAll?.data ?? []} />
+            </TabsContent>
+            <TabsContent value="work">
+              <div className="my-5">
+                <div className="flex items-center justify-between">
+                  <p className="font-medium text-lg text-textShade my-5">
+                    Work Plan Summary
+                  </p>
+                </div>
+                <section>
+                  <WorkTable workStageDataAll={workStageDataAll?.data ?? []} />
+                </section>
+              </div>
+            </TabsContent>
+          </Tabs>
+        )}
         {/* )} */}
       </Container>
       {
