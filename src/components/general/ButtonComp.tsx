@@ -23,7 +23,7 @@ const ButtonComp: React.FC<ButtonCompProps> = ({
       <Button
         onClick={onClick}
         disabled={disabled}
-        className={` rounded-[8px] w-[100px] h-[36px] bg-deepBlue text-sm font-medium text-white ${className}`}
+        className={`rounded-[8px] w-[100px] h-[36px] bg-deepBlue text-sm font-medium text-white ${className}`}
       >
         {showIcon && <div className="mr-1">{icon}</div>}
         {text}

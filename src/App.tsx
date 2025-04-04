@@ -28,19 +28,22 @@ import InventoryDetail from "./pages/admin/storage/inventory/InventoryDetail";
 import AddStock from "./pages/admin/storage/inventory/AddStock";
 import { useAuthStore } from "./store/authStore";
 import { useEffect } from "react";
-import { AdminProtectedRoute, SuperAdminProtectedRoute } from "./utils/ProtectedRoute";
+import {
+  AdminProtectedRoute,
+  SuperAdminProtectedRoute,
+} from "./utils/ProtectedRoute";
 import LaborComp from "./pages/admin/settings/LaborComp";
 import ViewBudget from "./components/projects/budget/GenerateBudget/ViewBudget";
 import ContractorDetail from "./pages/admin/contractor/ContractorDetail";
 import PaymentScheduleDetail from "./pages/admin/project/PaymentScheduleDetail";
+import PaymentExpense from "./pages/admin/project/PaymentExpense";
 
 function App() {
-
   const { applyUserTheme } = useAuthStore();
 
-    useEffect(() => {
-      applyUserTheme();
-    }, []);
+  useEffect(() => {
+    applyUserTheme();
+  }, []);
 
   return (
     <div>
@@ -67,6 +70,10 @@ function App() {
             <Route
               path="project/:id/payment-schedule"
               element={<PaymentSchedule />}
+            />
+            <Route
+              path="project/:id/payment-schedule/:month"
+              element={<PaymentExpense />}
             />
             <Route
               path="project/:id/payment-schedule-detail"

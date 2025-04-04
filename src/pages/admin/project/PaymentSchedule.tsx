@@ -12,12 +12,14 @@ import useGetPaymentSchedule, {
 } from "@/hooks/api/queries/projects/paymentSchedule/getPaymentSchedule";
 import { PageTypes } from "@/utils";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const PaymentSchedule = () => {
   const pageKey = PageTypes.PROJECTS;
   const { id } = useParams();
   const { data: project } = usegetProjectById(id ?? "");
+
+  const navigate = useNavigate();
 
   const [openSchedule, setOpenSchedule] = useState(false);
 
@@ -39,11 +41,23 @@ const PaymentSchedule = () => {
 
   return (
     <div>
-      <RouteChain
-        routeOne="Projects"
-        routeTwo={`${project?.name}`}
-        routeThree="Payment Schedule"
-      />
+      <div className="flex justify-between">
+        <RouteChain
+          routeOne="Projects"
+          routeTwo={`${project?.name}`}
+          routeThree="Payment Schedule"
+        />
+        <div>
+          <button
+            onClick={() =>
+              navigate(`/admin/project/${id}/payment-schedule/April`)
+            }
+            className="border border-deepBlue text-deepBlue rounded p-1"
+          >
+            View Expense Report
+          </button>
+        </div>
+      </div>
       <Container className="my-5">
         <aside className="sm:flex items-center justify-between">
           <p className="font-medium sm:text-lg text-sm text-textShade">
