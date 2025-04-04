@@ -14,9 +14,11 @@ import { useParams } from "react-router-dom";
 import useGetSingleProject from "@/hooks/api/queries/projects/getSingleProject";
 import { useNavigate } from "react-router-dom";
 import useGetWorkStageAll from "@/hooks/api/queries/projects/budget/workStage/getWorkStageAll";
+import usegetProjectById from "@/hooks/api/queries/projects/getProjectById";
 
 const Budget = () => {
   const { id } = useParams<{ id: string }>();
+  const { data: projectT } = usegetProjectById(id ?? "");
 
   // const [showGenerated, setShowGenerated] = useState(false);
   const [addBudget, setAddBudget] = useState(false);
@@ -83,7 +85,7 @@ const Budget = () => {
     <div>
       <RouteChain
         routeOne="Projects"
-        routeTwo="Mabushi Project"
+        routeTwo={`${project?.name}`}
         routeThree="Budget and Planning"
       />
 

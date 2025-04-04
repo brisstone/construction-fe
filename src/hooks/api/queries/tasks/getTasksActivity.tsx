@@ -29,6 +29,10 @@ export interface TasksActType {
   status: string;
   createdAt: string;
   updatedAt: string;
+  assigneeId: {
+    lastName: string
+    firstName: string
+  }
   __v: number;
 }
 

@@ -7,10 +7,13 @@ import DocTab from "@/components/projects/document/DocTab";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import useGetProjectDocument from "@/hooks/api/queries/document/getProjectDocument";
+import usegetProjectById from "@/hooks/api/queries/projects/getProjectById";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 const DocumentPage = () => {
   const { id } = useParams();
+
+  const { data: project } = usegetProjectById(id ?? "");
 
   const [addDoc, setAddDoc] = useState(false);
 
@@ -28,7 +31,7 @@ const DocumentPage = () => {
     <div>
       <RouteChain
         routeOne="Projects"
-        routeTwo="Mabushi Project"
+        routeTwo={`${project?.name}`}
         routeThree="Documents"
       />
       <Container className="my-5">

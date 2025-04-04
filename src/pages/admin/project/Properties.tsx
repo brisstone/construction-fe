@@ -6,6 +6,7 @@ import Container from "@/components/layout/Container";
 import CreateProperty from "@/components/projects/properties/CreateProperty";
 import PropertyCard from "@/components/projects/properties/PropertyCard";
 import TopHeader from "@/components/ui/TopHeader";
+import usegetProjectById from "@/hooks/api/queries/projects/getProjectById";
 import useGetProperty, {
   PropertyType,
 } from "@/hooks/api/queries/projects/property/getProperty";
@@ -22,6 +23,11 @@ const Properties = () => {
   const { id } = useParams<{ id: string }>();
 
   const { data: property, isPending } = useGetProperty(id ?? "");
+
+  const { data: project } = usegetProjectById(id ?? "");
+
+  console.log(project, 'project__project')
+
 
   const { data: propertyMetrics, isPending: isLoading } = useGetPropertyMetrics(
     id ?? ""
@@ -74,7 +80,7 @@ const Properties = () => {
     <div>
       <RouteChain
         routeOne="Projects"
-        routeTwo="Mabushi Project"
+        routeTwo={`${project?.name}`}
         routeThree="Properties"
       />
       <main>
@@ -87,7 +93,7 @@ const Properties = () => {
         <div className="p-5 rounded-xl bg-white">
           <p className="font-bold ">Project Description</p>
           <h3 className="text-2SM  text-darkGrey my-2">
-            5 Bedroom Stand-alone Duplex with BQ (House A05)
+           {project?.description}
           </h3>
         </div>
 

@@ -6,6 +6,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { WorkStageType } from "@/hooks/api/queries/projects/budget/workStage/getWorkStage";
+import { formatNumberWithCommaDecimal } from "@/utils";
 import { useNavigate } from "react-router-dom";
 // export type TaskItem = {
 //   id: number;
@@ -39,9 +40,19 @@ const SubSructureTable = ({
       navigate(`/admin/project/${workItem?._id}/budget/workStage`);
     };
 
-    if (workStageDataLoad?.length === 0) {
-      return <div>No data</div>;
-    }
+    // Sum of labor quantity * rate
+    const totalLaborCost = (workItem.projectLabors || []).reduce(
+      (sum, labor) => sum + (labor.quantity || 0) * (labor.rate || 0),
+      0
+    );
+
+    // Sum of material quantity * rate
+    const totalMaterialCost = (workItem.projectMaterials || []).reduce(
+      (sum, material) => sum + (material.quantity || 0) * (material.rate || 0),
+      0
+    );
+
+    const totalCost = totalLaborCost + totalMaterialCost;
 
     return (
       <tr
@@ -49,9 +60,9 @@ const SubSructureTable = ({
         key={index}
         className="text-gray-700 text-sm h-[50px] border-b cursor-pointer"
       >
-        <td className="py-2 px-4">{workItem._id}</td>
+        <td className="py-2 px-4">{index + 1}</td>
         <td className="py-2 px-4">{workItem.name}</td>
-        <td className="py-2 px-4">{"undecided"}</td>
+        <td className="py-2 px-4">{`${formatNumberWithCommaDecimal(totalCost)}`}</td>
 
         <td className="py-1 px-4">
           <Popover>

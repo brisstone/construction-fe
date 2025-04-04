@@ -111,7 +111,7 @@ const BillTable = ({
       </div>
 
       <ReusableDialog
-        title={selectedRow?.stageType ?? "Details"}
+        title={selectedRow?.stageType?.replace("_", " ") ?? "Details"}
         open={selectedRow !== null}
         onOpenChange={(open) => {
           if (!open) setSelectedRow(null);

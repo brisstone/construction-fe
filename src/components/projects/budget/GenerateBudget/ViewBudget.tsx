@@ -12,6 +12,7 @@ import Container from "@/components/layout/Container";
 import RouteChain from "@/components/general/RouteChain";
 import usegetBudgetMetrics from "@/hooks/api/queries/projects/budget/getBudgetMetrics";
 import { formatNumberWithCommaDecimal } from "@/utils";
+import usegetProjectById from "@/hooks/api/queries/projects/getProjectById";
 const ViewBudget = () => {
   const [newWork, setNewWork] = useState(false);
 
@@ -20,6 +21,7 @@ const ViewBudget = () => {
     setActiveTab(value);
   };
   const { id } = useParams<{ id: string }>();
+  const { data: project } = usegetProjectById(id ?? "");
 
   const { setBudgetId, setProjectId } = useIdStore();
   const { data: budget, isPending } = usegetBudget(id ?? "");
@@ -29,9 +31,9 @@ const ViewBudget = () => {
 
   console.log(isloading, "budgetMetrics__budgetMetrics");
 
-  const { data: workStageData } = useGetWorkStage(
+  const { data: workStageData, isPending: isFeching } = useGetWorkStage(
     id ?? "",
-    activeTab === "sub" ? "sub_structure" : "super_structure" 
+    activeTab === "sub" ? "sub_structure" : "super_structure"
   );
 
   const workStageDataLoad = workStageData?.data;
@@ -53,7 +55,7 @@ const ViewBudget = () => {
     <div>
       <RouteChain
         routeOne="Projects"
-        routeTwo="Mabushi Project"
+        routeTwo={`${project?.name}`}
         routeThree="Budget View"
       />
       <Container className="my-5">
@@ -113,10 +115,12 @@ const ViewBudget = () => {
                 />
               </div>
               <TabsContent value="sub">
-                <SubComp workStageDataLoad={workStageDataLoad ?? []} />
+
+                <SubComp isFeching={isFeching} workStageDataLoad={workStageDataLoad ?? []} />
               </TabsContent>
               <TabsContent value="super">
-                <SubComp workStageDataLoad={workStageDataLoad ?? []} />
+
+                <SubComp isFeching={isFeching} workStageDataLoad={workStageDataLoad ?? []} />
               </TabsContent>
             </div>
           </Tabs>

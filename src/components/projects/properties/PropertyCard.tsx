@@ -14,6 +14,7 @@ import {
 import ReusableDialog from "@/components/general/ReuseableDialog";
 import DeletePropertyModal from "./DeletePropertyModal";
 import { useState } from "react";
+import { formatNumberWithCommaDecimal } from "@/utils";
 
 const PropertyCard = ({
   propertyItem,
@@ -81,7 +82,7 @@ const PropertyCard = ({
         <div className="w-full h-[190px] relative ">
           <div className="absolute z-10 bottom-2 left-2">
             <div className="bg-slate-500 text-white p-1 text-sm">
-              #{propertyItem?.amount}
+              {formatNumberWithCommaDecimal(propertyItem?.amount)}
             </div>
           </div>
           <div className="absolute z-10 top-2 left-2">

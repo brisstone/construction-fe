@@ -4,6 +4,7 @@ import Pagination from "@/components/general/Pagination";
 import RouteChain from "@/components/general/RouteChain";
 import Container from "@/components/layout/Container";
 import TaskTable from "@/components/projects/Tasks/TaskTable";
+import usegetProjectById from "@/hooks/api/queries/projects/getProjectById";
 import useGetTasksActivity from "@/hooks/api/queries/tasks/getTasksActivity";
 import { PageTypes } from "@/utils";
 import { useParams } from "react-router-dom";
@@ -12,6 +13,7 @@ const Task = () => {
   const pageKey = PageTypes.PROJECTS;
 
   const { id } = useParams();
+  const { data: project } = usegetProjectById(id ?? "");
 
   const { data: taskActivity, isPending } = useGetTasksActivity(id ?? "");
 
@@ -25,7 +27,7 @@ const Task = () => {
     <div>
       <RouteChain
         routeOne="Projects"
-        routeTwo="Mabushi Project"
+        routeTwo={`${project?.name}`}
         routeThree="Task Management"
       />
       <Container className="my-5">

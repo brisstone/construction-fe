@@ -6,6 +6,7 @@ import RouteChain from "@/components/general/RouteChain";
 import Container from "@/components/layout/Container";
 import NewPaymentModal from "@/components/projects/paymentSchedule/NewPaymentModal";
 import PaymentTable from "@/components/projects/paymentSchedule/PaymentTable";
+import usegetProjectById from "@/hooks/api/queries/projects/getProjectById";
 import useGetPaymentSchedule, {
   PaymentScheduleType,
 } from "@/hooks/api/queries/projects/paymentSchedule/getPaymentSchedule";
@@ -16,6 +17,7 @@ import { useParams } from "react-router-dom";
 const PaymentSchedule = () => {
   const pageKey = PageTypes.PROJECTS;
   const { id } = useParams();
+  const { data: project } = usegetProjectById(id ?? "");
 
   const [openSchedule, setOpenSchedule] = useState(false);
 
@@ -39,7 +41,7 @@ const PaymentSchedule = () => {
     <div>
       <RouteChain
         routeOne="Projects"
-        routeTwo="Mabushi Project"
+        routeTwo={`${project?.name}`}
         routeThree="Payment Schedule"
       />
       <Container className="my-5">

@@ -10,7 +10,7 @@ import ReusableDialog from "@/components/general/ReuseableDialog";
 import { useState } from "react";
 import ClientDetailModal from "@/components/clientDetail/ClientDetailModal";
 import PropertyGallery from "@/components/projects/properties/PropertyGallery";
-// import gall1 from "@/assets/images/gallery/gall1.png";
+import gall1 from "@/assets/images/gallery/gall1.png";
 // import gall2 from "@/assets/images/gallery/gall2.png";
 // import gall3 from "@/assets/images/ProjectHouse1.png";
 import PaymentDetailModal from "@/components/clientDetail/PaymentDetailModal";
@@ -24,6 +24,7 @@ import useGetSingleProperty from "@/hooks/api/queries/projects/property/getSingl
 import { useParams } from "react-router-dom";
 import AddPropertyClient from "@/components/projects/properties/AddPropertyClient";
 import { ClientType } from "@/hooks/api/queries/clients/getClients";
+import usegetProjectById from "@/hooks/api/queries/projects/getProjectById";
 
 const PropertyDetail = () => {
   // const client: boolean = true;
@@ -35,6 +36,9 @@ const PropertyDetail = () => {
   const [addClient, setAddClient] = useState(false);
 
   const { data: propertySingle, isPending } = useGetSingleProperty(id2 ?? "");
+
+
+  const { data: project } = usegetProjectById(id2 ?? "");
 
   console.log(propertySingle, "propertySingle");
 
@@ -58,23 +62,25 @@ const PropertyDetail = () => {
     <div>
       <RouteChain
         routeOne="Projects"
-        routeTwo="Mabushi Project"
+        routeTwo={`${project?.name}`}
         routeThree="Properties"
       />
       <Container className="my-5">
-        <div>
+        <div className="h-full">
           <PropertyGallery
             id={` 1`}
             allImageSets={[
               {
-                images: propertySingle?.photos ?? [],
+                images: propertySingle?.photos
+                  ? propertySingle?.photos
+                  : [gall1, gall1, gall1, gall1, gall1, gall1, gall1],
                 // images: [gall1, gall2, gall3, gall1, gall2],
               },
             ]}
-            isNotStarLot={false}
-            backoffice={true}
-            showNavigation={true}
-            dynamicHeight={true}
+            isNotStarLot={true}
+            backoffice={false}
+            showNavigation={false}
+            dynamicHeight={false}
           />
         </div>
         <section className="md:flex justify-between my-5">

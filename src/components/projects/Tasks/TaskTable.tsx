@@ -4,6 +4,7 @@ import ReusableDialog from "@/components/general/ReuseableDialog";
 import { Button } from "@/components/ui/button";
 import { TasksActType } from "@/hooks/api/queries/tasks/getTasksActivity";
 import AssignTaskModal from "./AssignTaskModal";
+import { format } from "date-fns";
 
 const TaskTable = ({ taskActivity }: { taskActivity: TasksActType[] }) => {
   const headers = [
@@ -23,12 +24,13 @@ const TaskTable = ({ taskActivity }: { taskActivity: TasksActType[] }) => {
   }
 
   const renderRow = (task: TasksActType, index: number) => {
+    console.log(task, 'task__task')
     return (
       <tr key={index} className="text-gray-700 text-sm h-[50px] border-b">
         <td className="py-2 px-4">{task?.name}</td>
-        <td className="py-2 px-4">{task?.assignedTo ?? "Nil"}</td>
-        <td className="py-2 px-4">{task?.startDate}</td>
-        <td className="py-2 px-4">{task?.endDate}</td>
+        <td className="py-2 px-4">{task?.assigneeId?.firstName ?? "Nil"} {task?.assigneeId?.lastName}</td>
+        <td className="py-2 px-4">{format(new Date(task?.startDate), "MMM dd, yyyy")}</td>
+        <td className="py-2 px-4">{format(new Date(task?.endDate), "MMM dd, yyyy")}</td>
         <td className="py-2 px-4 font-medium">
           <span
             className={`${

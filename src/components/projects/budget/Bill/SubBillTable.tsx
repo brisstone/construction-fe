@@ -17,7 +17,7 @@ const SubBillTable = ({ selectedRow }: { selectedRow: any }) => {
     { content: <>Description</> },
     { content: <>Quantity</> },
     { content: <>Rate</> },
-    { content: <>Amount(#)</> },
+    { content: <>Amount(₦)</> },
   ];
 
   // Format the data for our table based on selectedRow

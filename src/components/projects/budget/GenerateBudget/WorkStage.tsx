@@ -20,6 +20,8 @@ import useGetProjectActivity, {
   ProjectActType,
 } from "@/hooks/api/queries/projects/budget/workStage/projectActivity/getProjectActivity";
 import ProjectActivityTable from "../projectActivity/ProjectActivityTable";
+import usegetProjectById from "@/hooks/api/queries/projects/getProjectById";
+import { formatNumberWithCommaDecimal } from "@/utils";
 const WorkStage = () => {
   const { id } = useParams<{ id: string }>();
   const [newMaterial, setNewMaterial] = useState(false);
@@ -30,6 +32,7 @@ const WorkStage = () => {
     null
   );
   const [editActivity, setEditActivity] = useState<ProjectActType | null>(null);
+  const { data: project } = usegetProjectById(id ?? "");
 
   const handleLaborEdit = (item: ProjectLaborType) => {
     setEditLabour(item);
@@ -44,10 +47,26 @@ const WorkStage = () => {
     setNewActivity(true);
   };
 
-  const { data: workStageSingle } = useGetWorkStageById(id ?? "");
+  const { data: workStageSingle, isPending } = useGetWorkStageById(id ?? "");
   const { data: projectActivity } = useGetProjectActivity(id ?? "");
 
-  const workStageSingleData = workStageSingle?.data
+  const workStageSingleData = workStageSingle?.data;
+
+  const totalLaborCost =
+    workStageSingleData?.projectLabors?.reduce(
+      (sum, labor) => sum + (labor.quantity || 0) * (labor.rate || 0),
+      0
+    ) || 0;
+
+  const totalMaterialCost =
+    workStageSingleData?.projectMaterials?.reduce(
+      (sum, material) => sum + (material.quantity || 0) * (material.rate || 0),
+      0
+    ) || 0;
+
+  const totalCost = totalLaborCost + totalMaterialCost;
+
+  console.log(workStageSingleData, "workStageSingleData__workStageSingleData");
 
   const projectActivityData = projectActivity?.data;
 
@@ -57,7 +76,7 @@ const WorkStage = () => {
     <div>
       <RouteChain
         routeOne="Projects"
-        routeTwo="Mabushi Project"
+        routeTwo={`${project?.name}`}
         routeThree="Budget and Planning"
       />
       <Container className=" my-5">
@@ -77,11 +96,26 @@ const WorkStage = () => {
             </div>
             <div>
               <h3 className="font-medium">Activities</h3>
-              <p className="text-textShade text-sm">Material & Labour</p>
+              <p className="text-textShade text-sm">
+                {(() => {
+                  const hasMaterials =
+                    (workStageSingleData?.projectMaterials || []).length > 0;
+                  const hasLabors =
+                    (workStageSingleData?.projectLabors || []).length > 0;
+
+                  if(isPending) return "Loading..."
+                  if (hasMaterials && hasLabors) return "Material & Labour";
+                  if (hasMaterials) return "Material only";
+                  if (hasLabors) return "Labour only";
+                  return "None";
+                })()}
+              </p>
             </div>
             <div>
-              <h3 className="font-medium">Total Cost (#)</h3>
-              <p className="text-textShade text-sm">2,656,000.00 </p>
+              <h3 className="font-medium">Total Cost (₦)</h3>
+              <p className="text-textShade text-sm">
+                {formatNumberWithCommaDecimal(totalCost)}{" "}
+              </p>
             </div>
           </div>
         </section>
@@ -218,8 +252,12 @@ const WorkStage = () => {
               <AddNewLabour
                 defaultValues={editLabour || undefined}
                 isEditMode={!!editLabour}
-                projectId={workStageSingleData?.projectLabors?.[0]?.projectId ?? ""}
-                budgetId={workStageSingleData?.projectLabors?.[0]?.budgetId ?? ""}
+                projectId={
+                  workStageSingleData?.projectLabors?.[0]?.projectId ?? ""
+                }
+                budgetId={
+                  workStageSingleData?.projectLabors?.[0]?.budgetId ?? ""
+                }
                 handleModalClose={() => {
                   setEditLabour(null);
                   setNewLabour(false);
