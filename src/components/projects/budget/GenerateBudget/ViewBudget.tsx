@@ -12,6 +12,7 @@ import Container from "@/components/layout/Container";
 import RouteChain from "@/components/general/RouteChain";
 import usegetBudgetMetrics from "@/hooks/api/queries/projects/budget/getBudgetMetrics";
 import { formatNumberWithCommaDecimal } from "@/utils";
+import RoundLoader from "@/components/general/RoundLoader";
 const ViewBudget = () => {
   const [newWork, setNewWork] = useState(false);
 
@@ -31,7 +32,7 @@ const ViewBudget = () => {
 
   const { data: workStageData } = useGetWorkStage(
     id ?? "",
-    activeTab === "sub" ? "sub_structure" : "super_structure" 
+    activeTab === "sub" ? "sub_structure" : "super_structure"
   );
 
   const workStageDataLoad = workStageData?.data;
@@ -45,9 +46,6 @@ const ViewBudget = () => {
     setBudgetId(budget?._id ?? "");
   }, [id, budget]);
 
-  if (isPending) {
-    return <div className="text-center">Loading...</div>;
-  }
 
   return (
     <div>
@@ -63,83 +61,89 @@ const ViewBudget = () => {
           </p>
           {/* <ButtonComp text="" className="w-fit mt-1 sm:mt-0" /> */}
         </aside>
-        <section className="my-4 py-3 border-y">
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <h3 className="font-medium">Budget Title</h3>
-              <p className="text-textShade text-sm">{budget?.name}</p>
-            </div>
-            <div>
-              <h3 className="font-medium">No of Units</h3>
-              <p className="text-textShade text-sm">
-                {budgetMetrics?.data?.totalUnits}
-              </p>
-            </div>
-            <div>
-              <h3 className="font-medium">Budget Cost (#)</h3>
-              <p className="text-textShade text-sm">
-                {formatNumberWithCommaDecimal(
-                  budgetMetrics?.data?.totalBudgetCost
-                )}{" "}
-              </p>
-            </div>
-          </div>
-          <div className="my-3">
-            <h3 className="font-medium">Budget Description</h3>
-            <p className="w-1/2 text-xs text-textShade">
-              {budget?.description}
-            </p>
-          </div>
-        </section>
-        <main>
-          <Tabs defaultValue="sub" onValueChange={handleTabChange}>
-            <aside className="md:flex items-center justify-between">
-              <div className="w-full overflow-x-auto scrollbar-hidden">
-                <TabsList className="rounded-[8px] bg-fadedGrey">
-                  <TabsTrigger value="sub">Substructure</TabsTrigger>
-                  <TabsTrigger value="super">Superstructure</TabsTrigger>
-                </TabsList>
+        {isPending ? (
+          <RoundLoader />
+        ) : (
+          <>
+            <section className="my-4 py-3 border-y">
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <h3 className="font-medium">Budget Title</h3>
+                  <p className="text-textShade text-sm">{budget?.name}</p>
+                </div>
+                <div>
+                  <h3 className="font-medium">No of Units</h3>
+                  <p className="text-textShade text-sm">
+                    {budgetMetrics?.data?.totalUnits}
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-medium">Budget Cost (#)</h3>
+                  <p className="text-textShade text-sm">
+                    {formatNumberWithCommaDecimal(
+                      budgetMetrics?.data?.totalBudgetCost
+                    )}{" "}
+                  </p>
+                </div>
               </div>
-            </aside>
-            <div className="my-5">
-              <div className="sm:flex items-center justify-between my-3">
-                <p className="font-medium text-lg text-textShade">
-                  Work Stage List
+              <div className="my-3">
+                <h3 className="font-medium">Budget Description</h3>
+                <p className="w-1/2 text-xs text-textShade">
+                  {budget?.description}
                 </p>
-                <ButtonComp
-                  onClick={() => setNewWork(true)}
-                  text="Add Work Stage"
-                  className="w-fit mt-1 sm:mt-0"
-                />
               </div>
-              <TabsContent value="sub">
-                <SubComp workStageDataLoad={workStageDataLoad ?? []} />
-              </TabsContent>
-              <TabsContent value="super">
-                <SubComp workStageDataLoad={workStageDataLoad ?? []} />
-              </TabsContent>
-            </div>
-          </Tabs>
-          {
-            <ReusableDialog
-              title={`Add New Work Stage - ${
-                activeTab === "sub" ? "Substructure" : "Superstructure"
-              }`}
-              // title="Add New Work Stage"
-              open={newWork}
-              onOpenChange={setNewWork}
-              className="sm:max-w-[80vw]"
-            >
-              <div>
-                <AddNewWorkModal
-                  handleModalClose={handleModalClose}
-                  budgetId={budget?._id ?? ""}
-                  workStageType={activeTab}
-                />
-              </div>
-            </ReusableDialog>
-          }
-        </main>
+            </section>
+            <main>
+              <Tabs defaultValue="sub" onValueChange={handleTabChange}>
+                <aside className="md:flex items-center justify-between">
+                  <div className="w-full overflow-x-auto scrollbar-hidden">
+                    <TabsList className="rounded-[8px] bg-fadedGrey">
+                      <TabsTrigger value="sub">Substructure</TabsTrigger>
+                      <TabsTrigger value="super">Superstructure</TabsTrigger>
+                    </TabsList>
+                  </div>
+                </aside>
+                <div className="my-5">
+                  <div className="sm:flex items-center justify-between my-3">
+                    <p className="font-medium text-lg text-textShade">
+                      Work Stage List
+                    </p>
+                    <ButtonComp
+                      onClick={() => setNewWork(true)}
+                      text="Add Work Stage"
+                      className="w-fit mt-1 sm:mt-0"
+                    />
+                  </div>
+                  <TabsContent value="sub">
+                    <SubComp workStageDataLoad={workStageDataLoad ?? []} />
+                  </TabsContent>
+                  <TabsContent value="super">
+                    <SubComp workStageDataLoad={workStageDataLoad ?? []} />
+                  </TabsContent>
+                </div>
+              </Tabs>
+              {
+                <ReusableDialog
+                  title={`Add New Work Stage - ${
+                    activeTab === "sub" ? "Substructure" : "Superstructure"
+                  }`}
+                  // title="Add New Work Stage"
+                  open={newWork}
+                  onOpenChange={setNewWork}
+                  className="sm:max-w-[80vw]"
+                >
+                  <div>
+                    <AddNewWorkModal
+                      handleModalClose={handleModalClose}
+                      budgetId={budget?._id ?? ""}
+                      workStageType={activeTab}
+                    />
+                  </div>
+                </ReusableDialog>
+              }
+            </main>
+          </>
+        )}
       </Container>
     </div>
   );

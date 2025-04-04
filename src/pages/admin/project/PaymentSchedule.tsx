@@ -2,6 +2,7 @@ import ButtonComp from "@/components/general/ButtonComp";
 import FilterLayout from "@/components/general/FilterLayout";
 import Pagination from "@/components/general/Pagination";
 import ReusableDialog from "@/components/general/ReuseableDialog";
+import RoundLoader from "@/components/general/RoundLoader";
 import RouteChain from "@/components/general/RouteChain";
 import Container from "@/components/layout/Container";
 import NewPaymentModal from "@/components/projects/paymentSchedule/NewPaymentModal";
@@ -23,7 +24,7 @@ const PaymentSchedule = () => {
     null
   );
 
-  const { data: paymentSchedule } = useGetPaymentSchedule(id ?? "");
+  const { data: paymentSchedule, isPending } = useGetPaymentSchedule(id ?? "");
 
   const handleModalClose = () => {
     setOpenSchedule(false);
@@ -53,12 +54,18 @@ const PaymentSchedule = () => {
             className="w-fit mt-1 sm:mt-0"
           />
         </aside>
-        <FilterLayout pageKey={pageKey} />
-        <PaymentTable
-          onEdit={handleEdit}
-          paymentSchedule={paymentSchedule?.data ?? []}
-        />
-        <Pagination />
+        {isPending ? (
+          <RoundLoader />
+        ) : (
+          <>
+            <FilterLayout pageKey={pageKey} />
+            <PaymentTable
+              onEdit={handleEdit}
+              paymentSchedule={paymentSchedule?.data ?? []}
+            />
+            <Pagination />
+          </>
+        )}
         {
           <ReusableDialog
             title={

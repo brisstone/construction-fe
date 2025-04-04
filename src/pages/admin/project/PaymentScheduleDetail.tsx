@@ -10,6 +10,7 @@ import { useState } from "react";
 import PaymentTable from "@/components/clientDetail/PaymentTable";
 import useGetSchedulePayments from "@/hooks/api/queries/projects/paymentSchedule/getPaymentProject";
 import { formatNumberWithCommaDecimal } from "@/utils";
+import RoundLoader from "@/components/general/RoundLoader";
 
 const PaymentScheduleDetail = () => {
   const { id } = useParams();
@@ -74,64 +75,64 @@ const PaymentScheduleDetail = () => {
     { title: "Payment Type:", content: singlePaymentScheduleLoad?.paymentType },
   ];
 
-  if (isPending || payProjPend) {
-    return <div className="text-center my-5">Loading...</div>;
-  }
-
   return (
     <div>
       <RouteChain routeOne="Projects" routeTwo="Schedule View" />
-      <Container className="my-5">
-        <aside className="sm:flex items-center justify-between">
-          <p className="font-medium sm:text-lg text-sm text-textShade">
-            View Payment Schedule
-          </p>
-          <ButtonComp
-            onClick={() => {
-              if (singlePaymentScheduleLoad?.paymentCompleted) return;
-              setAddPay(true);
-            }}
-            text={
-              singlePaymentScheduleLoad?.paymentCompleted
-                ? "Payment completed"
-                : "Make Payment"
-            }
-            className="w-fit mt-1 sm:mt-0"
-          />
-        </aside>
-        <section className="my-4 py-3 border-y">
-          <div className="grid grid-cols-2 gap-3 my-5">
-            {clientDetails.map((item, index) => (
-              <div key={index} className="text-sm">
-                <span className="font-semibold mr-3">{item.title}: </span>
-                <span className="text-xs text-darkGrey">{item.content}</span>
-              </div>
-            ))}
-          </div>
-          <div className="my-3">
-            {/* <h3 className="font-medium">Description of Work or Material:</h3>
+      {isPending || payProjPend ? (
+        <RoundLoader />
+      ) : (
+        <Container className="my-5">
+          <aside className="sm:flex items-center justify-between">
+            <p className="font-medium sm:text-lg text-sm text-textShade">
+              View Payment Schedule
+            </p>
+            <ButtonComp
+              onClick={() => {
+                if (singlePaymentScheduleLoad?.paymentCompleted) return;
+                setAddPay(true);
+              }}
+              text={
+                singlePaymentScheduleLoad?.paymentCompleted
+                  ? "Payment completed"
+                  : "Make Payment"
+              }
+              className="w-fit mt-1 sm:mt-0"
+            />
+          </aside>
+          <section className="my-4 py-3 border-y">
+            <div className="grid grid-cols-2 gap-3 my-5">
+              {clientDetails.map((item, index) => (
+                <div key={index} className="text-sm">
+                  <span className="font-semibold mr-3">{item.title}: </span>
+                  <span className="text-xs text-darkGrey">{item.content}</span>
+                </div>
+              ))}
+            </div>
+            <div className="my-3">
+              {/* <h3 className="font-medium">Description of Work or Material:</h3>
             <p className="w-1/2 text-xs text-textShade">
               Supply of 200 Bags of Cement
             </p> */}
-          </div>
-        </section>
-        <section className="">
-          {/* <div>
+            </div>
+          </section>
+          <section className="">
+            {/* <div>
             <h3 className="font-bold text-lg mb-3">Receipt of Payment</h3>
             <img
               src={singlePaymentScheduleLoad?.paymentProof}
               alt="samplepassport"
             />
           </div> */}
-          <aside className="border my-5 flex items-center gap-5 p-5 rounded-[14px]">
-            <h3 className="text-lg font-semibold">Notes:</h3>
-            <p>{singlePaymentScheduleLoad?.description}</p>
-          </aside>
-        </section>
-        <section className="border-y">
-          <PaymentTable paymentDataLoad={paymentDataLoad ?? []} />
-        </section>
-      </Container>
+            <aside className="border my-5 flex items-center gap-5 p-5 rounded-[14px]">
+              <h3 className="text-lg font-semibold">Notes:</h3>
+              <p>{singlePaymentScheduleLoad?.description}</p>
+            </aside>
+          </section>
+          <section className="border-y">
+            <PaymentTable paymentDataLoad={paymentDataLoad ?? []} />
+          </section>
+        </Container>
+      )}
 
       {
         <ReusableDialog
