@@ -213,7 +213,7 @@ const AddClient = ({
       </div>
       <InputField type="date" label="Date of Entry" name="dateOfEntry" />
       <div>
-        <p className="text-sm font-semibold text-grey mb-2">Proof of Payment</p>
+        <p className="text-sm font-semibold text-grey mb-2">Proof of Identification</p>
         <FileUpload onFileUpload={(file) => console.log(file)} />
       </div>
       <div className="flex gap-3 items-center justify-self-end mt-4">

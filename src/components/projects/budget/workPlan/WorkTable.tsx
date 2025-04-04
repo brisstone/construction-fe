@@ -61,7 +61,7 @@ const GroupedWorkTable = ({
           colSpan={6}
           className="pl-16 text-grey font-bold h-[60px] px-4 py-2 uppercase"
         >
-          {section.section}
+          {section.section} 
         </td>
       </tr>
       {section.tasks.map((task, taskIdx) => (
