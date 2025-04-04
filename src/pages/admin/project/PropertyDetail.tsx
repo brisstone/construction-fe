@@ -21,7 +21,7 @@ import useGetSingleProperty from "@/hooks/api/queries/projects/property/getSingl
 import { useParams } from "react-router-dom";
 import AddPropertyClient from "@/components/projects/properties/AddPropertyClient";
 import { ClientType } from "@/hooks/api/queries/clients/getClients";
-import usegetProjectById from "@/hooks/api/queries/projects/getProjectById";
+// import usegetProjectById from "@/hooks/api/queries/projects/getProjectById";
 import RoundLoader from "@/components/general/RoundLoader";
 
 const PropertyDetail = () => {
@@ -35,7 +35,7 @@ const PropertyDetail = () => {
 
   const { data: propertySingle, isPending } = useGetSingleProperty(id2 ?? "");
 
-  const { data: project } = usegetProjectById(id2 ?? "");
+  // const { data: project } = usegetProjectById(id2 ?? "");
 
   console.log(propertySingle, "propertySingle");
 
@@ -56,7 +56,7 @@ const PropertyDetail = () => {
     <div>
       <RouteChain
         routeOne="Projects"
-        routeTwo={`${project?.name}`}
+        routeTwo={`${propertySingle?.projectId?.name}`}
         routeThree="Properties"
       />
       {isPending ? (
@@ -68,10 +68,10 @@ const PropertyDetail = () => {
               id={` 1`}
               allImageSets={[
                 {
-                  images: propertySingle?.photos
-                    ? propertySingle?.photos
-                    : [gall1, gall1, gall1, gall1, gall1, gall1, gall1],
-                  // images: [gall1, gall2, gall3, gall1, gall2],
+                  images:
+                    propertySingle?.photos && propertySingle.photos.length > 0
+                      ? propertySingle.photos
+                      : [gall1, gall1, gall1, gall1, gall1, gall1, gall1],
                 },
               ]}
               isNotStarLot={true}

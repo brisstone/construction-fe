@@ -62,7 +62,7 @@ const PaymentTable = ({ paymentDataLoad, onEdit }: TableProp) => {
   // };
 
   if (paymentDataLoad?.length === 0) {
-    return <div>No Data available</div>;
+    return <div>No Payments available</div>;
   }
   const renderRow = (item: PaymentPropertyData, index: number) => {
     return (

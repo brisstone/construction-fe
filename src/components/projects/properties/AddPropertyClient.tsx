@@ -24,9 +24,10 @@ const AddPropertyClient = ({
 }) => {
   const [client, setClient] = useState("");
   const [agentType, setAgentType] = useState("");
-  const [agent, setAgent] = useState("");
+  const [agent, setAgent] = useState(AgentTypeEnum.AFFILIATE as string);
   const [frequency, setFrequency] = useState("");
   const [commision, setCommision] = useState<string | number>("");
+  const [dueDate, setDueDate] = useState<Date | null>(null);
 
   const { currentUser } = useAuthStore();
   const { data: clientData, isPending } = useGetClients(
@@ -35,6 +36,11 @@ const AddPropertyClient = ({
 
   const { data: CompanyUser, isPending: userpend } = useGetCompanyUser(
     currentUser?.companyId ?? ""
+  );
+
+  const { data: CompanyAffilitates } = useGetCompanyUser(
+    currentUser?.companyId ?? "",
+    { accountType: AgentTypeEnum.AFFILIATE }
   );
 
   const clientOptions =
@@ -49,6 +55,12 @@ const AddPropertyClient = ({
       value: user._id,
     })) || [];
 
+  const agentAffiliateOptions =
+    CompanyAffilitates?.data?.map((user: CompanyUserType) => ({
+      label: user.firstName,
+      value: user._id,
+    })) || [];
+
   const queryClient = useQueryClient();
   const { mutate: updateProperty, isPending: isUpdating } = useUpdateProperty();
 
@@ -59,6 +71,7 @@ const AddPropertyClient = ({
       agentId: agent,
       paymentFrequency: frequency,
       agentCommission: commision,
+      dueDate,
     };
 
     updateProperty(
@@ -121,7 +134,11 @@ const AddPropertyClient = ({
             onValueChange={setAgent}
             className="my-4"
             placeholder="Property Agent"
-            options={agentOptions}
+            options={
+              agentType == AgentTypeEnum.EMPLOYEE
+                ? agentOptions
+                : agentAffiliateOptions
+            }
           />
         </div>
         <div className="grid sm:grid-cols-2 grid-cols-1 gap-5 ">
@@ -148,10 +165,19 @@ const AddPropertyClient = ({
           <InputField
             type="number"
             name="commission"
-            placeholder="Commission"
+            placeholder="Commission (%)"
             className="mt-2"
             value={commision}
             onChange={(e) => setCommision(Number(e.target.value))}
+          />
+
+          <InputField
+            type="date"
+            label="Due Date for Payment"
+            name="dateDue"
+            placeholder="Due date"
+            value={dueDate ? dueDate.toISOString().split("T")[0] : ""}
+            onChange={(e) => setDueDate(new Date(e.target.value))}
           />
         </div>
       </div>

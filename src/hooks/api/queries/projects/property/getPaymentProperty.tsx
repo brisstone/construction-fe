@@ -7,8 +7,16 @@ export interface ResponseType {
   balanceRemaining: number;
   property: {
     amount: number;
-    paymentCompleted: boolean
-  }
+    paymentCompleted: boolean;
+    agentCommission: number;
+    paymentFrequency: string;
+    agentType: string;
+    agentId: {
+      firstName: string;
+      lastName: string;
+    };
+    dueDate: string;
+  };
 }
 
 export interface PaymentPropertyData {

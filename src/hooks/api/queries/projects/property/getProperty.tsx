@@ -13,7 +13,9 @@ export interface PropertyType {
   name: string;
   description: string;
   companyId: CompanyID;
-  projectId: string;
+  projectId: {
+    name: string;
+  };
   amount: number | string;
   photos: string[];
   status: string;
@@ -26,6 +28,7 @@ export interface PropertyType {
   amenities: Amenity[];
   createdAt: Date;
   updatedAt: Date;
+  paymentCompleted: boolean;
   __v: number;
 }
 

@@ -43,7 +43,7 @@ const PropertyCard = ({
         onClick={() => {
           navigate(`/admin/project/${id}/properties/${propertyItem?._id}`);
         }}
-        className="relative group"
+        className="relative group cursor-pointer"
       >
         <div className="absolute z-10 top-2 right-2 group-hover:flex gap-2">
           <Popover>
@@ -86,11 +86,24 @@ const PropertyCard = ({
             </div>
           </div>
           <div className="absolute z-10 top-2 left-2">
-            {propertyItem?.clientId && (
-              <div className="bg-yellow text-white p-1 text-sm">
-                Allocated
-              </div>
-            )}
+            {/* {propertyItem?.clientId && ( */}
+            <div
+              style={{borderRadius: '8px'}}
+              className={`${
+                propertyItem?.paymentCompleted
+                  ? "bg-[red]"
+                  : propertyItem?.clientId
+                  ? "bg-[#FFA500]"
+                  : "bg-green"
+              } text-white p-1 text-sm font-bold rounded-lg`}
+            >
+              {propertyItem?.paymentCompleted
+                ? "SOLD"
+                : propertyItem?.clientId
+                ? "ALLOCATED"
+                : "AVAILABLE"}
+            </div>
+            {/* )} */}
           </div>
           <img
             src={propertyItem?.photos[0] || ProjectHouse1}
