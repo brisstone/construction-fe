@@ -5,8 +5,12 @@ import InputField from "@/components/input/InputField";
 import TextAreaField from "@/components/input/TextAreaField";
 import useMultipleFileUpload from "@/hooks/api/mutation/imageUploads/useMultipleFileUpload";
 import useCreatePaymentSchedule from "@/hooks/api/mutation/project/paymentSchedules/useCreatePaymentSchedule";
+import useUpdatePaymentSchedule from "@/hooks/api/mutation/project/paymentSchedules/useUpdatePaymentSchedule";
 import useGetContractor from "@/hooks/api/queries/contractor/getContractor";
-import { QUERY_KEY_PAYMENTSCHEDULE } from "@/hooks/api/queries/projects/paymentSchedule/getPaymentSchedule";
+import {
+  PaymentScheduleType,
+  QUERY_KEY_PAYMENTSCHEDULE,
+} from "@/hooks/api/queries/projects/paymentSchedule/getPaymentSchedule";
 import { useAuthStore } from "@/store/authStore";
 import { paymentMethod, paymentType, scheduleType } from "@/utils";
 import { useQueryClient } from "@tanstack/react-query";
@@ -30,22 +34,26 @@ interface FormData {
 }
 const NewPaymentModal = ({
   handleModalClose,
+  defaultValues,
+  isEditMode,
 }: {
   handleModalClose: () => void;
+  defaultValues?: PaymentScheduleType;
+  isEditMode?: boolean;
 }) => {
   const { id } = useParams<{ id: string }>();
 
   const { currentUser } = useAuthStore();
   const [formData, setFormData] = useState<FormData>({
-    contractor: "",
-    description: "",
-    amountDue: 0,
-    dateDue: null,
+    contractor: defaultValues?.contractorId?._id || "",
+    description: defaultValues?.description || "",
+    amountDue: defaultValues?.amount || 0,
+    dateDue: defaultValues?.datePaid ? new Date(defaultValues.datePaid) : null,
     paymentSchedule: "",
     amountPaid: 0,
     actualDate: null,
-    paymentMethod: "",
-    paymentPlan: "",
+    paymentMethod: defaultValues?.paymentMethod || "",
+    paymentPlan: defaultValues?.paymentType || "",
     expenseType: "",
     file: null,
     // note: "This is just a sample note that can be anything like comment/payments",
@@ -91,6 +99,9 @@ const NewPaymentModal = ({
   const { mutate: createPaymentSchedule, isPending: isCreating } =
     useCreatePaymentSchedule();
 
+  const { mutate: updateAction, isPending: isUpdating } =
+    useUpdatePaymentSchedule();
+
   const handleSave = () => {
     const payload = {
       projectId: id ?? "",
@@ -108,22 +119,42 @@ const NewPaymentModal = ({
       description: formData.description,
     };
 
-    createPaymentSchedule(payload, {
-      onSuccess: (response: any) => {
-        toast.success(
-          response?.data?.message || "property payment added successfully"
-        );
-        queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY_PAYMENTSCHEDULE],
-        });
-        handleModalClose();
-      },
-      onError: (error: any) => {
-        toast.error(
-          error?.response?.data?.message || "Error creating property payment"
-        );
-      },
-    });
+    if (isEditMode && defaultValues?._id) {
+      updateAction(
+        { ...payload, id: defaultValues._id },
+        {
+          onSuccess: (response: any) => {
+            toast.success(response?.data?.message || "edited successfully");
+            queryClient.invalidateQueries({
+              queryKey: [QUERY_KEY_PAYMENTSCHEDULE],
+            });
+            handleModalClose();
+          },
+          onError: (error: any) => {
+            toast.error(
+              error?.response?.data?.message || "Error updating payment schedule"
+            );
+          },
+        }
+      );
+    } else {
+      createPaymentSchedule(payload, {
+        onSuccess: (response: any) => {
+          toast.success(
+            response?.data?.message || "payment schedule added successfully"
+          );
+          queryClient.invalidateQueries({
+            queryKey: [QUERY_KEY_PAYMENTSCHEDULE],
+          });
+          handleModalClose();
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message || "Error creating payment schedule"
+          );
+        },
+      });
+    }
   };
 
   if (isPending) {
@@ -142,6 +173,7 @@ const NewPaymentModal = ({
           //   label: item?.firstName,
           //   value: item?._id,
           // }))}
+          defaultValue={formData?.contractor}
           options={contractor?.data?.map((item) => ({
             label: item.firstName,
             value: item._id,
@@ -238,6 +270,7 @@ const NewPaymentModal = ({
           <p className="text-sm font-semibold text-grey">Payment Method</p>
           <ReusableSelect
             className="my-4"
+            defaultValue={formData?.paymentMethod}
             placeholder="Payment Method"
             onValueChange={(value) => handleInputChange("paymentMethod", value)}
             options={[
@@ -274,7 +307,15 @@ const NewPaymentModal = ({
       /> */}
       <div className="flex gap-3 items-center justify-self-end mt-4">
         <ButtonComp
-          text={isCreating ? "saving.." : "Save"}
+          text={
+            isEditMode
+              ? isUpdating
+                ? "Updating..."
+                : "Update"
+              : isCreating
+              ? "saving..."
+              : "Save"
+          }
           onClick={handleSave}
         />
       </div>

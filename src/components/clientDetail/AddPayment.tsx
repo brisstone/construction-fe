@@ -7,9 +7,13 @@ import useMultipleFileUpload from "@/hooks/api/mutation/imageUploads/useMultiple
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import useCreatePaymentProperty from "@/hooks/api/mutation/project/property/useCreatePaymentProperty";
-import { QUERY_KEY_PAYMENTPROPERTY } from "@/hooks/api/queries/projects/property/getPaymentProperty";
+import {
+  PaymentPropertyData,
+  QUERY_KEY_PAYMENTPROPERTY,
+} from "@/hooks/api/queries/projects/property/getPaymentProperty";
 import { QUERY_KEY_PAYMENTPROJECT } from "@/hooks/api/queries/projects/paymentSchedule/getPaymentProject";
 import { QUERY_KEY_SINGLEPAYMENTSCHEDULE } from "@/hooks/api/queries/projects/paymentSchedule/getSinglePaymentSchedule";
+import useUpdatePaymentProperty from "@/hooks/api/mutation/project/property/useUpdatePaymentProperty";
 
 type TypeProps = {
   handleModalClose: () => void;
@@ -21,23 +25,33 @@ type TypeProps = {
   scheduleId?: string;
   params?: Record<string, any>;
   balance?: number;
+  defaultValues?: PaymentPropertyData;
+  isEditMode?: boolean;
 };
 
 const AddPayment = ({
   handleModalClose,
+  defaultValues,
   projectId,
+  isEditMode,
   propertyId,
   clientId,
   contractorId,
   schedulePay = false,
   scheduleId,
   params,
-  balance
+  balance,
 }: TypeProps) => {
-  const [paymentTitle, setPaymentTitle] = useState("");
-  const [amountPaid, setAmountPaid] = useState(balance);
-  const [payDate, setPayDate] = useState<Date | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState("");
+  const [paymentTitle, setPaymentTitle] = useState(defaultValues?.name || "");
+  const [amountPaid, setAmountPaid] = useState(
+    defaultValues?.amount || balance
+  );
+  const [payDate, setPayDate] = useState<Date | null>(
+    defaultValues?.datePaid ? new Date(defaultValues.datePaid) : null
+  );
+  const [paymentMethod, setPaymentMethod] = useState(
+    defaultValues?.paymentMethod || ""
+  );
   const [proofOfPayment, setProofOfPayment] = useState<File | null>(null);
 
   const { mutate: uploadImage } = useMultipleFileUpload();
@@ -69,57 +83,90 @@ const AddPayment = ({
   const { mutate: createPaymentProperty, isPending: isCreating } =
     useCreatePaymentProperty();
 
+  const { mutate: updatePaymentProperty, isPending: isUpdating } =
+    useUpdatePaymentProperty();
+
   const handleSave = () => {
     const payload = schedulePay
       ? {
-        name: paymentTitle,
-        projectId,
-        contractorId,
-        amount: amountPaid,
-        datePaid: payDate?.toISOString(),
-        paymentMethod,
-        paymentFLow: "out_bound",
-        paymentProof: proofOfPayment,
-        paymentScheduleId: scheduleId
-      }
+          name: paymentTitle,
+          projectId,
+          contractorId,
+          amount: amountPaid,
+          datePaid: payDate?.toISOString(),
+          paymentMethod,
+          paymentFLow: "out_bound",
+          paymentProof: proofOfPayment,
+          paymentScheduleId: scheduleId,
+        }
       : {
-        name: paymentTitle,
-        projectId,
-        propertyId,
-        clientId,
-        amount: amountPaid,
-        datePaid: payDate?.toISOString(),
-        paymentMethod,
-        paymentFLow: "in_bound",
-        paymentProof: proofOfPayment,
-      };
+          name: paymentTitle,
+          projectId,
+          propertyId,
+          clientId,
+          amount: amountPaid,
+          datePaid: payDate?.toISOString(),
+          paymentMethod,
+          paymentFLow: "in_bound",
+          paymentProof: proofOfPayment,
+        };
 
-    createPaymentProperty(payload, {
-      onSuccess: (response: any) => {
-        toast.success(
-          response?.data?.message || "property payment added successfully"
-        );
-        queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY_PAYMENTPROPERTY],
-        });
-        queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY_PAYMENTPROJECT],
-        });
-        queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY_PAYMENTPROJECT, params, scheduleId],
-        });
-        queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY_SINGLEPAYMENTSCHEDULE, params, scheduleId],
-        });
-        
-        handleModalClose();
-      },
-      onError: (error: any) => {
-        toast.error(
-          error?.response?.data?.message || "Error creating property payment"
-        );
-      },
-    });
+    if (isEditMode && defaultValues?._id) {
+      updatePaymentProperty(
+        { ...payload, id: defaultValues._id },
+        {
+          onSuccess: (response: any) => {
+            toast.success(response?.data?.message || "edited successfully");
+            queryClient.invalidateQueries({
+              queryKey: [QUERY_KEY_PAYMENTPROPERTY],
+            });
+            queryClient.invalidateQueries({
+              queryKey: [QUERY_KEY_PAYMENTPROJECT],
+            });
+            queryClient.invalidateQueries({
+              queryKey: [QUERY_KEY_PAYMENTPROJECT, params, scheduleId],
+            });
+            queryClient.invalidateQueries({
+              queryKey: [QUERY_KEY_SINGLEPAYMENTSCHEDULE, params, scheduleId],
+            });
+            handleModalClose();
+          },
+          onError: (error: any) => {
+            toast.error(
+              error?.response?.data?.message ||
+                "Error updating payment property"
+            );
+          },
+        }
+      );
+    } else {
+      createPaymentProperty(payload, {
+        onSuccess: (response: any) => {
+          toast.success(
+            response?.data?.message || "property payment added successfully"
+          );
+          queryClient.invalidateQueries({
+            queryKey: [QUERY_KEY_PAYMENTPROPERTY],
+          });
+          queryClient.invalidateQueries({
+            queryKey: [QUERY_KEY_PAYMENTPROJECT],
+          });
+          queryClient.invalidateQueries({
+            queryKey: [QUERY_KEY_PAYMENTPROJECT, params, scheduleId],
+          });
+          queryClient.invalidateQueries({
+            queryKey: [QUERY_KEY_SINGLEPAYMENTSCHEDULE, params, scheduleId],
+          });
+
+          handleModalClose();
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message || "Error creating property payment"
+          );
+        },
+      });
+    }
   };
 
   return (
@@ -156,7 +203,6 @@ const AddPayment = ({
             { label: "bank", value: "bank" },
             { label: "card", value: "card" },
             { label: "transfer", value: "transfer" },
-
           ]}
           defaultValue={paymentMethod}
           onValueChange={setPaymentMethod}
@@ -169,7 +215,15 @@ const AddPayment = ({
 
       <div className="flex gap-3 items-center justify-self-end mt-4">
         <ButtonComp
-          text={isCreating ? "saving.." : "Save"}
+          text={
+            isEditMode
+              ? isUpdating
+                ? "Updating..."
+                : "Update"
+              : isCreating
+              ? "saving..."
+              : "Save Property"
+          }
           onClick={handleSave}
         />
       </div>

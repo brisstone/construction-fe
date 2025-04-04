@@ -3,6 +3,15 @@ import { PaymentScheduleType } from "@/hooks/api/queries/projects/paymentSchedul
 import { formatNumberWithCommaDecimal } from "@/utils";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ThreeDotsVertical } from "@/assets/svgComp/General";
+import ReusableDialog from "@/components/general/ReuseableDialog";
+import DeletePayPropsModal from "./DeletePayPropsModal";
+import { useState } from "react";
 // export type DataItem = {
 //   _id: string;
 //   contractor: string;
@@ -90,8 +99,11 @@ import { useNavigate } from "react-router-dom";
 
 const PaymentTable = ({
   paymentSchedule,
+  onEdit,
 }: {
   paymentSchedule: PaymentScheduleType[];
+
+  onEdit: (schedulePay: PaymentScheduleType) => void;
 }) => {
   const headers = [
     { content: <>Contractor/Vendor</> },
@@ -100,9 +112,18 @@ const PaymentTable = ({
     { content: <>Amount Paid(₦)</> },
     { content: <>Actual Pay date</> },
     { content: <>Status</> },
+    { content: <>Action</> },
   ];
 
   const navigate = useNavigate();
+
+  const [deletePayProps, setDeletePayProps] = useState(false);
+  const [selectedPayProps, setSelectedPayProps] = useState<string | null>(null);
+
+  const handleDelete = (id: string) => {
+    setSelectedPayProps(id);
+    setDeletePayProps(true);
+  };
 
   if (!paymentSchedule || paymentSchedule?.length === 0) {
     return <div className="text-center">Data not available</div>;
@@ -113,7 +134,7 @@ const PaymentTable = ({
       navigate(`/admin/project/${item?._id}/payment-schedule-detail`);
     };
 
-    console.log(item, 'item__item')
+    console.log(item, "item__item");
 
     return (
       <tr
@@ -133,7 +154,31 @@ const PaymentTable = ({
             : "N/A"}
         </td>
         <td className="py-1 px-4 ">
-          {item.paymentCompleted? <span className="text-[green]">Paid</span> : <span className="text-red-600">Pending</span>}
+          {item.paymentCompleted ? (
+            <span className="text-[green]">Paid</span>
+          ) : (
+            <span className="text-red-600">Pending</span>
+          )}
+        </td>
+        <td className="py-1 px-4" onClick={(e) => e.stopPropagation()}>
+          <Popover>
+            <PopoverTrigger>
+              <ThreeDotsVertical />
+            </PopoverTrigger>
+            <PopoverContent className="w-[100px] rounded-[4px]">
+              <div>
+                <p onClick={() => onEdit(item)} className="cursor-pointer">
+                  Edit
+                </p>
+                <p
+                  onClick={() => handleDelete(item?._id)}
+                  className="cursor-pointer"
+                >
+                  Delete
+                </p>
+              </div>
+            </PopoverContent>
+          </Popover>
         </td>
       </tr>
     );
@@ -147,6 +192,19 @@ const PaymentTable = ({
         renderRow={renderRow}
         className=""
       />
+      {
+        <ReusableDialog
+          title={"Delete Payment"}
+          open={deletePayProps}
+          onOpenChange={setDeletePayProps}
+          className="max-w-xl"
+        >
+          <DeletePayPropsModal
+            setDeletePayProps={setDeletePayProps}
+            selectedPayProps={selectedPayProps || ""}
+          />
+        </ReusableDialog>
+      }
     </div>
   );
 };

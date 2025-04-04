@@ -38,7 +38,7 @@ const DocumentPage = () => {
               <TabsList className="rounded-[8px] bg-fadedGrey">
                 <TabsTrigger value="Documents">All Documents</TabsTrigger>
                 <TabsTrigger value="Photos">Photos/Videos</TabsTrigger>
-                <TabsTrigger value="Drawing">Drawing</TabsTrigger>
+                {/* <TabsTrigger value="Drawing">Drawing</TabsTrigger> */}
               </TabsList>
             </div>
           </aside>
@@ -53,11 +53,25 @@ const DocumentPage = () => {
                 />
               </div>
               <div>
-                <DocTab projDocData={projDocData ?? []} />
+                <DocTab
+                  projDocData={
+                    projDocData?.filter((item) =>
+                      item?.type?.startsWith("application")
+                    ) ?? []
+                  }
+                />
               </div>
             </TabsContent>
             <TabsContent value="Photos">
-              <p>photo</p>
+              <div>
+                <DocTab
+                  projDocData={
+                    projDocData?.filter((item) =>
+                      item?.type?.startsWith("image")
+                    ) ?? []
+                  }
+                />
+              </div>
             </TabsContent>
           </div>
         </Tabs>

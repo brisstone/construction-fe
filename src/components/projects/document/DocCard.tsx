@@ -18,9 +18,22 @@ const DocCard = ({ documentItem }: { documentItem: DocumentType }) => {
         </button>
       </div>
       <div className="h-[140px] w-[160px] bg-[#F7F8FA] rounded-[4px] flex justify-center items-center">
-        <img src={Filetypeicon} alt="Filetypeicon" className="w-fit h-fit" />
+        <img
+          src={
+            documentItem?.type?.startsWith("application")
+              ? Filetypeicon
+              : documentItem?.url
+          }
+          alt="Filetypeicon"
+          className="w-fit h-fit"
+        />
       </div>
-      <h3 className="text-sm font-semibold my-2">A legal Document</h3>
+      <h3 className="text-sm font-semibold my-2">
+        {" "}
+        {documentItem?.type?.startsWith("application")
+          ? "A Document"
+          : "Image"}
+      </h3>
       <p className="text-xs">
         {documentItem?.createdAt
           ? format(new Date(documentItem.createdAt), "MM/dd/yy")

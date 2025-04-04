@@ -16,6 +16,8 @@ import {
 import { useParams } from "react-router-dom";
 import useUpdateProperty from "@/hooks/api/mutation/project/property/useUpdateProperty";
 import { QUERY_KEY_SINGLEPROPERTY } from "@/hooks/api/queries/projects/property/getSingleProperty";
+import useDeleteImage from "@/hooks/api/mutation/imageUploads/useDeleteImage";
+import { XCircleIcon } from "lucide-react";
 
 interface Amenity {
   amenityId: string | amenityData;
@@ -74,6 +76,51 @@ const CreateProperty = ({
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
   const { mutate: uploadImage } = useMultipleFileUpload();
+  const { mutate: deleteImage } = useDeleteImage();
+
+  const queryClient = useQueryClient();
+
+  const [defaultPhotos, setDefaultPhotos] = useState<string[]>(
+    defaultValues?.photos || []
+  );
+  const [loadingPhoto, setLoadingPhoto] = useState<string | null>(null);
+
+  const handleDeleteImage = (photoUrl: string) => {
+    setLoadingPhoto(photoUrl); // Set loading state for the photo being deleted
+
+    // Optimistically update the UI
+    setDefaultPhotos((prev) => prev.filter((photo) => photo !== photoUrl));
+
+    deleteImage(photoUrl, {
+      onSuccess: (response: any) => {
+        toast.success(response?.data?.message || "Image deleted successfully");
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY_SINGLEPROPERTY],
+        });
+        setLoadingPhoto(null); // Reset loading state on success
+      },
+      onError: (error: any) => {
+        toast.error(error?.data?.message || "Error deleting image");
+
+        // Re-add the photo if the deletion failed
+        setDefaultPhotos((prev) => [...prev, photoUrl]);
+        setLoadingPhoto(null); // Reset loading state on error
+      },
+    });
+  };
+
+
+  // const handleDeleteImage = (fileUrl: string) => {
+  //   deleteImage(fileUrl, {
+  //     onSuccess: (response: any) => {
+  //       toast.success(response?.data?.message || "Image deleted successfully");
+  //       queryClient.invalidateQueries({ queryKey: [QUERY_KEY_SINGLEPROPERTY] });
+  //     },
+  //     onError: (error: any) => {
+  //       toast.error(error?.data?.message || "Error deleting image");
+  //     },
+  //   });
+  // };
 
   const handleFileChange = (files: File[], name: string) => {
     console.log("Uploaded files for", name, ":", files);
@@ -116,7 +163,6 @@ const CreateProperty = ({
     });
   };
 
-  const queryClient = useQueryClient();
   const { mutate: createProperty, isPending: isCreating } = useCreateProperty();
   const { mutate: updateProperty, isPending: isUpdating } = useUpdateProperty();
 
@@ -124,7 +170,7 @@ const CreateProperty = ({
     const payload = {
       ...formData,
       projectId: id,
-      photos: [...(defaultValues?.photos || []), ...uploadedFiles],
+      photos: [...defaultPhotos, ...uploadedFiles],
       amenities: Amenities,
     };
 
@@ -177,19 +223,27 @@ const CreateProperty = ({
               <div className="mb-2">
                 <p className="text-xs mb-1">Current images:</p>
                 <div className="flex gap-2">
-                  {defaultValues.photos.map((photo, index) => (
-                    <img
-                      key={index}
-                      src={photo}
-                      alt={`Current property icon ${index + 1}`}
-                      className="h-16 w-16 object-contain border rounded"
-                    />
+                  {defaultPhotos?.map((photo, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={photo}
+                        alt={`Current property icon ${index + 1}`}
+                        className="h-16 w-16 object-contain border rounded"
+                      />
+                      <button
+                        type="button"
+                        className="absolute top-0 right-0 text-red-500"
+                        onClick={() => handleDeleteImage(photo)}
+                      >
+                        <XCircleIcon size={18} />
+                      </button>
+                    </div>
                   ))}
                 </div>
               </div>
             )}
           <MultipleFileUpload
-            defaultFiles={defaultValues?.photos || []}
+            defaultFiles={defaultPhotos || []}
             name="propertyPhotos"
             onFileChange={handleFileChange}
           />

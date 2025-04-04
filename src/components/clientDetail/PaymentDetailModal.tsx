@@ -5,12 +5,16 @@ import Pagination from "../general/Pagination";
 import ReusableDialog from "../general/ReuseableDialog";
 import AddPayment from "./AddPayment";
 import { useState } from "react";
-import useGetPaymentProperty from "@/hooks/api/queries/projects/property/getPaymentProperty";
+import useGetPaymentProperty, {
+  PaymentPropertyData,
+} from "@/hooks/api/queries/projects/property/getPaymentProperty";
 import { useParams } from "react-router-dom";
 import { formatNumberWithCommaDecimal } from "@/utils";
 
 const PaymentDetailModal = ({ clientId }: { clientId: string }) => {
   const [addPay, setAddPay] = useState(false);
+
+  const [editPay, setEditPay] = useState<PaymentPropertyData | null>(null);
 
   const { id, id2 } = useParams();
 
@@ -22,6 +26,16 @@ const PaymentDetailModal = ({ clientId }: { clientId: string }) => {
   console.log(paymentData, "paymentData__paymentData");
 
   const paymentDataLoad = paymentData?.data;
+
+  const handleModalClose = () => {
+    setAddPay(false);
+    setEditPay(null);
+  };
+
+  const handleEdit = (property: PaymentPropertyData) => {
+    setEditPay(property);
+    setAddPay(true);
+  };
 
   if (isPending) {
     return <div className="text-center">loading....</div>;
@@ -79,23 +93,28 @@ const PaymentDetailModal = ({ clientId }: { clientId: string }) => {
             className="w-fit"
           />
         </div>
-        <PaymentTable paymentDataLoad={paymentDataLoad ?? []} />
+        <PaymentTable
+          paymentDataLoad={paymentDataLoad ?? []}
+          onEdit={handleEdit}
+        />
         <Pagination />
       </main>
       {
         <ReusableDialog
-          title="Add New Payment "
+          title={editPay ? "Edit New Payment" : "Add New Payment"}
           open={addPay}
           onOpenChange={setAddPay}
           className="sm:max-w-[60vw]"
         >
           <div>
             <AddPayment
-              handleModalClose={() => setAddPay(false)}
+              handleModalClose={handleModalClose}
               projectId={id ?? ""}
               propertyId={id2 ?? ""}
               clientId={clientId}
               balance={paymentData?.balanceRemaining}
+              defaultValues={editPay || undefined}
+              isEditMode={!!editPay}
             />
           </div>
         </ReusableDialog>

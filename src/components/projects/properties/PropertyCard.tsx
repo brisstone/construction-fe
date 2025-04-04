@@ -77,7 +77,20 @@ const PropertyCard = ({
             </PopoverContent>
           </Popover>
         </div>
+
         <div className="w-full h-[190px] relative ">
+          <div className="absolute z-10 bottom-2 left-2">
+            <div className="bg-slate-500 text-white p-1 text-sm">
+              #{propertyItem?.amount}
+            </div>
+          </div>
+          <div className="absolute z-10 top-2 left-2">
+            {propertyItem?.clientId && (
+              <div className="bg-yellow text-white p-1 text-sm">
+                Allocated
+              </div>
+            )}
+          </div>
           <img
             src={propertyItem?.photos[0] || ProjectHouse1}
             alt="property"

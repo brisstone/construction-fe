@@ -8,6 +8,7 @@ export interface ResponseType {
 
 export interface PaymentScheduleType {
   _id: string;
+  description: string;
   projectId: ProjectID;
   contractorId: ContractorID;
   companyId: CompanyID;
