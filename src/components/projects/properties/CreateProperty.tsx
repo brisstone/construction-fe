@@ -85,6 +85,8 @@ const CreateProperty = ({
   );
   const [loadingPhoto, setLoadingPhoto] = useState<string | null>(null);
 
+  console.log(loadingPhoto, "loadingPhoto");
+
   const handleDeleteImage = (photoUrl: string) => {
     setLoadingPhoto(photoUrl); // Set loading state for the photo being deleted
 

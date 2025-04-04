@@ -9,9 +9,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ThreeDotsVertical } from "@/assets/svgComp/General";
-import { useState } from "react";
-import ReusableDialog from "../general/ReuseableDialog";
-import DeletePayPropsModal from "./DeletePayPropsModal";
+// import { useState } from "react";
+// import ReusableDialog from "../general/ReuseableDialog";
+// import DeletePayPropsModal from "./DeletePayPropsModal";
 
 // export type payItem = {
 //   id: number;
@@ -41,7 +41,7 @@ import DeletePayPropsModal from "./DeletePayPropsModal";
 type TableProp = {
   paymentDataLoad: PaymentPropertyData[];
 
-  onEdit: (pay: PaymentPropertyData) => void;
+  onEdit?: (pay: PaymentPropertyData) => void;
 };
 
 const PaymentTable = ({ paymentDataLoad, onEdit }: TableProp) => {
@@ -53,14 +53,13 @@ const PaymentTable = ({ paymentDataLoad, onEdit }: TableProp) => {
     { content: <>Action</> },
   ];
 
-   const [deletePayProps, setDeletePayProps] = useState(false);
-    const [selectedPayProps, setSelectedPayProps] = useState<string | null>(null);
-  
-    const handleDelete = (id: string) => {
-      setSelectedPayProps(id);
-      setDeletePayProps(true);
-    };
-  
+  //  const [deletePayProps, setDeletePayProps] = useState(false);
+  //   const [selectedPayProps, setSelectedPayProps] = useState<string | null>(null);
+
+  // const handleDelete = (id: string) => {
+  //   setSelectedPayProps(id);
+  //   setDeletePayProps(true);
+  // };
 
   if (paymentDataLoad?.length === 0) {
     return <div>No Data available</div>;
@@ -80,26 +79,31 @@ const PaymentTable = ({ paymentDataLoad, onEdit }: TableProp) => {
           {/* <a href={item.paymentProof} download></a>
           <DownloadProof /> */}
         </td>
-        <td className="py-1 px-4">
-          <Popover>
-            <PopoverTrigger>
-              <ThreeDotsVertical />
-            </PopoverTrigger>
-            <PopoverContent className="w-[100px] rounded-[4px]">
-              <div>
-                <p onClick={() => onEdit(item)} className="cursor-pointer">
-                  Edit
-                </p>
-                {/* <p
+        {onEdit && (
+          <td className="py-1 px-4">
+            <Popover>
+              <PopoverTrigger>
+                <ThreeDotsVertical />
+              </PopoverTrigger>
+              <PopoverContent className="w-[100px] rounded-[4px]">
+                <div>
+                  <p
+                    onClick={() => onEdit && onEdit(item)}
+                    className="cursor-pointer"
+                  >
+                    Edit
+                  </p>
+                  {/* <p
                   onClick={() => handleDelete(item?._id)}
                   className="cursor-pointer"
                 >
                   Delete
                 </p> */}
-              </div>
-            </PopoverContent>
-          </Popover>
-        </td>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </td>
+        )}
       </tr>
     );
   };
@@ -112,7 +116,7 @@ const PaymentTable = ({ paymentDataLoad, onEdit }: TableProp) => {
         renderRow={renderRow}
         className=""
       />
-      {
+      {/* {
         <ReusableDialog
           title={"Delete Payment"}
           open={deletePayProps}
@@ -124,7 +128,7 @@ const PaymentTable = ({ paymentDataLoad, onEdit }: TableProp) => {
             selectedPayProps={selectedPayProps || ""}
           />
         </ReusableDialog>
-      }
+      } */}
     </div>
   );
 };
