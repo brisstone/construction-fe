@@ -13,6 +13,7 @@ import useGetPaymentSchedule, {
 import { formatNumberWithCommaDecimal, PageTypes } from "@/utils";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { toast } from "sonner";
 
 const PaymentExpense = () => {
   const pageKey = PageTypes.PROJECTS;
@@ -67,17 +68,21 @@ const PaymentExpense = () => {
           </p>
         </div>
 
-        <div className="flex justify-between">
-          <ButtonComp
-            onClick={() => setOpenSchedule(true)}
-            text="Save as pdf"
-            className="w-full mt-1 sm:mt-0"
-          />
-          <ButtonComp
-            onClick={() => setOpenSchedule(true)}
-            text="Print Report"
-            className="w-full mt-1 sm:mt-0"
-          />
+        <div className="flex gap-8 justify-between">
+          <div className=" w-full">
+            <ButtonComp
+              onClick={() => toast.success("done")}
+              text="Save as pdf"
+              className="w-full mt-1 sm:mt-0 h-[50px]"
+            />
+          </div>
+          <div className=" w-full">
+            <ButtonComp
+              onClick={() => toast.success("done")}
+              text="Print Report"
+              className="w-full mt-1 sm:mt-0 h-[50px]"
+            />
+          </div>
         </div>
         {
           <ReusableDialog

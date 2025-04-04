@@ -118,12 +118,13 @@ const SubBillTable = ({ selectedRow }: { selectedRow: any }) => {
         </p>
       </div>
       <div className="my-4">
-        <h3 className="font-bold text-xs text-center">
+        {tableData?.length > 0 &&   <h3 className="font-bold text-xs text-center">
           Note:{" "}
           <span className="font-normal">
-            Kindly check "Documents" for complete breakdown of items
+            Kindly check "Budgets" for complete breakdown of items
           </span>
-        </h3>
+        </h3>}
+      
       </div>
     </div>
   );
