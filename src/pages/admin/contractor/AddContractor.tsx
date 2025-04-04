@@ -52,7 +52,7 @@ const AddContractor = ({
           lng: Number(defaultValues?.geometry?.long),
         }
       : null
-  );
+  ); 
 
   console.log(coordinates, "coordinates");
   const [files, setFiles] = useState<any>({
@@ -106,7 +106,7 @@ const AddContractor = ({
             );
           },
         }
-      );
+      ); 
     } else {
       createContractor(data, {
         onSuccess: (response: any) => {
