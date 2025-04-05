@@ -23,14 +23,14 @@ const RouteChain = ({
       </main>
       <aside className="flex items-center gap-1">
         <p>{routeOne}</p>
-        {routeTwo && (
+        {routeTwo ? (
           <div>
             <span>/ </span>
             <span className={`${routeThree ? "" : "text-deepBlue"}`}>
               {routeTwo}
             </span>
           </div>
-        )}
+        ): "..."}
         {routeThree && (
           <div>
             <span> / </span>
