@@ -11,7 +11,9 @@ export interface WorkStageType {
   name: string;
   description: string;
   companyId: string;
-  projectId: string;
+  projectId: {
+    name: string;
+  };
   stageType: string;
   projectLabors: ProjectLaborType[];
   projectMaterials: ProjectMaterialType[];

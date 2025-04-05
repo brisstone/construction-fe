@@ -20,8 +20,9 @@ import useGetProjectActivity, {
   ProjectActType,
 } from "@/hooks/api/queries/projects/budget/workStage/projectActivity/getProjectActivity";
 import ProjectActivityTable from "../projectActivity/ProjectActivityTable";
-import usegetProjectById from "@/hooks/api/queries/projects/getProjectById";
 import { formatNumberWithCommaDecimal } from "@/utils";
+
+
 const WorkStage = () => {
   const { id } = useParams<{ id: string }>();
   const [newMaterial, setNewMaterial] = useState(false);
@@ -32,7 +33,6 @@ const WorkStage = () => {
     null
   );
   const [editActivity, setEditActivity] = useState<ProjectActType | null>(null);
-  const { data: project } = usegetProjectById(id ?? "");
 
   const handleLaborEdit = (item: ProjectLaborType) => {
     setEditLabour(item);
@@ -76,7 +76,7 @@ const WorkStage = () => {
     <div>
       <RouteChain
         routeOne="Projects"
-        routeTwo={`${project?.name}`}
+        routeTwo={`${workStageSingleData?.projectId?.name}`}
         routeThree="Budget and Planning"
       />
       <Container className=" my-5">
